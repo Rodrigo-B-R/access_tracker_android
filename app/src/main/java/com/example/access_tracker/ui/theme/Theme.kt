@@ -1,57 +1,32 @@
 package com.example.access_tracker.ui.theme
 
-import android.app.Activity
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
-
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+// El diseño solo define tema claro y no usa color dinámico: la paleta es de la marca.
+private val EsquemaClaro = lightColorScheme(
+    primary = Petroleo700,
+    onPrimary = FondoCrema,
+    secondary = Mostaza500,
+    onSecondary = TintaBase,
+    tertiary = Coral500,
+    onTertiary = TintaBase,
+    background = FondoCrema,
+    onBackground = TintaBase,
+    surface = FondoCrema,
+    onSurface = TintaBase,
+    surfaceVariant = FondoArena,
+    onSurfaceVariant = TintaSuave,
+    outline = TintaTenue,
+    error = Rojo600,
+    onError = FondoBlanco,
 )
 
 @Composable
-fun Access_trackerTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
-) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
+fun Access_trackerTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = EsquemaClaro,
         typography = Typography,
         content = content
     )
