@@ -92,20 +92,20 @@ fun DirResumenScreen(onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> U
                     .padding(start = 24.dp, end = 24.dp, top = 16.dp, bottom = 18.dp),
                 verticalArrangement = Arrangement.spacedBy(18.dp),
             ) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         Text("Dirección", style = Texto.LabelM, color = Petroleo100)
-                        Text("Resumen", style = Texto.DisplayL, color = FondoCrema)
-                    }
-                    Row(
-                        Modifier.clip(RoundedCornerShape(24.dp)).background(Petroleo500).clickable { elegirFecha = true }.padding(horizontal = 16.dp, vertical = 12.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Icono(Ico.Calendar, tint = FondoCrema, tamano = 20.dp)
-                        Text(fecha, style = Texto.LabelL, color = FondoCrema)
+                        Text("Resumen", style = Texto.DisplayL, color = FondoCrema, maxLines = 1, softWrap = false)
                     }
                     MenuCuenta(onCambiarPassword, onCerrarSesion, oscuro = true)
+                }
+                Row(
+                    Modifier.clip(RoundedCornerShape(24.dp)).background(Petroleo500).clickable { elegirFecha = true }.padding(horizontal = 16.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icono(Ico.Calendar, tint = FondoCrema, tamano = 20.dp)
+                    Text(fecha, style = Texto.LabelL, color = FondoCrema, maxLines = 1, softWrap = false)
                 }
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     Cifra("3", "estancias\ncompletas", FondoBlanco, Modifier.weight(1f))
