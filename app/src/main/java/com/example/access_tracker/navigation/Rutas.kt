@@ -29,7 +29,6 @@ object Rutas {
     const val ResHorarioPersona = "res_horario_persona"
     const val ResRegistroTurno = "res_registro_turno"
     const val ResAusencia = "res_ausencia"
-    const val ResAlertaInsuficiente = "res_alerta_insuficiente"
     const val ResAltaPersonal = "res_alta_personal"
     const val ResPerfilPersona = "res_perfil_persona"
     const val ResDarBaja = "res_dar_baja"

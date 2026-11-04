@@ -121,7 +121,7 @@ fun RegistroTurnoScreen(onCerrar: () -> Unit, onRegistrar: () -> Unit) {
 /** Ausencia o incidencia de una persona (el retardo se calcula con la checada), con motivo en categoría general. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun RegistrarAusenciaScreen(onCerrar: () -> Unit, onGuardar: () -> Unit) {
+fun RegistrarAusenciaScreen(onCerrar: () -> Unit, onGuardar: () -> Unit, persona: String = "Paola Reyes") {
     var tipo by remember { mutableIntStateOf(0) }
     var motivo by remember { mutableIntStateOf(0) }
     PantallaBase(
@@ -130,9 +130,9 @@ fun RegistrarAusenciaScreen(onCerrar: () -> Unit, onGuardar: () -> Unit) {
     ) {
         EncabezadoPantalla("Registrar ausencia o incidencia", onAtras = onCerrar, cerrar = true)
         CampoSelector(
-            "Persona", "Paola Reyes", icono = Ico.Chevdown,
-            opciones = listOf("Paola Reyes", "Ana Torres", "Marta Gil Soto", "Lucía Ramos", "Sofía Vega"),
-            inicio = { Avatar("PR", lado = 28.dp) },
+            "Persona", persona, icono = Ico.Chevdown,
+            opciones = listOf("Ana Torres", "Lucía Herrera", "Carmen Ruiz", "Sofía Díaz", "Paola Reyes", "Rosa Medina"),
+            inicio = { Avatar(persona.split(" ").take(2).joinToString("") { it.take(1) }.uppercase(), lado = 28.dp) },
         )
         CampoSelector("Fecha", "Miércoles 7 de octubre", icono = Ico.Calendar)
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -155,60 +155,9 @@ fun RegistrarAusenciaScreen(onCerrar: () -> Unit, onGuardar: () -> Unit) {
     }
 }
 
-/** Hoja inferior que aparece sobre la asistencia cuando una sala queda bajo el mínimo. */
-@Composable
-fun AlertaInsuficienteScreen(onVerCobertura: () -> Unit, onCerrar: () -> Unit) {
-    Box(Modifier.fillMaxSize()) {
-        ResAsistenciaScreen(onAvisos = {}, onTurnoCompleto = {}, onAusencia = {})
-        Box(Modifier.fillMaxSize().background(TintaBase.copy(alpha = 0.45f)).clickable(onClick = onCerrar))
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(topStart = 36.dp, topEnd = 36.dp))
-                .background(FondoCrema)
-                .navigationBarsPadding()
-                .padding(start = 24.dp, end = 24.dp, top = 14.dp, bottom = 36.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(18.dp),
-        ) {
-            Box(Modifier.width(44.dp).height(5.dp).clip(RoundedCornerShape(3.dp)).background(TintaTenue))
-            Box(Modifier.height(72.dp).width(72.dp).clip(CircleShape).background(Rojo100), contentAlignment = Alignment.Center) {
-                Icono(Ico.Alert, tint = Rojo600, tamano = 34.dp)
-            }
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Maternal A quedó bajo el mínimo", style = Texto.TitleL, color = TintaBase, textAlign = TextAlign.Center)
-                Text(
-                    "Hay 2 de 3 personas presentes. Revisa la cobertura o reasigna a alguien para cubrir el turno.",
-                    style = Texto.BodyL, color = TintaSuave, textAlign = TextAlign.Center,
-                )
-            }
-            Row(
-                Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(Rojo100).padding(horizontal = 18.dp, vertical = 14.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text("Maternal A", style = Texto.LabelL, color = Rojo600)
-                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    CuadroPersona(true, TintaBase, lado = 26.dp)
-                    CuadroPersona(true, TintaBase, lado = 26.dp)
-                    CuadroPersona(false, TintaBase, lado = 26.dp, colorFaltante = Rojo600)
-                }
-            }
-            Boton("Ver cobertura", onVerCobertura)
-            Boton("Cerrar", onCerrar, estilo = EstiloBoton.Secundario)
-        }
-    }
-}
 
 @Preview(showBackground = true, heightDp = 915, widthDp = 412)
 @Composable
 private fun RegistroTurnoPreview() {
     Access_trackerTheme { RegistroTurnoScreen({}, {}) }
-}
-
-@Preview(showBackground = true, heightDp = 915, widthDp = 412)
-@Composable
-private fun AlertaInsuficientePreview() {
-    Access_trackerTheme { AlertaInsuficienteScreen({}, {}) }
 }

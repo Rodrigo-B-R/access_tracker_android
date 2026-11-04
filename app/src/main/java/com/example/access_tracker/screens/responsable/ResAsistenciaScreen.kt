@@ -29,6 +29,7 @@ import com.example.access_tracker.components.FilaPersona
 import com.example.access_tracker.components.Ico
 import com.example.access_tracker.components.Icono
 import com.example.access_tracker.components.PantallaBase
+import com.example.access_tracker.components.sobreBarra
 import com.example.access_tracker.components.Segmentado
 import com.example.access_tracker.components.TituloPantalla
 import com.example.access_tracker.components.TonoChip
@@ -52,14 +53,14 @@ import com.example.access_tracker.ui.theme.Texto
 fun ResAsistenciaScreen(
     onAvisos: () -> Unit,
     onTurnoCompleto: () -> Unit,
-    onAusencia: () -> Unit,
+    onAusencia: (persona: String?) -> Unit,
 ) {
     var turno by remember { mutableIntStateOf(0) }
     PantallaBase(
         conBarra = true,
         separacion = 16.dp,
         overlay = {
-            BotonFlotanteIcono(Ico.Plus, Coral500, onAusencia, Modifier.align(Alignment.BottomEnd).padding(end = 24.dp, bottom = 115.dp))
+            BotonFlotanteIcono(Ico.Plus, Coral500, { onAusencia(null) }, Modifier.align(Alignment.BottomEnd).sobreBarra())
         },
     ) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -86,12 +87,12 @@ fun ResAsistenciaScreen(
             Icono(Ico.Chevron, tint = FondoCrema, tamano = 20.dp)
         }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilaPersona("AT", "Ana Torres", "Maternal A · Entrada 7:25") { Chip("Retardo", tono = TonoChip.Alerta) }
-            FilaPersona("LH", "Lucía Herrera", "Lactantes · Entrada 6:58", fondoAvatar = Mostaza100, tintaAvatar = TintaBase) { Chip("Presente", tono = TonoChip.Exito) }
-            FilaPersona("CR", "Carmen Ruiz", "Maternal B · Entrada 7:02", fondoAvatar = Coral100, tintaAvatar = TintaBase) { Chip("Presente", tono = TonoChip.Exito) }
-            FilaPersona("SD", "Sofía Díaz", "Preescolar · Sin checar", fondoAvatar = Verde100, tintaAvatar = Verde600) { Chip("Sin checar", tono = TonoChip.Neutro) }
-            FilaPersona("PR", "Paola Reyes", "Maternal A · Ausente", onClick = onAusencia) { Chip("Ausente", tono = TonoChip.Peligro) }
-            FilaPersona("RM", "Rosa Medina", "Cocina · Entrada 6:45", fondoAvatar = Mostaza100, tintaAvatar = TintaBase) { Chip("Presente", tono = TonoChip.Exito) }
+            FilaPersona("AT", "Ana Torres", "Maternal A · Entrada 7:25", onClick = { onAusencia("Ana Torres") }) { Chip("Retardo", tono = TonoChip.Alerta) }
+            FilaPersona("LH", "Lucía Herrera", "Lactantes · Entrada 6:58", onClick = { onAusencia("Lucía Herrera") }, fondoAvatar = Mostaza100, tintaAvatar = TintaBase) { Chip("Presente", tono = TonoChip.Exito) }
+            FilaPersona("CR", "Carmen Ruiz", "Maternal B · Entrada 7:02", onClick = { onAusencia("Carmen Ruiz") }, fondoAvatar = Coral100, tintaAvatar = TintaBase) { Chip("Presente", tono = TonoChip.Exito) }
+            FilaPersona("SD", "Sofía Díaz", "Preescolar · Sin checar", onClick = { onAusencia("Sofía Díaz") }, fondoAvatar = Verde100, tintaAvatar = Verde600) { Chip("Sin checar", tono = TonoChip.Neutro) }
+            FilaPersona("PR", "Paola Reyes", "Maternal A · Ausente", onClick = { onAusencia("Paola Reyes") }) { Chip("Ausente", tono = TonoChip.Peligro) }
+            FilaPersona("RM", "Rosa Medina", "Cocina · Entrada 6:45", onClick = { onAusencia("Rosa Medina") }, fondoAvatar = Mostaza100, tintaAvatar = TintaBase) { Chip("Presente", tono = TonoChip.Exito) }
         }
     }
 }

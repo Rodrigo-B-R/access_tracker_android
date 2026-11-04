@@ -25,6 +25,14 @@ import com.example.access_tracker.ui.theme.FondoCrema
 val EspacioBarra: Dp = 130.dp
 
 /**
+ * Coloca un botón flotante justo encima de la barra de navegación flotante (72 dp de alto + 16 dp de margen),
+ * sumando el espacio de la barra del sistema para que nunca quede detrás.
+ */
+fun Modifier.sobreBarra(): Modifier = this
+    .navigationBarsPadding()
+    .padding(end = 24.dp, bottom = 100.dp)
+
+/**
  * Contenedor estándar: fondo crema, contenido con scroll a 24 dp de margen
  * y, opcionalmente, una cabecera a todo el ancho (bajo la barra de estado),
  * un pie fijo (botones de acción) y un overlay (botón flotante, etc.).

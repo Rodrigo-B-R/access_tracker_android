@@ -1,9 +1,11 @@
 package com.example.access_tracker.navigation
 
+import android.net.Uri
 import androidx.navigation.NavController
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.example.access_tracker.screens.responsable.AlertaInsuficienteScreen
 import com.example.access_tracker.screens.responsable.AltaPersonalScreen
 import com.example.access_tracker.screens.responsable.DarDeBajaScreen
 import com.example.access_tracker.screens.responsable.PerfilPersonaScreen
@@ -30,7 +32,7 @@ fun NavGraphBuilder.grafoResponsable(nav: NavController) {
         ResInicioScreen(
             onAvisos = irAAvisos,
             onMenu = { nav.navigate(Rutas.ResMenu) },
-            onAtender = { nav.navigate(Rutas.ResAlertaInsuficiente) },
+            onAtender = { nav.irAPestana(Perfil.Responsable, Rutas.ResAsistencia) },
             onVerAsistencia = { nav.irAPestana(Perfil.Responsable, Rutas.ResAsistencia) },
         )
     }
@@ -38,7 +40,9 @@ fun NavGraphBuilder.grafoResponsable(nav: NavController) {
         ResAsistenciaScreen(
             onAvisos = irAAvisos,
             onTurnoCompleto = { nav.navigate(Rutas.ResRegistroTurno) },
-            onAusencia = { nav.navigate(Rutas.ResAusencia) },
+            onAusencia = { persona ->
+                nav.navigate(if (persona == null) Rutas.ResAusencia else "${Rutas.ResAusencia}?persona=${Uri.encode(persona)}")
+            },
         )
     }
     composable(Rutas.ResHorarios) {
@@ -55,11 +59,19 @@ fun NavGraphBuilder.grafoResponsable(nav: NavController) {
 
     // Registro de asistencia
     composable(Rutas.ResRegistroTurno) { RegistroTurnoScreen(onCerrar = { atras() }, onRegistrar = { atras() }) }
-    composable(Rutas.ResAusencia) { RegistrarAusenciaScreen(
+    composable(
+        "${Rutas.ResAusencia}?persona={persona}",
+        arguments = listOf(navArgument("persona") { type = NavType.StringType; defaultValue = "Paola Reyes" }),
+    ) { entrada ->
+        RegistrarAusenciaScreen(
             onCerrar = { atras() },
-            onGuardar = { nav.irAPestana(Perfil.Responsable, Rutas.ResAsistencia) },
-        ) }
-    composable(Rutas.ResAlertaInsuficiente) { AlertaInsuficienteScreen(onVerCobertura = { atras() }, onCerrar = { atras() }) }
+            // Vuelve a Asistencia sin restaurar el estado guardado de la pestaña, que incluiría este formulario.
+            onGuardar = {
+                if (!nav.popBackStack(Rutas.ResAsistencia, inclusive = false)) nav.irAPestana(Perfil.Responsable, Rutas.ResAsistencia)
+            },
+            persona = entrada.arguments?.getString("persona") ?: "Paola Reyes",
+        )
+    }
 
     // Personal
     composable(Rutas.ResAltaPersonal) { AltaPersonalScreen(onCerrar = { atras() }, onGuardar = { atras() }) }

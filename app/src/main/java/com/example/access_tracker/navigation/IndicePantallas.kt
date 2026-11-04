@@ -40,7 +40,6 @@ object IndicePantallas {
                 EntradaIndice("Horario de la persona", Rutas.ResHorarioPersona),
                 EntradaIndice("Registro por turno completo", Rutas.ResRegistroTurno),
                 EntradaIndice("Registrar ausencia o incidencia", Rutas.ResAusencia),
-                EntradaIndice("Alerta de personal insuficiente", Rutas.ResAlertaInsuficiente),
                 EntradaIndice("Alta y edición de personal", Rutas.ResAltaPersonal),
                 EntradaIndice("Perfil de persona", Rutas.ResPerfilPersona),
                 EntradaIndice("Dar de baja", Rutas.ResDarBaja),

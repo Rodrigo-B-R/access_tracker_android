@@ -22,6 +22,7 @@ import com.example.access_tracker.components.FilaPersona
 import com.example.access_tracker.components.Flecha
 import com.example.access_tracker.components.Ico
 import com.example.access_tracker.components.PantallaBase
+import com.example.access_tracker.components.sobreBarra
 import com.example.access_tracker.components.Segmentado
 import com.example.access_tracker.components.TituloPantalla
 import com.example.access_tracker.ui.theme.Access_trackerTheme
@@ -40,7 +41,7 @@ fun ResPersonalScreen(onAvisos: () -> Unit, onPersona: () -> Unit, onAlta: () ->
         conBarra = true,
         separacion = 16.dp,
         overlay = {
-            BotonFlotanteIcono(Ico.Userplus, Mostaza500, onAlta, Modifier.align(Alignment.BottomEnd).padding(end = 24.dp, bottom = 115.dp))
+            BotonFlotanteIcono(Ico.Userplus, Mostaza500, onAlta, Modifier.align(Alignment.BottomEnd).sobreBarra())
         },
     ) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
