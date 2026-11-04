@@ -64,7 +64,6 @@ import com.example.access_tracker.ui.theme.Verde100
 fun AltaPersonalScreen(onCerrar: () -> Unit, onGuardar: () -> Unit) {
     var nombre by remember { mutableStateOf("Marta Gil Soto") }
     var clave by remember { mutableStateOf("marta.gil") }
-    var rol by remember { mutableIntStateOf(0) }
     PantallaBase(
         pie = { Boton("Guardar y crear cuenta", onGuardar, estilo = EstiloBoton.Oscuro) },
     ) {
@@ -74,13 +73,6 @@ fun AltaPersonalScreen(onCerrar: () -> Unit, onGuardar: () -> Unit) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             CampoSelector("Sala", "Maternal A", Modifier.weight(1f), icono = Ico.Chevdown, opciones = listOf("Lactantes", "Maternal A", "Maternal B", "Preescolar"))
             CampoSelector("Turno", "Matutino", Modifier.weight(1f), icono = Ico.Chevdown, opciones = listOf("Matutino", "Vespertino", "Mixto"))
-        }
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Rol en la app", style = Texto.LabelM, color = TintaSuave)
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                ChipOpcion("Empleada/o", Modifier.weight(1f), seleccionado = rol == 0, onClick = { rol = 0 })
-                ChipOpcion("Asistente", Modifier.weight(1f), seleccionado = rol == 1, onClick = { rol = 1 })
-            }
         }
         CampoTexto("Clave de acceso", clave, { clave = it }, icono = Ico.Idcard)
         Nota(
@@ -92,13 +84,16 @@ fun AltaPersonalScreen(onCerrar: () -> Unit, onGuardar: () -> Unit) {
 
 /** Ficha de una persona: datos, resumen del mes e historial. */
 @Composable
-fun PerfilPersonaScreen(onAtras: () -> Unit, onEditar: () -> Unit, onBaja: () -> Unit) {
+fun PerfilPersonaScreen(onAtras: () -> Unit, onEditar: () -> Unit, onBaja: () -> Unit, onHorario: () -> Unit) {
     PantallaBase(
         separacion = 16.dp,
         pie = {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                Boton("Editar datos", onEditar, Modifier.weight(1f), EstiloBoton.Secundario)
-                Boton("Dar de baja", onBaja, Modifier.weight(1f), EstiloBoton.Peligro)
+            Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Boton("Editar horario", onHorario, estilo = EstiloBoton.Oscuro)
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Boton("Editar datos", onEditar, Modifier.weight(1f), EstiloBoton.Secundario)
+                    Boton("Dar de baja", onBaja, Modifier.weight(1f), EstiloBoton.Peligro)
+                }
             }
         },
     ) {
@@ -117,7 +112,6 @@ fun PerfilPersonaScreen(onAtras: () -> Unit, onEditar: () -> Unit, onBaja: () ->
         Tarjeta(radio = 24.dp, relleno = 0.dp) {
             Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 6.dp)) {
                 DatoPerfil(Ico.Clock, "Turno", "Matutino · 7:00 – 15:00")
-                DatoPerfil(Ico.Shield, "Rol en la app", "Empleada/o")
                 DatoPerfil(Ico.Idcard, "Clave", "ana.torres")
                 DatoPerfil(Ico.Calendar, "Alta", "12 ene 2025")
             }
@@ -160,7 +154,7 @@ private fun EventoHistorial(titulo: String, fecha: String) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DarDeBajaScreen(onCerrar: () -> Unit, onConfirmar: () -> Unit) {
-    var motivo by remember { mutableIntStateOf(2) }
+    var motivo by remember { mutableIntStateOf(0) }
     PantallaBase(
         pie = { Boton("Confirmar baja", onConfirmar, estilo = EstiloBoton.Peligro) },
     ) {
@@ -177,27 +171,21 @@ fun DarDeBajaScreen(onCerrar: () -> Unit, onConfirmar: () -> Unit) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Motivo de baja", style = Texto.LabelM, color = TintaSuave)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                listOf("Renuncia", "Fin de contrato", "Traslado a otra estancia", "Otro").forEachIndexed { i, t ->
+                listOf("Renuncia", "Fin de contrato", "Otro").forEachIndexed { i, t ->
                     ChipOpcion(t, seleccionado = motivo == i, onClick = { motivo = i })
                 }
             }
         }
-        CampoSelector(
-            "Estancia destino", "Estancia San Nicolás", icono = Ico.Chevdown, activo = true,
-            opciones = listOf("Estancia San Nicolás", "Estancia Centro", "Estancia Las Flores", "Estancia Norte"),
-            inicio = { Icono(Ico.Building, tint = TintaSuave, tamano = 20.dp) },
-        )
         CampoSelector("Fecha de baja", "Viernes 9 de octubre", icono = Ico.Calendar)
         Nota(
             "La persona sale de la plantilla activa. El historial se conserva y se anonimiza un año después de la baja.",
             icono = Ico.History, fondo = Mostaza100, tint = TintaBase,
         )
-        Nota("La Responsable de la estancia destino recibe el alta (por confirmar con el socio).", icono = Ico.Swap)
     }
 }
 
 @Preview(showBackground = true, heightDp = 915, widthDp = 412)
 @Composable
 private fun PerfilPersonaPreview() {
-    Access_trackerTheme { PerfilPersonaScreen({}, {}, {}) }
+    Access_trackerTheme { PerfilPersonaScreen({}, {}, {}, {}) }
 }

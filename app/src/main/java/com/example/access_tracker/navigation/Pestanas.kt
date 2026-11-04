@@ -19,7 +19,6 @@ object Pestanas {
     )
     val Direccion = listOf(
         Pestana(Rutas.DirResumen, "Resumen", Ico.Home),
-        Pestana(Rutas.DirEstancias, "Estancias", Ico.Building),
         Pestana(Rutas.DirEstadisticas, "Estadísticas", Ico.Chart),
         Pestana(Rutas.DirBitacora, "Bitácora", Ico.History),
     )

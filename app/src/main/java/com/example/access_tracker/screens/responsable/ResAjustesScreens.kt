@@ -64,9 +64,16 @@ import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde100
 import com.example.access_tracker.ui.theme.Verde600
 
-/** Menú ⋮ del inicio: bitácora, ajustes y exportar. Se muestra sobre el inicio con un velo. */
+/** Menú ⋮ del inicio: bitácora, salas y mínimos, exportar, cuenta y cierre de sesión. Se muestra sobre el inicio con un velo. */
 @Composable
-fun ResMenuScreen(onCerrar: () -> Unit, onBitacora: () -> Unit, onAjustes: () -> Unit, onExportar: () -> Unit) {
+fun ResMenuScreen(
+    onCerrar: () -> Unit,
+    onBitacora: () -> Unit,
+    onSalas: () -> Unit,
+    onExportar: () -> Unit,
+    onCuenta: () -> Unit,
+    onCerrarSesion: () -> Unit,
+) {
     Box(Modifier.fillMaxSize()) {
         ResInicioScreen(onAvisos = {}, onMenu = {}, onAtender = {}, onVerAsistencia = {})
         Box(Modifier.fillMaxSize().background(TintaBase.copy(alpha = 0.45f)).clickable(onClick = onCerrar))
@@ -83,8 +90,10 @@ fun ResMenuScreen(onCerrar: () -> Unit, onBitacora: () -> Unit, onAjustes: () ->
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
             OpcionMenu(Ico.History, Petroleo100, "Bitácora", "Quién hizo qué", onBitacora)
-            OpcionMenu(Ico.Settings, Mostaza100, "Ajustes", "Salas, mínimos y permisos", onAjustes)
+            OpcionMenu(Ico.Users, Mostaza100, "Salas y mínimos", "Personal mínimo por turno", onSalas)
             OpcionMenu(Ico.Download, Coral100, "Exportar", "CSV de asistencias", onExportar)
+            OpcionMenu(Ico.Lock, Petroleo100, "Mi cuenta", "Cambiar contraseña", onCuenta)
+            OpcionMenu(Ico.Logout, Rojo100, "Cerrar sesión", "Salir de la cuenta", onCerrarSesion)
         }
     }
 }
@@ -101,45 +110,6 @@ private fun OpcionMenu(icono: Ico, fondo: androidx.compose.ui.graphics.Color, ti
             Text(titulo, style = Texto.LabelL, color = TintaBase)
             Text(detalle, style = Texto.BodyS, color = TintaSuave)
         }
-    }
-}
-
-/** Configuración de la estancia, permisos y cuenta. */
-@Composable
-fun ResAjustesScreen(onAtras: () -> Unit, onSalas: () -> Unit, onPermisos: () -> Unit, onCerrarSesion: () -> Unit) {
-    PantallaBase(separacion = 16.dp) {
-        EncabezadoPantalla("Ajustes", onAtras = onAtras)
-        Row(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(28.dp)).background(Petroleo700).padding(20.dp),
-            horizontalArrangement = Arrangement.spacedBy(14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            IconoCuadro(Ico.Building, fondo = Mostaza500, lado = 52.dp, radio = 14.dp, tamanoIcono = 24.dp)
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text("Estancia Cumbres", style = Texto.TitleS, color = FondoCrema)
-                Text("4 salas · 16 personas · Responsable: María González", style = Texto.BodyS, color = Petroleo100)
-            }
-        }
-        Eyebrow("Configuración de la estancia")
-        GrupoFilas {
-            FilaAjuste(Ico.Users, Petroleo100, "Salas y mínimos", "Salas de la estancia y personal mínimo por turno", onClick = onSalas)
-            Divisor()
-            FilaAjuste(Ico.Shield, Mostaza100, "Permisos de la Asistente", "Qué puede ver y reportar tu Asistente", onClick = onPermisos)
-            Divisor()
-            FilaAjuste(Ico.Lock, Coral100, "Mi cuenta", "Cambiar contraseña y cerrar sesión")
-        }
-        Row(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(Rojo100).clickable(onClick = onCerrarSesion).padding(horizontal = 18.dp, vertical = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icono(Ico.Logout, tint = Rojo600)
-            Text("Cerrar sesión", style = Texto.LabelL, color = Rojo600, modifier = Modifier.weight(1f))
-        }
-        Text(
-            "Sonrisas de Cristal · versión de prueba",
-            style = Texto.BodyS, color = TintaTenue, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth(),
-        )
     }
 }
 
@@ -160,7 +130,7 @@ fun ResAjustesSalasScreen(onAtras: () -> Unit, onGuardar: () -> Unit) {
         separacion = 14.dp,
         pie = { Boton("Guardar cambios", onGuardar, estilo = EstiloBoton.Oscuro) },
     ) {
-        EncabezadoPantalla("Salas y mínimos", onAtras = onAtras, eyebrow = "Ajustes")
+        EncabezadoPantalla("Salas y mínimos", onAtras = onAtras, eyebrow = "Menú")
         Row(horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
             LeyendaTurno(Ico.Sun, "Mínimo matutino")
             LeyendaTurno(Ico.Moon, "Mínimo vespertino")
@@ -206,50 +176,8 @@ private fun LeyendaTurno(icono: Ico, texto: String) {
     }
 }
 
-/** Qué puede ver y reportar la Asistente. Cada cambio queda en la bitácora. */
-@Composable
-fun ResAjustesPermisosScreen(onAtras: () -> Unit) {
-    val activos = remember { mutableStateOf(listOf(true, true, true, false, true)) }
-    fun cambiar(i: Int, v: Boolean) { activos.value = activos.value.toMutableList().also { it[i] = v } }
-    PantallaBase(separacion = 16.dp) {
-        EncabezadoPantalla("Permisos de la Asistente", onAtras = onAtras, eyebrow = "Ajustes")
-        Tarjeta(radio = 24.dp) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                Avatar("SD", fondo = Verde100, tinta = Verde600, lado = 48.dp)
-                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Text("Sofía Díaz", style = Texto.TitleS, color = TintaBase)
-                    Text("Asistente · Preescolar", style = Texto.BodyS, color = TintaSuave)
-                }
-                Chip("${activos.value.count { it }} de 5 activos", tono = TonoChip.Info, punto = false)
-            }
-        }
-        Nota("La Asistente solo reporta y detecta; nunca corrige registros ni da de alta personal.", icono = Ico.Shield)
-        GrupoFilas {
-            FilaInterruptor(Ico.Users, "Detectar turnos sin cubrir y avisar", activos.value[0], { cambiar(0, it) }, descripcion = "Ve la cobertura por sala")
-            Divisor()
-            FilaInterruptor(Ico.Clock, "Reportar retardos", activos.value[1], { cambiar(1, it) })
-            Divisor()
-            FilaInterruptor(Ico.Fingerprint, "Reportar olvidos de checada", activos.value[2], { cambiar(2, it) })
-            Divisor()
-            FilaInterruptor(Ico.Logout, "Reportar salidas anticipadas", activos.value[3], { cambiar(3, it) })
-            Divisor()
-            FilaInterruptor(Ico.Alert, "Reportar errores", activos.value[4], { cambiar(4, it) })
-        }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally), verticalAlignment = Alignment.CenterVertically) {
-            Icono(Ico.History, tint = TintaSuave, tamano = 16.dp)
-            Text("Cada cambio queda en la bitácora de la estancia.", style = Texto.BodyS, color = TintaSuave)
-        }
-    }
-}
-
 @Preview(showBackground = true, heightDp = 915, widthDp = 412)
 @Composable
-private fun ResAjustesPreview() {
-    Access_trackerTheme { ResAjustesScreen({}, {}, {}, {}) }
-}
-
-@Preview(showBackground = true, heightDp = 915, widthDp = 412)
-@Composable
-private fun ResAjustesPermisosPreview() {
-    Access_trackerTheme { ResAjustesPermisosScreen({}) }
+private fun ResAjustesSalasPreview() {
+    Access_trackerTheme { ResAjustesSalasScreen({}, {}) }
 }

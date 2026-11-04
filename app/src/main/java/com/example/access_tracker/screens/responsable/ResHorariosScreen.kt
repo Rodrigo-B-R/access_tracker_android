@@ -1,6 +1,7 @@
 package com.example.access_tracker.screens.responsable
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -57,7 +58,7 @@ private val Cuadricula = listOf(
 /** Horarios y turnos de la semana: cuadrícula persona × día. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ResHorariosScreen(onAvisos: () -> Unit) {
+fun ResHorariosScreen(onAvisos: () -> Unit, onPersona: () -> Unit) {
     PantallaBase(conBarra = true, separacion = 16.dp) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) { TituloPantalla("Horarios") }
@@ -72,6 +73,7 @@ fun ResHorariosScreen(onAvisos: () -> Unit) {
             Text("5 – 11 de octubre", style = Texto.LabelL, color = TintaBase, textAlign = TextAlign.Center, modifier = Modifier.weight(1f))
             BotonCircular(Ico.Chevron, {}, fondo = FondoBlanco, lado = 40.dp)
         }
+        Text("Cada semana repite la anterior. Toca el nombre de una persona para cambiar sus días y turnos.", style = Texto.BodyS, color = TintaTenue)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Chip("M · Matutino", tono = TonoChip.Info)
             Chip("V · Vespertino", tono = TonoChip.Alerta)
@@ -90,7 +92,7 @@ fun ResHorariosScreen(onAvisos: () -> Unit) {
                 }
                 Cuadricula.forEach { (nombre, turnos) ->
                     Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Box(Modifier.width(76.dp).height(36.dp), contentAlignment = Alignment.CenterStart) {
+                        Box(Modifier.width(76.dp).height(36.dp).clickable(onClick = onPersona), contentAlignment = Alignment.CenterStart) {
                             Text(nombre, style = Texto.LabelM, color = TintaBase, maxLines = 1)
                         }
                         turnos.forEach { celda -> CeldaTurno(celda, Modifier.weight(1f)) }
@@ -105,14 +107,6 @@ fun ResHorariosScreen(onAvisos: () -> Unit) {
         ) {
             Icono(Ico.Alert, tint = Rojo600, tamano = 22.dp)
             Text("Miércoles · Sofía Díaz: turno sin cubrir en Maternal A.", style = Texto.BodyMMedium, color = TintaBase, modifier = Modifier.weight(1f))
-        }
-        Row(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(FondoArena).padding(horizontal = 16.dp, vertical = 14.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icono(Ico.Copy, tamano = 20.dp)
-            Text("Copiar semana anterior", style = Texto.LabelL, color = TintaBase)
         }
     }
 }
@@ -133,5 +127,5 @@ private fun CeldaTurno(codigo: Char, modifier: Modifier = Modifier) {
 @Preview(showBackground = true, heightDp = 915, widthDp = 412)
 @Composable
 private fun ResHorariosPreview() {
-    Access_trackerTheme { ResHorariosScreen({}) }
+    Access_trackerTheme { ResHorariosScreen({}, {}) }
 }

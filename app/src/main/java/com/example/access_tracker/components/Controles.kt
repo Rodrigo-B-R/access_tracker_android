@@ -96,13 +96,14 @@ fun FiltroDesplegable(inicial: String, opciones: List<String>, radio: androidx.c
     }
 }
 
-/** Opción tipo botón (tipo de solicitud, Entrada/Salida...). */
+/** Opción tipo botón (tipo de solicitud, Entrada/Salida...). Con [icono] muestra ese icono en lugar de la palomita. */
 @Composable
 fun ChipOpcion(
     texto: String,
     modifier: Modifier = Modifier,
     seleccionado: Boolean = false,
     bloqueado: Boolean = false,
+    icono: Ico? = null,
     onClick: () -> Unit = {},
 ) {
     val forma = RoundedCornerShape(22.dp)
@@ -117,11 +118,20 @@ fun ChipOpcion(
         )
         .then(if (!seleccionado && !bloqueado) Modifier.border(BorderStroke(1.dp, FondoArenaFuerte), forma) else Modifier)
         .clickable(enabled = !bloqueado, onClick = onClick)
-        .padding(horizontal = 16.dp, vertical = 11.dp)
-    Row(base, horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally), verticalAlignment = Alignment.CenterVertically) {
-        if (seleccionado) Icono(Ico.Check, tint = Mostaza500, tamano = 16.dp)
+        .padding(horizontal = 10.dp, vertical = 11.dp)
+    Row(base, horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally), verticalAlignment = Alignment.CenterVertically) {
+        // Con icono propio no hay palomita: la selección solo cambia el color.
+        if (icono != null) Icono(icono, tint = if (seleccionado) Mostaza500 else TintaSuave, tamano = 18.dp)
+        else if (seleccionado) Icono(Ico.Check, tint = Mostaza500, tamano = 14.dp)
         if (bloqueado) Icono(Ico.Lock, tint = TintaTenue, tamano = 14.dp)
-        Text(texto, style = Texto.LabelM, color = if (seleccionado) FondoCrema else if (bloqueado) TintaTenue else TintaBase)
+        // Una sola línea: la palomita nunca debe empujar el texto a un salto de línea.
+        Text(
+            texto,
+            style = Texto.LabelM,
+            color = if (seleccionado) FondoCrema else if (bloqueado) TintaTenue else TintaBase,
+            maxLines = 1,
+            softWrap = false,
+        )
     }
 }
 

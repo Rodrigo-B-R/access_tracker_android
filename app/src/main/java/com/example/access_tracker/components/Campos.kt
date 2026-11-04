@@ -156,7 +156,7 @@ fun CampoSelector(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DialogoFecha(actual: String, onCerrar: () -> Unit, onElegida: (String) -> Unit) {
+internal fun DialogoFecha(actual: String, onCerrar: () -> Unit, onElegida: (String) -> Unit) {
     val estado = rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
     DatePickerDialog(
         onDismissRequest = onCerrar,
@@ -220,7 +220,7 @@ private fun DialogoHora(actual: String, onCerrar: () -> Unit, onElegida: (String
 private val Mexico = Locale.forLanguageTag("es-MX")
 
 /** Da formato a la fecha elegida con el mismo estilo del texto de ejemplo: «Septiembre 2026», «Martes 6 de octubre» o «Mié 7 oct». */
-private fun formatoFecha(milis: Long, plantilla: String): String {
+internal fun formatoFecha(milis: Long, plantilla: String): String {
     val fecha = Instant.ofEpochMilli(milis).atZone(ZoneOffset.UTC).toLocalDate()
     val patron = when {
         Regex("""\S+ \d{4}""").matches(plantilla) -> "MMMM yyyy"

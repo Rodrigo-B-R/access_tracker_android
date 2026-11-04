@@ -13,15 +13,32 @@ import com.example.access_tracker.screens.empleada.HorarioScreen
 
 fun NavGraphBuilder.grafoEmpleada(nav: NavController) {
     val irAAvisos = { nav.navigate(Rutas.EmpAvisos) }
+    val cambiarPassword = { nav.navigate(rutaCambioPassword(Perfil.Empleada)) }
+    val salir = { nav.cerrarSesion() }
 
     composable(Rutas.EmpChecar) {
-        ChecarFueraScreen(onAvisos = irAAvisos, onRegistrarEntrada = { nav.navigate(Rutas.EmpChecarDentro) })
+        ChecarFueraScreen(
+            onAvisos = irAAvisos,
+            onRegistrarEntrada = { nav.navigate(Rutas.EmpChecarDentro) },
+            onCambiarPassword = { cambiarPassword() },
+            onCerrarSesion = { salir() },
+        )
     }
     composable(Rutas.EmpChecarDentro) {
-        ChecarDentroScreen(onAvisos = irAAvisos, onRegistrarSalida = { nav.popBackStack() })
+        ChecarDentroScreen(
+            onAvisos = irAAvisos,
+            onRegistrarSalida = { nav.popBackStack() },
+            onCambiarPassword = { cambiarPassword() },
+            onCerrarSesion = { salir() },
+        )
     }
     composable(Rutas.EmpChecarSinInternet) {
-        ChecarSinInternetScreen(onAvisos = irAAvisos, onRegistrarSalida = { nav.popBackStack() })
+        ChecarSinInternetScreen(
+            onAvisos = irAAvisos,
+            onRegistrarSalida = { nav.popBackStack() },
+            onCambiarPassword = { cambiarPassword() },
+            onCerrarSesion = { salir() },
+        )
     }
     composable(Rutas.EmpAsistencias) {
         AsistenciasScreen()

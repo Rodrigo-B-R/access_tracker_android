@@ -55,7 +55,7 @@ fun ResPersonalScreen(onAvisos: () -> Unit, onPersona: () -> Unit, onAlta: () ->
             FilaPersona("LH", "Lucía Herrera", "Lactantes", fondoAvatar = Mostaza100, tintaAvatar = TintaBase, ladoAvatar = 40.dp, onClick = onPersona) { Flecha() }
             FilaPersona("CR", "Carmen Ruiz", "Maternal B", fondoAvatar = Coral100, tintaAvatar = TintaBase, ladoAvatar = 40.dp, onClick = onPersona) { Flecha() }
             EncabezadoSeccion("Asistentes · 2")
-            FilaPersona("SD", "Sofía Díaz", "Preescolar · Asistente en la app", fondoAvatar = Verde100, tintaAvatar = Verde600, ladoAvatar = 40.dp, onClick = onPersona) { Flecha() }
+            FilaPersona("SD", "Sofía Díaz", "Preescolar", fondoAvatar = Verde100, tintaAvatar = Verde600, ladoAvatar = 40.dp, onClick = onPersona) { Flecha() }
             FilaPersona("PR", "Paola Reyes", "Maternal A", ladoAvatar = 40.dp, onClick = onPersona) { Flecha() }
             EncabezadoSeccion("Cocina · 1")
             FilaPersona("RM", "Rosa Medina", "Cocina", fondoAvatar = Mostaza100, tintaAvatar = TintaBase, ladoAvatar = 40.dp, onClick = onPersona) { Flecha() }

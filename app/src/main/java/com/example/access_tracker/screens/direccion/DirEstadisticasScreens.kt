@@ -42,6 +42,7 @@ import com.example.access_tracker.components.Eyebrow
 import com.example.access_tracker.components.FiltroPill
 import com.example.access_tracker.components.GrupoFilas
 import com.example.access_tracker.components.Ico
+import com.example.access_tracker.components.MenuCuenta
 import com.example.access_tracker.components.IconoCuadro
 import com.example.access_tracker.components.Icono
 import com.example.access_tracker.components.Nota
@@ -68,7 +69,7 @@ import com.example.access_tracker.ui.theme.Verde100
 
 /** Estadísticas de toda la fundación para el periodo elegido. Solo lectura. */
 @Composable
-fun DirEstadisticasScreen(onBajasTraslados: () -> Unit) {
+fun DirEstadisticasScreen(onExportar: () -> Unit, onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}) {
     var periodo by remember { mutableIntStateOf(0) }
     PantallaBase(conBarra = true, separacion = 14.dp) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -77,6 +78,7 @@ fun DirEstadisticasScreen(onBajasTraslados: () -> Unit) {
                 Text("Estadísticas", style = Texto.TitleL, color = TintaBase)
             }
             EtiquetaLectura("Solo lectura")
+            MenuCuenta(onCambiarPassword, onCerrarSesion)
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Segmentado(listOf("Mes", "Trim.", "Año"), periodo, { periodo = it }, Modifier.weight(1f))
@@ -111,12 +113,12 @@ fun DirEstadisticasScreen(onBajasTraslados: () -> Unit) {
             }
         }
         Row(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(Petroleo700).clickable(onClick = onBajasTraslados).padding(horizontal = 18.dp, vertical = 14.dp),
+            Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(Petroleo700).clickable(onClick = onExportar).padding(horizontal = 18.dp, vertical = 14.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icono(Ico.Swap, tint = Mostaza500, tamano = 20.dp)
-            Text("Ver bajas y traslados", style = Texto.LabelL, color = FondoCrema, modifier = Modifier.weight(1f))
+            Icono(Ico.Download, tint = Mostaza500, tamano = 20.dp)
+            Text("Exportar reporte CSV", style = Texto.LabelL, color = FondoCrema, modifier = Modifier.weight(1f))
             Icono(Ico.Chevron, tint = FondoCrema, tamano = 20.dp)
         }
     }
@@ -159,22 +161,23 @@ private fun GrupoBarras(
     }
 }
 
-/** Bitácora de todas las estancias. Solo lectura. */
+/** Bitácora de la fundación con selector por estancia. Solo lectura. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun DirBitacoraScreen() {
+fun DirBitacoraScreen(onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}) {
     var filtro by remember { mutableIntStateOf(0) }
     PantallaBase(conBarra = true, separacion = 14.dp) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Eyebrow("Dirección")
                 Text("Bitácora", style = Texto.TitleL, color = TintaBase)
-                Text("Todas las estancias", style = Texto.BodyM, color = TintaSuave)
+                Text("Elige una estancia o consulta todas", style = Texto.BodyM, color = TintaSuave)
             }
             EtiquetaLectura("Solo lectura")
+            MenuCuenta(onCambiarPassword, onCerrarSesion)
         }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            listOf("Todas", "Cumbres", "Apodaca", "Escobedo").forEachIndexed { i, t ->
+            listOf("Todas", "Cumbres", "San Nicolás", "Apodaca", "Guadalupe", "Escobedo").forEachIndexed { i, t ->
                 FiltroPill(t, activo = filtro == i, onClick = { filtro = i })
             }
         }
@@ -184,8 +187,8 @@ fun DirBitacoraScreen() {
                 "Registrado por Ana Torres · 7 oct 7:00", estancia = "Cumbres", estiloTitulo = Texto.LabelL,
             )
             EventoBitacora(
-                Ico.Edit, Coral100, "Corrección", TonoChip.Coral, "Entrada: 7:25 → 7:00",
-                "Pidió Sofía Díaz · Autorizó Responsable · 7 oct 8:02", estancia = "Cumbres", estiloTitulo = Texto.LabelL,
+                Ico.Alert, Coral100, "Ausencia", TonoChip.Coral, "Paola Reyes · Enfermedad",
+                "Registrado por Responsable · 7 oct 8:02", estancia = "Cumbres", estiloTitulo = Texto.LabelL,
             )
             EventoBitacora(
                 Ico.Swap, Mostaza100, "Baja", TonoChip.Alerta, "Traslado a Estancia San Nicolás",
@@ -199,128 +202,8 @@ fun DirBitacoraScreen() {
     }
 }
 
-/** Causas de baja y detalle de bajas y traslados. Los nombres solo se ven en traslados. */
-@Composable
-fun DirBajasTrasladosScreen(onAtras: () -> Unit) {
-    PantallaBase(separacion = 16.dp) {
-        EncabezadoPantalla(
-            "Bajas y traslados", onAtras = onAtras, eyebrow = "Estadísticas",
-            accion = { EtiquetaLectura("Lectura") },
-        )
-        Tarjeta(radio = 24.dp, relleno = 18.dp) {
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    Text("Causas de baja", style = Texto.TitleS, color = TintaBase)
-                    Chip("Trimestre", tono = TonoChip.Neutro, punto = false)
-                }
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Causa.forEach { c -> Box(Modifier.weight(c.peso).height(20.dp).clip(RoundedCornerShape(6.dp)).background(c.color)) }
-                }
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Causa.forEach { c ->
-                        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Box(Modifier.size(12.dp).clip(RoundedCornerShape(4.dp)).background(c.color))
-                            Text(c.nombre, style = Texto.BodyM, color = TintaBase, modifier = Modifier.weight(1f))
-                            Text("${c.peso.toInt()} %", style = Texto.LabelM, color = TintaBase)
-                        }
-                    }
-                }
-            }
-        }
-        Eyebrow("Detalle de bajas")
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            DetalleBaja(Ico.Swap, Petroleo100, "Traslado", "Ana T. · Cumbres → San Nicolás", "3 oct")
-            DetalleBaja(Ico.Userminus, Coral100, "Renuncia", "Estancia Apodaca", "2 oct")
-            DetalleBaja(Ico.Calendar, Mostaza100, "Fin de contrato", "Estancia Escobedo", "30 sep")
-        }
-        Nota("Los nombres solo se ven en traslados. A un año de la baja, todo se anonimiza.", icono = Ico.Shield)
-    }
-}
-
-private data class CausaBaja(val nombre: String, val peso: Float, val color: Color)
-
-private val Causa = listOf(
-    CausaBaja("Renuncia", 45f, Coral500),
-    CausaBaja("Traslado", 25f, Petroleo700),
-    CausaBaja("Fin de contrato", 20f, Mostaza500),
-    CausaBaja("Otro", 10f, TintaTenue),
-)
-
-@Composable
-private fun DetalleBaja(icono: Ico, fondo: Color, titulo: String, detalle: String, fecha: String) {
-    Row(
-        Modifier.fillMaxWidth().clip(RoundedCornerShape(22.dp)).background(FondoBlanco).padding(14.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        IconoCuadro(icono, fondo = fondo, lado = 40.dp, radio = 14.dp, tamanoIcono = 24.dp)
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(titulo, style = Texto.LabelL, color = TintaBase)
-            Text(detalle, style = Texto.BodyS, color = TintaSuave)
-        }
-        Text(fecha, style = Texto.LabelM, color = TintaSuave)
-    }
-}
-
-/** Descarga un CSV con los datos de todas las estancias. */
-@Composable
-fun DirExportarScreen(onAtras: () -> Unit, onDescargar: () -> Unit) {
-    var periodo by remember { mutableIntStateOf(0) }
-    val incluir = remember { mutableStateListOf(true, true, true) }
-    val opciones = listOf(
-        "Asistencias" to "Entradas y salidas por día",
-        "Incidencias" to "Retardos, faltas y correcciones",
-        "Altas, bajas y traslados" to "Movimientos de personal",
-    )
-    PantallaBase(
-        separacion = 18.dp,
-        pie = { Boton("Descargar CSV", onDescargar, estilo = EstiloBoton.Oscuro) },
-    ) {
-        EncabezadoPantalla("Exportar", onAtras = onAtras, eyebrow = "Estadísticas")
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Periodo", style = Texto.LabelM, color = TintaSuave)
-            Segmentado(listOf("Mes", "Trimestre", "Año"), periodo, { periodo = it })
-        }
-        CampoSelector(
-            "Estancia", "Todas las estancias", icono = Ico.Chevdown,
-            opciones = listOf("Todas las estancias", "Estancia San Nicolás", "Estancia Centro", "Estancia Las Flores", "Estancia Norte"),
-            inicio = { Icono(Ico.Building, tint = TintaSuave, tamano = 20.dp) },
-        )
-        Text("Qué incluir", style = Texto.LabelM, color = TintaSuave)
-        GrupoFilas {
-            opciones.forEachIndexed { i, (titulo, detalle) ->
-                Row(Modifier.fillMaxWidth().padding(vertical = 14.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Text(titulo, style = Texto.LabelL, color = TintaBase)
-                        Text(detalle, style = Texto.BodyS, color = TintaSuave)
-                    }
-                    Casilla(incluir[i], onClick = { incluir[i] = !incluir[i] })
-                }
-                if (i < opciones.lastIndex) Divisor()
-            }
-        }
-        Row(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(FondoArena).padding(horizontal = 16.dp, vertical = 14.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            IconoCuadro(Ico.File, fondo = FondoBlanco, lado = 40.dp, radio = 14.dp, tamanoIcono = 24.dp)
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text("Formato CSV", style = Texto.LabelL, color = TintaBase)
-                Text("Lo abre Excel o Google Sheets", style = Texto.BodyS, color = TintaSuave)
-            }
-        }
-    }
-}
-
 @Preview(showBackground = true, heightDp = 915, widthDp = 412)
 @Composable
 private fun DirEstadisticasPreview() {
     Access_trackerTheme { DirEstadisticasScreen({}) }
-}
-
-@Preview(showBackground = true, heightDp = 915, widthDp = 412)
-@Composable
-private fun DirBajasPreview() {
-    Access_trackerTheme { DirBajasTrasladosScreen({}) }
 }

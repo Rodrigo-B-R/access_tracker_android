@@ -53,7 +53,6 @@ fun ResAsistenciaScreen(
     onAvisos: () -> Unit,
     onTurnoCompleto: () -> Unit,
     onAusencia: () -> Unit,
-    onCorregir: () -> Unit,
 ) {
     var turno by remember { mutableIntStateOf(0) }
     PantallaBase(
@@ -87,7 +86,7 @@ fun ResAsistenciaScreen(
             Icono(Ico.Chevron, tint = FondoCrema, tamano = 20.dp)
         }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilaPersona("AT", "Ana Torres", "Maternal A · Entrada 7:25", onClick = onCorregir) { Chip("Retardo", tono = TonoChip.Alerta) }
+            FilaPersona("AT", "Ana Torres", "Maternal A · Entrada 7:25") { Chip("Retardo", tono = TonoChip.Alerta) }
             FilaPersona("LH", "Lucía Herrera", "Lactantes · Entrada 6:58", fondoAvatar = Mostaza100, tintaAvatar = TintaBase) { Chip("Presente", tono = TonoChip.Exito) }
             FilaPersona("CR", "Carmen Ruiz", "Maternal B · Entrada 7:02", fondoAvatar = Coral100, tintaAvatar = TintaBase) { Chip("Presente", tono = TonoChip.Exito) }
             FilaPersona("SD", "Sofía Díaz", "Preescolar · Sin checar", fondoAvatar = Verde100, tintaAvatar = Verde600) { Chip("Sin checar", tono = TonoChip.Neutro) }
@@ -100,5 +99,5 @@ fun ResAsistenciaScreen(
 @Preview(showBackground = true, heightDp = 915, widthDp = 412)
 @Composable
 private fun ResAsistenciaPreview() {
-    Access_trackerTheme { ResAsistenciaScreen({}, {}, {}, {}) }
+    Access_trackerTheme { ResAsistenciaScreen({}, {}, {}) }
 }

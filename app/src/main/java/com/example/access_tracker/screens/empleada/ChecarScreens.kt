@@ -27,6 +27,7 @@ import com.example.access_tracker.components.BarraSuperiorLogo
 import com.example.access_tracker.components.BotonChecada
 import com.example.access_tracker.components.EstadoBanner
 import com.example.access_tracker.components.Ico
+import com.example.access_tracker.components.MenuCuenta
 import com.example.access_tracker.components.Icono
 import com.example.access_tracker.components.PantallaBase
 import com.example.access_tracker.components.PildoraEstado
@@ -49,9 +50,9 @@ import com.example.access_tracker.ui.theme.Verde600
 
 /** Pestaña Checar, la que abre al entrar. Estado: fuera de la estancia. */
 @Composable
-fun ChecarFueraScreen(onAvisos: () -> Unit, onRegistrarEntrada: () -> Unit) {
+fun ChecarFueraScreen(onAvisos: () -> Unit, onRegistrarEntrada: () -> Unit, onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}) {
     PantallaBase(conBarra = true) {
-        BarraSuperiorLogo(avisos = 2, onAvisos = onAvisos)
+        BarraSuperiorLogo(avisos = 2, onAvisos = onAvisos, cuenta = { MenuCuenta(onCambiarPassword, onCerrarSesion) })
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text("Miércoles 7 de octubre", style = Texto.BodyL, color = TintaSuave)
             Text("Hola, María", style = Texto.DisplayL, color = TintaBase)
@@ -78,9 +79,9 @@ fun ChecarFueraScreen(onAvisos: () -> Unit, onRegistrarEntrada: () -> Unit) {
 
 /** Estado después de registrar la entrada: hora grande, avance de la jornada y botón de salida. */
 @Composable
-fun ChecarDentroScreen(onAvisos: () -> Unit, onRegistrarSalida: () -> Unit) {
+fun ChecarDentroScreen(onAvisos: () -> Unit, onRegistrarSalida: () -> Unit, onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}) {
     PantallaBase(fondo = Petroleo700, conBarra = true) {
-        BarraSuperiorLogo(avisos = 2, onAvisos = onAvisos, oscuro = true)
+        BarraSuperiorLogo(avisos = 2, onAvisos = onAvisos, oscuro = true, cuenta = { MenuCuenta(onCambiarPassword, onCerrarSesion, oscuro = true) })
         Row(Modifier.padding(top = 6.dp), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(Modifier.size(14.dp).clip(CircleShape).background(Mostaza500))
             Text("Estás dentro", style = Texto.TitleM, color = FondoCrema)
@@ -111,9 +112,9 @@ fun ChecarDentroScreen(onAvisos: () -> Unit, onRegistrarSalida: () -> Unit) {
 
 /** Funciona sin conexión; marca «fuera de zona» sin bloquear para que la Responsable lo revise. */
 @Composable
-fun ChecarSinInternetScreen(onAvisos: () -> Unit, onRegistrarSalida: () -> Unit) {
+fun ChecarSinInternetScreen(onAvisos: () -> Unit, onRegistrarSalida: () -> Unit, onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}) {
     PantallaBase(conBarra = true, separacion = 16.dp) {
-        BarraSuperiorLogo(avisos = 2, onAvisos = onAvisos)
+        BarraSuperiorLogo(avisos = 2, onAvisos = onAvisos, cuenta = { MenuCuenta(onCambiarPassword, onCerrarSesion) })
         BannerConexion(EstadoBanner.SinConexion, "Sin conexión: tus registros se guardan en el dispositivo y se envían al reconectar.")
         TurnoDeHoy()
         Column(

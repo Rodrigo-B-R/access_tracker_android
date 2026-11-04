@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.access_tracker.screens.comunes.AvisoSinConexionScreen
 import com.example.access_tracker.screens.comunes.CambioPasswordScreen
+import com.example.access_tracker.screens.comunes.ExportarScreen
 import com.example.access_tracker.screens.comunes.IndiceScreen
 import com.example.access_tracker.screens.comunes.LoginScreen
 import com.example.access_tracker.screens.comunes.PermisosScreen
@@ -16,6 +17,12 @@ private const val ArgPerfil = "perfil"
 private val ArgumentosPerfil = listOf(
     navArgument(ArgPerfil) { type = NavType.StringType; defaultValue = Perfil.Empleada.name },
 )
+
+/** Ruta de la pantalla Exportar, compartida por Responsable y Dirección. */
+fun rutaExportar(perfil: Perfil) = "${Rutas.Exportar}?$ArgPerfil=${perfil.name}"
+
+/** Ruta del cambio de contraseña desde «Mi cuenta». */
+fun rutaCambioPassword(perfil: Perfil) = "${Rutas.CambioPassword}?$ArgPerfil=${perfil.name}"
 
 private fun perfilDe(nombre: String?) = Perfil.entries.firstOrNull { it.name == nombre } ?: Perfil.Empleada
 
@@ -42,6 +49,14 @@ fun NavGraphBuilder.grafoComunes(nav: NavController) {
     composable("${Rutas.Permisos}?$ArgPerfil={$ArgPerfil}", arguments = ArgumentosPerfil) { entrada ->
         val perfil = perfilDe(entrada.arguments?.getString(ArgPerfil))
         PermisosScreen(onContinuar = { nav.entrarAPerfil(perfil) })
+    }
+    composable("${Rutas.Exportar}?$ArgPerfil={$ArgPerfil}", arguments = ArgumentosPerfil) { entrada ->
+        val perfil = perfilDe(entrada.arguments?.getString(ArgPerfil))
+        ExportarScreen(
+            onAtras = { nav.popBackStack() },
+            onDescargar = { nav.popBackStack() },
+            direccion = perfil == Perfil.Direccion,
+        )
     }
     composable(Rutas.SesionExpirada) { SesionExpiradaScreen(onIniciarSesion = { nav.cerrarSesion() }) }
     composable(Rutas.AvisoSinConexion) { AvisoSinConexionScreen() }

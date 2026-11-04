@@ -108,7 +108,7 @@ fun ResInicioScreen(
                 IconoCuadro(Ico.Flag, fondo = Coral100, lado = 44.dp, radio = 14.dp, tamanoIcono = 24.dp)
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Text("Turno sin cubrir · Maternal A", style = Texto.LabelL, color = TintaBase)
-                    Text("7:00 – 15:00 · falta 1 persona. Marcado por la Asistente.", style = Texto.BodyS, color = TintaSuave)
+                    Text("7:00 – 15:00 · falta 1 persona.", style = Texto.BodyS, color = TintaSuave)
                 }
             }
         }

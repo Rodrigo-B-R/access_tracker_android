@@ -54,7 +54,7 @@ fun ResBitacoraScreen(onAtras: () -> Unit) {
     PantallaBase(separacion = 16.dp) {
         EncabezadoPantalla("Bitácora", onAtras = onAtras, eyebrow = "Estancia Cumbres")
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            listOf("Todo", "Checadas", "Correcciones", "Altas y bajas", "Permisos").forEachIndexed { i, t ->
+            listOf("Todo", "Checadas", "Ausencias", "Altas y bajas", "Salas").forEachIndexed { i, t ->
                 FiltroPill(t, activo = filtro == i, onClick = { filtro = i })
             }
         }
@@ -64,66 +64,18 @@ fun ResBitacoraScreen(onAtras: () -> Unit) {
                 "Entrada de Ana Torres · 7:00", "Registrado por Ana Torres · 7 oct 7:00",
             )
             EventoBitacora(
-                Ico.Edit, Coral100, "Corrección", TonoChip.Coral,
-                "Entrada de Ana Torres: 7:25 → 7:00", "Pidió: Sofía Díaz · Autorizó: Responsable · 7 oct 8:02",
-                motivo = "Motivo: olvidó checar al llegar",
+                Ico.Alert, Coral100, "Ausencia", TonoChip.Coral,
+                "Paola Reyes · Maternal A", "Registrado por Responsable · 7 oct 8:02",
+                motivo = "Motivo: enfermedad",
             )
             EventoBitacora(
                 Ico.Userplus, Verde100, "Alta", TonoChip.Exito,
                 "Marta Gil Soto · Maestra titular", "Registrado por Responsable · 6 oct 9:30",
             )
             EventoBitacora(
-                Ico.Shield, Mostaza100, "Permisos", TonoChip.Alerta,
-                "Asistente: reportar salidas anticipadas → apagado", "Registrado por Responsable · 5 oct 16:10",
+                Ico.Users, Mostaza100, "Salas", TonoChip.Alerta,
+                "Preescolar: mínimo matutino 3 → 4", "Registrado por Responsable · 5 oct 16:10",
             )
-        }
-    }
-}
-
-/** Descarga un CSV con asistencias, incidencias, ausencias y movimientos. */
-@Composable
-fun ResExportarScreen(onAtras: () -> Unit, onDescargar: () -> Unit) {
-    var periodo by remember { mutableIntStateOf(1) }
-    val incluir = remember { mutableStateListOf(true, true, true, false) }
-    val opciones = listOf(
-        "Asistencias" to "Entradas y salidas por día",
-        "Incidencias" to "Retardos y correcciones",
-        "Ausencias" to "Faltas por categoría",
-        "Movimientos de personal" to "Altas, bajas y traslados",
-    )
-    PantallaBase(
-        separacion = 18.dp,
-        pie = { Boton("Descargar CSV", onDescargar, estilo = EstiloBoton.Oscuro) },
-    ) {
-        EncabezadoPantalla("Exportar", onAtras = onAtras, eyebrow = "Estancia Cumbres")
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Periodo", style = Texto.LabelM, color = TintaSuave)
-            Segmentado(listOf("Semana", "Mes", "Personalizado"), periodo, { periodo = it })
-        }
-        CampoSelector("Mes", "Septiembre 2026", icono = Ico.Calendar)
-        Text("Qué incluir", style = Texto.LabelM, color = TintaSuave)
-        GrupoFilas {
-            opciones.forEachIndexed { i, (titulo, detalle) ->
-                Row(Modifier.fillMaxWidth().padding(vertical = 14.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Text(titulo, style = Texto.LabelL, color = TintaBase)
-                        Text(detalle, style = Texto.BodyS, color = TintaSuave)
-                    }
-                    Casilla(incluir[i], onClick = { incluir[i] = !incluir[i] })
-                }
-                if (i < opciones.lastIndex) Divisor()
-            }
-        }
-        Row(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(FondoArena).padding(horizontal = 16.dp, vertical = 14.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            IconoCuadro(Ico.File, fondo = FondoBlanco, lado = 40.dp, radio = 14.dp, tamanoIcono = 24.dp)
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text("Formato CSV", style = Texto.LabelL, color = TintaBase)
-                Text("Se comparte con el menú de Android", style = Texto.BodyS, color = TintaSuave)
-            }
         }
     }
 }
@@ -132,10 +84,4 @@ fun ResExportarScreen(onAtras: () -> Unit, onDescargar: () -> Unit) {
 @Composable
 private fun ResBitacoraPreview() {
     Access_trackerTheme { ResBitacoraScreen({}) }
-}
-
-@Preview(showBackground = true, heightDp = 915, widthDp = 412)
-@Composable
-private fun ResExportarPreview() {
-    Access_trackerTheme { ResExportarScreen({}, {}) }
 }

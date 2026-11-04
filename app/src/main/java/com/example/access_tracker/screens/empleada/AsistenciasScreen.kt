@@ -58,7 +58,7 @@ fun AsistenciasScreen() {
         DiaAsistencia("MIÉ", "7", "Por sincronizar", TonoChip.Neutro, "Entrada 7:02 · Salida en curso", actual = true)
         DiaAsistencia("MAR", "6", "Retardo 12 min", TonoChip.Alerta, "Entrada 7:12 · Salida 15:01")
         DiaAsistencia("LUN", "5", "A tiempo", TonoChip.Exito, "Entrada 6:58 · Salida 15:03")
-        DiaAsistencia("VIE", "2", "Corregido por Responsable", TonoChip.Info, "Entrada 7:00 · Salida 15:00")
+        DiaAsistencia("VIE", "2", "A tiempo", TonoChip.Exito, "Entrada 7:00 · Salida 15:00")
     }
 }
 

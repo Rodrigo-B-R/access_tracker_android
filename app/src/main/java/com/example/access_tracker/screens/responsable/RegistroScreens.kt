@@ -102,7 +102,7 @@ fun RegistroTurnoScreen(onCerrar: () -> Unit, onRegistrar: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text("Seleccionar todos", style = Texto.LabelL, color = Petroleo700, modifier = Modifier.weight(1f))
-            Text("$cantidad de 6", style = Texto.LabelM, color = Petroleo700)
+            Text("$cantidad de ${PersonasTurno.size}", style = Texto.LabelM, color = Petroleo700)
             Casilla(todos, onClick = { val nuevo = !todos; for (i in marcados.indices) marcados[i] = nuevo })
         }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -118,7 +118,7 @@ fun RegistroTurnoScreen(onCerrar: () -> Unit, onRegistrar: () -> Unit) {
     }
 }
 
-/** Ausencia, retardo o incidencia de una persona, con motivo en categoría general. */
+/** Ausencia o incidencia de una persona (el retardo se calcula con la checada), con motivo en categoría general. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RegistrarAusenciaScreen(onCerrar: () -> Unit, onGuardar: () -> Unit) {
@@ -138,7 +138,7 @@ fun RegistrarAusenciaScreen(onCerrar: () -> Unit, onGuardar: () -> Unit) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Tipo", style = Texto.LabelM, color = TintaSuave)
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                listOf("Falta", "Retardo", "Incidencia").forEachIndexed { i, t ->
+                listOf("Falta", "Incidencia").forEachIndexed { i, t ->
                     ChipOpcion(t, Modifier.weight(1f), seleccionado = tipo == i, onClick = { tipo = i })
                 }
             }
@@ -159,7 +159,7 @@ fun RegistrarAusenciaScreen(onCerrar: () -> Unit, onGuardar: () -> Unit) {
 @Composable
 fun AlertaInsuficienteScreen(onVerCobertura: () -> Unit, onCerrar: () -> Unit) {
     Box(Modifier.fillMaxSize()) {
-        ResAsistenciaScreen(onAvisos = {}, onTurnoCompleto = {}, onAusencia = {}, onCorregir = {})
+        ResAsistenciaScreen(onAvisos = {}, onTurnoCompleto = {}, onAusencia = {})
         Box(Modifier.fillMaxSize().background(TintaBase.copy(alpha = 0.45f)).clickable(onClick = onCerrar))
         Column(
             modifier = Modifier
@@ -198,71 +198,6 @@ fun AlertaInsuficienteScreen(onVerCobertura: () -> Unit, onCerrar: () -> Unit) {
             Boton("Ver cobertura", onVerCobertura)
             Boton("Cerrar", onCerrar, estilo = EstiloBoton.Secundario)
         }
-    }
-}
-
-/** Corrección de una checada: queda en la bitácora con quién la pidió y quién la autoriza. */
-@Composable
-fun CorregirRegistroScreen(onAtras: () -> Unit, onGuardar: () -> Unit) {
-    var entrada by remember { mutableStateOf(true) }
-    var motivo by remember { mutableStateOf("Olvidó checar al llegar") }
-    PantallaBase(
-        separacion = 16.dp,
-        pie = { Boton("Guardar corrección", onGuardar) },
-    ) {
-        EncabezadoPantalla("Corregir registro", onAtras = onAtras)
-        Tarjeta(radio = 24.dp) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                Avatar("AT", lado = 48.dp)
-                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Text("Ana Torres", style = Texto.TitleS, color = TintaBase)
-                    Text("Mié 7 oct · Maternal A", style = Texto.BodyS, color = TintaSuave)
-                }
-                Chip("Retardo", tono = TonoChip.Alerta)
-            }
-        }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            RegistroActual("Entrada", "7:25 a. m.", TintaBase, Modifier.weight(1f))
-            RegistroActual("Salida", "Sin registro", TintaTenue, Modifier.weight(1f))
-        }
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Checada a corregir", style = Texto.LabelM, color = TintaSuave)
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                ChipOpcion("Entrada", Modifier.weight(1f), seleccionado = entrada, onClick = { entrada = true })
-                ChipOpcion("Salida", Modifier.weight(1f), seleccionado = !entrada, onClick = { entrada = false })
-            }
-        }
-        CampoSelector("Hora correcta", "7:00 a. m.", icono = Ico.Clock, activo = true)
-        CampoTexto("Motivo (obligatorio)", motivo, { motivo = it })
-        Column(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(Petroleo700).padding(18.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                Icono(Ico.History, tint = Mostaza500, tamano = 18.dp)
-                Text("Quedará en la bitácora", style = Texto.LabelM, color = Mostaza500)
-            }
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                Column {
-                    Text("Antes", style = Texto.BodyS, color = Petroleo100)
-                    Text("7:25", style = Texto.TitleL.copy(textDecoration = TextDecoration.LineThrough), color = Petroleo100)
-                }
-                Icono(Ico.Chevron, tint = Mostaza500, tamano = 22.dp)
-                Column {
-                    Text("Ahora", style = Texto.BodyS, color = Petroleo100)
-                    Text("7:00", style = Texto.TitleL, color = FondoCrema)
-                }
-            }
-            Text("Pidió: Asistente (Sofía Díaz) · hoy 7:40\nAutoriza: Responsable (tú)", style = Texto.BodyM, color = FondoCrema)
-        }
-    }
-}
-
-@Composable
-private fun RegistroActual(etiqueta: String, valor: String, colorValor: androidx.compose.ui.graphics.Color, modifier: Modifier = Modifier) {
-    Column(modifier.clip(RoundedCornerShape(20.dp)).background(FondoArena).padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        Text(etiqueta, style = Texto.LabelS, color = TintaSuave)
-        Text(valor, style = Texto.TitleM, color = colorValor)
     }
 }
 

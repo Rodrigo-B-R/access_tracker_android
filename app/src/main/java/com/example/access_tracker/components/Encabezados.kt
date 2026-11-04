@@ -79,10 +79,19 @@ fun AvisosPill(
 
 /** Logo a la izquierda y avisos a la derecha. `oscuro` es la variante sobre fondo petróleo. */
 @Composable
-fun BarraSuperiorLogo(avisos: Int, onAvisos: () -> Unit, modifier: Modifier = Modifier, oscuro: Boolean = false) {
+fun BarraSuperiorLogo(
+    avisos: Int,
+    onAvisos: () -> Unit,
+    modifier: Modifier = Modifier,
+    oscuro: Boolean = false,
+    cuenta: (@Composable () -> Unit)? = null,
+) {
     Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
         Logo(sobreOscuro = oscuro)
-        if (oscuro) AvisosPill(avisos, onAvisos, fondo = Petroleo500, tinta = FondoCrema) else AvisosPill(avisos, onAvisos)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            if (oscuro) AvisosPill(avisos, onAvisos, fondo = Petroleo500, tinta = FondoCrema) else AvisosPill(avisos, onAvisos)
+            cuenta?.invoke()
+        }
     }
 }
 

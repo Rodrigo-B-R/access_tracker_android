@@ -89,7 +89,7 @@ fun ResAvisosScreen(onAtras: () -> Unit, onNuevo: () -> Unit, onEstadoLectura: (
         AvisoItem("Reunión", TonoChip.Info, "lun 5 oct", "Reunión de personal el viernes a las 9:00", fondo = FondoBlanco) {
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                 Icono(Ico.Check, tint = Verde600, tamano = 16.dp)
-                Text("Recibido de Dirección · Lectura confirmada", style = Texto.BodyS, color = Verde600)
+                Text("Lectura confirmada", style = Texto.BodyS, color = Verde600)
             }
         }
     }
