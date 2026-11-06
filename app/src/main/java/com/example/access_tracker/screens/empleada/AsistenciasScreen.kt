@@ -45,9 +45,9 @@ import com.example.access_tracker.ui.theme.Verde100
 
 /** Pestaña Asistencias: la empleada solo ve lo suyo. */
 @Composable
-fun AsistenciasScreen() {
+fun AsistenciasScreen(barra: @Composable () -> Unit = {}) {
     var periodo by remember { mutableIntStateOf(0) }
-    PantallaBase(conBarra = true, separacion = 16.dp) {
+    PantallaBase(barra = barra, conBarra = true, separacion = 16.dp) {
         TituloPantalla("Mis asistencias")
         Segmentado(listOf("Esta semana", "Semana pasada", "Mes"), periodo, { periodo = it })
         Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {

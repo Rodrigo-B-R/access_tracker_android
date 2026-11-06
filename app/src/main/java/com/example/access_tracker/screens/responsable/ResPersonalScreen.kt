@@ -35,9 +35,10 @@ import com.example.access_tracker.ui.theme.Verde600
 
 /** Pestaña Personal: lista agrupada por rol, con alta de personas. */
 @Composable
-fun ResPersonalScreen(onAvisos: () -> Unit, onPersona: () -> Unit, onAlta: () -> Unit) {
+fun ResPersonalScreen(onAvisos: () -> Unit, onPersona: () -> Unit, onAlta: () -> Unit, barra: @Composable () -> Unit = {}) {
     var vista by remember { mutableIntStateOf(0) }
     PantallaBase(
+        barra = barra,
         conBarra = true,
         separacion = 16.dp,
         overlay = {

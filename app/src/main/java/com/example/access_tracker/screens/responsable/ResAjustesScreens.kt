@@ -64,7 +64,6 @@ import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde100
 import com.example.access_tracker.ui.theme.Verde600
 
-/** Menú ⋮ del inicio: bitácora, salas y mínimos, exportar, cuenta y cierre de sesión. Se muestra sobre el inicio con un velo. */
 @Composable
 fun ResMenuScreen(
     onCerrar: () -> Unit,
@@ -73,9 +72,10 @@ fun ResMenuScreen(
     onExportar: () -> Unit,
     onCuenta: () -> Unit,
     onCerrarSesion: () -> Unit,
+    barra: @Composable () -> Unit = {},
 ) {
     Box(Modifier.fillMaxSize()) {
-        ResInicioScreen(onAvisos = {}, onMenu = {}, onAtender = {}, onVerAsistencia = {})
+        ResInicioScreen(onAvisos = {}, onMenu = {}, onAtender = {}, onVerAsistencia = {}, barra = barra)
         Box(Modifier.fillMaxSize().background(TintaBase.copy(alpha = 0.45f)).clickable(onClick = onCerrar))
         Column(
             modifier = Modifier

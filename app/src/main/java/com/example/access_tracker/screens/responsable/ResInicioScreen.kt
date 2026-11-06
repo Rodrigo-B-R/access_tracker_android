@@ -46,8 +46,9 @@ fun ResInicioScreen(
     onMenu: () -> Unit,
     onAtender: () -> Unit,
     onVerAsistencia: () -> Unit,
+    barra: @Composable () -> Unit = {},
 ) {
-    PantallaBase(conBarra = true, separacion = 20.dp) {
+    PantallaBase(barra = barra, conBarra = true, separacion = 20.dp) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text("Estancia Cumbres", style = Texto.TitleM, color = TintaBase)

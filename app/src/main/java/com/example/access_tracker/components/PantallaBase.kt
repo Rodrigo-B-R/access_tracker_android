@@ -46,6 +46,7 @@ fun PantallaBase(
     cabecera: (@Composable ColumnScope.() -> Unit)? = null,
     pie: (@Composable ColumnScope.() -> Unit)? = null,
     overlay: (@Composable BoxScope.() -> Unit)? = null,
+    barra: @Composable () -> Unit = {},
     contenido: @Composable ColumnScope.() -> Unit,
 ) {
     Box(modifier.fillMaxSize().background(fondo)) {
@@ -80,5 +81,13 @@ fun PantallaBase(
             }
         }
         overlay?.invoke(this)
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .navigationBarsPadding()
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+        ) {
+            barra()
+        }
     }
 }

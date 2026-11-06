@@ -29,18 +29,5 @@ object Pestanas {
         Perfil.Direccion -> Direccion
     }
 
-    // Variantes de estado de una pestaña: se ven con la barra y la misma pestaña activa.
-    private val variantes = mapOf(
-        ScreenNames.EmpChecarDentro.route to ScreenNames.EmpChecar.route,
-        ScreenNames.EmpChecarSinInternet.route to ScreenNames.EmpChecar.route,
-        ScreenNames.ResMenu.route to ScreenNames.ResInicio.route,
-    )
-
-    /** Pestaña que se marca como activa para una ruta (la misma ruta, o la pestaña de la que es variante). */
-    fun activaDe(ruta: String?): String? = variantes[ruta] ?: ruta
-
-    /** Perfil dueño de la ruta si es una pestaña principal (la barra solo se muestra ahí). */
-    fun perfilDe(ruta: String?): Perfil? = activaDe(ruta).let { activa -> Perfil.entries.firstOrNull { p -> de(p).any { it.ruta == activa } } }
-
     fun inicio(perfil: Perfil) = de(perfil).first().ruta
 }

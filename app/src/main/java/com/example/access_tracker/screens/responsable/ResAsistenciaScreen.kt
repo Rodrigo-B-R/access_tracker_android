@@ -54,9 +54,11 @@ fun ResAsistenciaScreen(
     onAvisos: () -> Unit,
     onTurnoCompleto: () -> Unit,
     onAusencia: (persona: String?) -> Unit,
+    barra: @Composable () -> Unit = {},
 ) {
     var turno by remember { mutableIntStateOf(0) }
     PantallaBase(
+        barra = barra,
         conBarra = true,
         separacion = 16.dp,
         overlay = {

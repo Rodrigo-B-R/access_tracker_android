@@ -69,9 +69,9 @@ import com.example.access_tracker.ui.theme.Verde100
 
 /** Estadísticas de toda la fundación para el periodo elegido. Solo lectura. */
 @Composable
-fun DirEstadisticasScreen(onExportar: () -> Unit, onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}) {
+fun DirEstadisticasScreen(onExportar: () -> Unit, onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}, barra: @Composable () -> Unit = {}) {
     var periodo by remember { mutableIntStateOf(0) }
-    PantallaBase(conBarra = true, separacion = 14.dp) {
+    PantallaBase(barra = barra, conBarra = true, separacion = 14.dp) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Eyebrow("Dirección")
@@ -164,9 +164,9 @@ private fun GrupoBarras(
 /** Bitácora de la fundación con selector por estancia. Solo lectura. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun DirBitacoraScreen(onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}) {
+fun DirBitacoraScreen(onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}, barra: @Composable () -> Unit = {}) {
     var filtro by remember { mutableIntStateOf(0) }
-    PantallaBase(conBarra = true, separacion = 14.dp) {
+    PantallaBase(barra = barra, conBarra = true, separacion = 14.dp) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Eyebrow("Dirección")
