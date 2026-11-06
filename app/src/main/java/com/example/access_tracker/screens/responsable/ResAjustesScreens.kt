@@ -16,7 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -83,7 +83,11 @@ fun ResMenuScreen(
 @Composable
 private fun OpcionMenu(icono: Ico, fondo: Color, titulo: String, detalle: String, onClick: () -> Unit) {
     Row(
-        Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).clickable(onClick = onClick).padding(horizontal = 12.dp, vertical = 10.dp),
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 12.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -98,13 +102,11 @@ private fun OpcionMenu(icono: Ico, fondo: Color, titulo: String, detalle: String
 @Composable
 fun ResAjustesSalasScreen(onAtras: () -> Unit, onGuardar: () -> Unit) {
     val salas = remember {
-        mutableStateOf(
-            listOf(
-                Triple("Lactantes", 2, 2),
-                Triple("Maternal A", 3, 2),
-                Triple("Maternal B", 3, 2),
-                Triple("Preescolar", 4, 3),
-            ),
+        mutableStateListOf(
+            Triple("Lactantes", 2, 2),
+            Triple("Maternal A", 3, 2),
+            Triple("Maternal B", 3, 2),
+            Triple("Preescolar", 4, 3)
         )
     }
     PantallaBase(
@@ -116,13 +118,26 @@ fun ResAjustesSalasScreen(onAtras: () -> Unit, onGuardar: () -> Unit) {
             LeyendaTurno(Ico.Sun, "Mínimo matutino")
             LeyendaTurno(Ico.Moon, "Mínimo vespertino")
         }
-        salas.value.forEachIndexed { i, (nombre, manana, tarde) ->
+        salas.forEachIndexed { i, (nombre, manana, tarde) ->
             Tarjeta(radio = 24.dp, relleno = 0.dp) {
-                Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Column(
+                    Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
                     Text(nombre, style = Texto.TitleS, color = TintaBase)
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        ContadorMinimo(Ico.Sun, manana, { v -> salas.value = salas.value.toMutableList().also { it[i] = Triple(nombre, v, tarde) } }, Modifier.weight(1f))
-                        ContadorMinimo(Ico.Moon, tarde, { v -> salas.value = salas.value.toMutableList().also { it[i] = Triple(nombre, manana, v) } }, Modifier.weight(1f))
+                        ContadorMinimo(
+                            Ico.Sun,
+                            manana,
+                            { v -> salas[i] = Triple(nombre, v, tarde) },
+                            Modifier.weight(1f)
+                        )
+                        ContadorMinimo(
+                            Ico.Moon,
+                            tarde,
+                            { v -> salas[i] = Triple(nombre, manana, v) },
+                            Modifier.weight(1f)
+                        )
                     }
                 }
             }

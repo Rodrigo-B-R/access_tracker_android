@@ -61,7 +61,11 @@ fun HorarioScreen(barra: @Composable () -> Unit = {}) {
 @Composable
 private fun DiaSemana(letra: String, numero: String, estado: EstadoDia, modifier: Modifier = Modifier) {
     val fondo = when (estado) { EstadoDia.Hoy -> Mostaza500; EstadoDia.Descanso -> FondoArena; else -> FondoBlanco }
-    val punto = when (estado) { EstadoDia.Hoy -> TintaBase; EstadoDia.Descanso -> FondoArenaFuerte; else -> Petroleo700 }
+    val punto = when (estado) {
+        EstadoDia.Hoy -> TintaBase
+        EstadoDia.Descanso -> FondoArenaFuerte
+        else -> Petroleo700
+    }
     Column(
         modifier.clip(RoundedCornerShape(22.dp)).background(fondo).padding(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,

@@ -54,10 +54,19 @@ import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde100
 
 @Composable
-fun DirEstadisticasScreen(onExportar: () -> Unit, onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}, barra: @Composable () -> Unit = {}) {
+fun DirEstadisticasScreen(
+    onExportar: () -> Unit,
+    onCambiarPassword: () -> Unit = {},
+    onCerrarSesion: () -> Unit = {},
+    barra: @Composable () -> Unit = {}
+) {
     var periodo by remember { mutableIntStateOf(0) }
     PantallaBase(barra = barra, separacion = 14.dp) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Eyebrow("Dirección")
                 Text("Estadísticas", style = Texto.TitleL, color = TintaBase)
@@ -65,7 +74,11 @@ fun DirEstadisticasScreen(onExportar: () -> Unit, onCambiarPassword: () -> Unit 
             EtiquetaLectura("Solo lectura")
             MenuCuenta(onCambiarPassword, onCerrarSesion)
         }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Segmentado(listOf("Mes", "Trim.", "Año"), periodo, { periodo = it }, Modifier.weight(1f))
             FiltroDesplegable("Todas", listOf("Todas", "San Nicolás", "Centro", "Las Flores", "Norte"), radio = 24.dp)
         }
@@ -81,14 +94,22 @@ fun DirEstadisticasScreen(onExportar: () -> Unit, onCambiarPassword: () -> Unit 
         }
         Tarjeta(radio = 24.dp, relleno = 18.dp) {
             Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text("Altas y bajas por estancia", style = Texto.LabelL, color = TintaBase)
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         Leyenda(Petroleo700, "Altas")
                         Leyenda(Coral500, "Bajas")
                     }
                 }
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.Bottom) {
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.Bottom
+                ) {
                     GrupoBarras("Cumbres", 68.dp, 34.dp, Modifier.weight(1f))
                     GrupoBarras("S. Nicolás", 34.dp, 4.dp, Modifier.weight(1f), bajasVacio = true)
                     GrupoBarras("Apodaca", 34.dp, 68.dp, Modifier.weight(1f))
@@ -98,7 +119,12 @@ fun DirEstadisticasScreen(onExportar: () -> Unit, onCambiarPassword: () -> Unit 
             }
         }
         Row(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(Petroleo700).clickable(onClick = onExportar).padding(horizontal = 18.dp, vertical = 14.dp),
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(24.dp))
+                .background(Petroleo700)
+                .clickable(onClick = onExportar)
+                .padding(horizontal = 18.dp, vertical = 14.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -111,7 +137,10 @@ fun DirEstadisticasScreen(onExportar: () -> Unit, onCambiarPassword: () -> Unit 
 
 @Composable
 private fun Kpi(icono: Ico, etiqueta: String, valor: String, fondo: Color, modifier: Modifier) {
-    Column(modifier.clip(RoundedCornerShape(22.dp)).background(fondo).padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    Column(
+        modifier.clip(RoundedCornerShape(22.dp)).background(fondo).padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
             Icono(icono, tint = TintaBase, tamano = 16.dp)
             Text(etiqueta, style = Texto.LabelS, color = TintaBase)
@@ -137,10 +166,32 @@ private fun GrupoBarras(
     altasVacio: Boolean = false,
     bajasVacio: Boolean = false,
 ) {
-    Column(modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Row(Modifier.width(40.dp).height(76.dp), horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally), verticalAlignment = Alignment.Bottom) {
-            Box(Modifier.width(14.dp).height(altas).alpha(if (altasVacio) 0.25f else 1f).clip(RoundedCornerShape(5.dp)).background(Petroleo700))
-            Box(Modifier.width(14.dp).height(bajas).alpha(if (bajasVacio) 0.25f else 1f).clip(RoundedCornerShape(5.dp)).background(Coral500))
+    Column(
+        modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Row(
+            Modifier.width(40.dp).height(76.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Box(
+                Modifier
+                    .width(14.dp)
+                    .height(altas)
+                    .alpha(if (altasVacio) 0.25f else 1f)
+                    .clip(RoundedCornerShape(5.dp))
+                    .background(Petroleo700)
+            )
+            Box(
+                Modifier
+                    .width(14.dp)
+                    .height(bajas)
+                    .alpha(if (bajasVacio) 0.25f else 1f)
+                    .clip(RoundedCornerShape(5.dp))
+                    .background(Coral500)
+            )
         }
         Text(nombre, style = Texto.BodyS, color = TintaSuave, maxLines = 1)
     }
@@ -148,10 +199,18 @@ private fun GrupoBarras(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun DirBitacoraScreen(onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}, barra: @Composable () -> Unit = {}) {
+fun DirBitacoraScreen(
+    onCambiarPassword: () -> Unit = {},
+    onCerrarSesion: () -> Unit = {},
+    barra: @Composable () -> Unit = {}
+) {
     var filtro by remember { mutableIntStateOf(0) }
     PantallaBase(barra = barra, separacion = 14.dp) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Eyebrow("Dirección")
                 Text("Bitácora", style = Texto.TitleL, color = TintaBase)

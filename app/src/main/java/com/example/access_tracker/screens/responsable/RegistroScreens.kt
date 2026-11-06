@@ -48,7 +48,13 @@ import com.example.access_tracker.ui.theme.Verde100
 import com.example.access_tracker.ui.theme.Verde600
 import androidx.compose.ui.graphics.Color
 
-private data class PersonaTurno(val iniciales: String, val nombre: String, val sala: String, val fondo: Color, val tinta: Color)
+private data class PersonaTurno(
+    val iniciales: String,
+    val nombre: String,
+    val sala: String,
+    val fondo: Color,
+    val tinta: Color
+)
 
 private val PersonasTurno = listOf(
     PersonaTurno("AT", "Ana Torres", "Maternal A", Petroleo100, Petroleo700),
@@ -79,7 +85,11 @@ fun RegistroTurnoScreen(onCerrar: () -> Unit, onRegistrar: () -> Unit) {
         }
         CampoHora("Hora de entrada", "7:00 a. m.")
         Row(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(Petroleo100).padding(horizontal = 16.dp, vertical = 14.dp),
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
+                .background(Petroleo100)
+                .padding(horizontal = 16.dp, vertical = 14.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -89,11 +99,24 @@ fun RegistroTurnoScreen(onCerrar: () -> Unit, onRegistrar: () -> Unit) {
         }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             PersonasTurno.forEachIndexed { i, p ->
-                FilaPersona(p.iniciales, p.nombre, p.sala, fondoAvatar = p.fondo, tintaAvatar = p.tinta, ladoAvatar = 40.dp) {
+                FilaPersona(
+                    p.iniciales,
+                    p.nombre,
+                    p.sala,
+                    fondoAvatar = p.fondo,
+                    tintaAvatar = p.tinta,
+                    ladoAvatar = 40.dp
+                ) {
                     Casilla(marcados[i], onClick = { marcados[i] = !marcados[i] })
                 }
             }
-            FilaPersona("PR", "Paola Reyes", "Maternal A · ya registrada 6:52", ladoAvatar = 40.dp, fondo = FondoArena) {
+            FilaPersona(
+                "PR",
+                "Paola Reyes",
+                "Maternal A · ya registrada 6:52",
+                ladoAvatar = 40.dp,
+                fondo = FondoArena
+            ) {
                 Casilla(marcada = true, bloqueada = true)
             }
         }
@@ -111,7 +134,14 @@ fun RegistrarAusenciaScreen(onCerrar: () -> Unit, onGuardar: () -> Unit, persona
     ) {
         EncabezadoPantalla("Registrar ausencia o incidencia", onAtras = onCerrar, cerrar = true)
         CampoOpciones(
-            "Persona", persona, listOf("Ana Torres", "Lucía Herrera", "Carmen Ruiz", "Sofía Díaz", "Paola Reyes", "Rosa Medina"),
+            "Persona", persona, listOf(
+                "Ana Torres",
+                "Lucía Herrera",
+                "Carmen Ruiz",
+                "Sofía Díaz",
+                "Paola Reyes",
+                "Rosa Medina"
+            ),
             inicio = { Avatar(persona.split(" ").take(2).joinToString("") { it.take(1) }.uppercase(), lado = 28.dp) },
         )
         CampoFecha("Fecha", "Miércoles 7 de octubre")
@@ -125,13 +155,19 @@ fun RegistrarAusenciaScreen(onCerrar: () -> Unit, onGuardar: () -> Unit, persona
         }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Motivo (categoría general)", style = Texto.LabelM, color = TintaSuave)
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 listOf("Enfermedad", "Permiso", "Personal", "Transporte", "Otro").forEachIndexed { i, t ->
                     ChipOpcion(t, seleccionado = motivo == i, onClick = { motivo = i })
                 }
             }
         }
-        Nota("Solo la Responsable ve los motivos. No captures diagnósticos ni datos de niñas y niños.", icono = Ico.Shield)
+        Nota(
+            "Solo la Responsable ve los motivos. No captures diagnósticos ni datos de niñas y niños.",
+            icono = Ico.Shield
+        )
     }
 }
 

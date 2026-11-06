@@ -75,13 +75,25 @@ fun ResAvisosScreen(onAtras: () -> Unit, onNuevo: () -> Unit, onEstadoLectura: (
                 }
             }
         }
-        AvisoItem("Cambio de horario", TonoChip.Alerta, "ayer", "Nuevo horario de comida desde el lunes", fondo = FondoBlanco) {
+        AvisoItem(
+            "Cambio de horario",
+            TonoChip.Alerta,
+            "ayer",
+            "Nuevo horario de comida desde el lunes",
+            fondo = FondoBlanco
+        ) {
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                 Icono(Ico.Check, tint = Verde600, tamano = 16.dp)
                 Text("14 de 14 confirmaron", style = Texto.BodyS, color = Verde600)
             }
         }
-        AvisoItem("Reunión", TonoChip.Info, "lun 5 oct", "Reunión de personal el viernes a las 9:00", fondo = FondoBlanco) {
+        AvisoItem(
+            "Reunión",
+            TonoChip.Info,
+            "lun 5 oct",
+            "Reunión de personal el viernes a las 9:00",
+            fondo = FondoBlanco
+        ) {
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                 Icono(Ico.Check, tint = Verde600, tamano = 16.dp)
                 Text("Lectura confirmada", style = Texto.BodyS, color = Verde600)
@@ -107,7 +119,10 @@ fun ResNuevoAvisoScreen(onCerrar: () -> Unit, onEnviar: () -> Unit) {
         CampoTexto("Mensaje", mensaje, { mensaje = it }, lineas = 3)
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Tipo", style = Texto.LabelM, color = TintaSuave)
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 listOf("Cambio de horario", "Reunión", "Recordatorio", "Urgente").forEachIndexed { i, t ->
                     ChipOpcion(t, seleccionado = tipo == i, onClick = { tipo = i })
                 }
@@ -115,14 +130,21 @@ fun ResNuevoAvisoScreen(onCerrar: () -> Unit, onEnviar: () -> Unit) {
         }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Destinatarios", style = Texto.LabelM, color = TintaSuave)
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 listOf("Todo el personal", "Un turno", "Una sala", "Personas").forEachIndexed { i, t ->
                     ChipOpcion(t, seleccionado = destino == i, onClick = { destino = i })
                 }
             }
         }
         Row(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(FondoBlanco).padding(horizontal = 16.dp, vertical = 14.dp),
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
+                .background(FondoBlanco)
+                .padding(horizontal = 16.dp, vertical = 14.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -146,7 +168,11 @@ fun ResEstadoLecturaScreen(onAtras: () -> Unit, onRecordatorio: () -> Unit) {
             Modifier.fillMaxWidth().clip(RoundedCornerShape(28.dp)).background(Petroleo700).padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Chip("Urgente", tono = TonoChip.Peligro)
                 Text("Hoy 10:12", style = Texto.BodyS, color = Petroleo100)
             }
@@ -159,14 +185,48 @@ fun ResEstadoLecturaScreen(onAtras: () -> Unit, onRecordatorio: () -> Unit) {
         }
         EncabezadoSeccion("Sin confirmar · 5")
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilaPersona("SD", "Sofía Díaz", "Preescolar", fondoAvatar = Verde100, tintaAvatar = Verde600, ladoAvatar = 40.dp) { Chip("Sin leer", tono = TonoChip.Peligro) }
-            FilaPersona("PR", "Paola Reyes", "Maternal A", ladoAvatar = 40.dp) { Chip("Sin leer", tono = TonoChip.Peligro) }
-            FilaPersona("RM", "Rosa Medina", "Cocina", fondoAvatar = Mostaza100, tintaAvatar = TintaBase, ladoAvatar = 40.dp) { Chip("Sin leer", tono = TonoChip.Peligro) }
+            FilaPersona(
+                "SD",
+                "Sofía Díaz",
+                "Preescolar",
+                fondoAvatar = Verde100,
+                tintaAvatar = Verde600,
+                ladoAvatar = 40.dp
+            ) {
+                Chip("Sin leer", tono = TonoChip.Peligro)
+            }
+            FilaPersona(
+                "PR",
+                "Paola Reyes",
+                "Maternal A",
+                ladoAvatar = 40.dp
+            ) {
+                Chip("Sin leer", tono = TonoChip.Peligro)
+            }
+            FilaPersona(
+                "RM",
+                "Rosa Medina",
+                "Cocina",
+                fondoAvatar = Mostaza100,
+                tintaAvatar = TintaBase,
+                ladoAvatar = 40.dp
+            ) {
+                Chip("Sin leer", tono = TonoChip.Peligro)
+            }
         }
         EncabezadoSeccion("Confirmaron · 9")
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             FilaPersona("AT", "Ana Torres", "Maternal A", ladoAvatar = 40.dp) { HoraConfirmada("10:14") }
-            FilaPersona("LH", "Lucía Herrera", "Lactantes", fondoAvatar = Mostaza100, tintaAvatar = TintaBase, ladoAvatar = 40.dp) { HoraConfirmada("10:15") }
+            FilaPersona(
+                "LH",
+                "Lucía Herrera",
+                "Lactantes",
+                fondoAvatar = Mostaza100,
+                tintaAvatar = TintaBase,
+                ladoAvatar = 40.dp
+            ) {
+                HoraConfirmada("10:15")
+            }
         }
     }
 }

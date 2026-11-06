@@ -65,9 +65,18 @@ fun AltaPersonalScreen(onCerrar: () -> Unit, onGuardar: () -> Unit) {
     ) {
         EncabezadoPantalla("Alta de personal", onAtras = onCerrar, cerrar = true, eyebrow = "Personal")
         CampoTexto("Nombre completo", nombre, { nombre = it })
-        CampoOpciones("Tipo de personal", "Maestra titular", listOf("Maestra titular", "Asistente", "Auxiliar", "Cocina", "Intendencia"))
+        CampoOpciones(
+            "Tipo de personal",
+            "Maestra titular",
+            listOf("Maestra titular", "Asistente", "Auxiliar", "Cocina", "Intendencia")
+        )
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            CampoOpciones("Sala", "Maternal A", listOf("Lactantes", "Maternal A", "Maternal B", "Preescolar"), Modifier.weight(1f))
+            CampoOpciones(
+                "Sala",
+                "Maternal A",
+                listOf("Lactantes", "Maternal A", "Maternal B", "Preescolar"),
+                Modifier.weight(1f)
+            )
             CampoOpciones("Turno", "Matutino", listOf("Matutino", "Vespertino", "Mixto"), Modifier.weight(1f))
         }
         CampoTexto("Clave de acceso", clave, { clave = it }, icono = Ico.Idcard)
@@ -127,7 +136,11 @@ fun PerfilPersonaScreen(onAtras: () -> Unit, onEditar: () -> Unit, onBaja: () ->
 
 @Composable
 private fun DatoPerfil(icono: Ico, etiqueta: String, valor: String) {
-    Row(Modifier.fillMaxWidth().padding(vertical = 12.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        Modifier.fillMaxWidth().padding(vertical = 12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Icono(icono, tint = TintaSuave, tamano = 20.dp)
         Text(etiqueta, style = Texto.BodyM, color = TintaSuave, modifier = Modifier.weight(1f))
         Text(valor, style = Texto.LabelM, color = TintaBase)
@@ -136,7 +149,11 @@ private fun DatoPerfil(icono: Ico, etiqueta: String, valor: String) {
 
 @Composable
 private fun EventoHistorial(titulo: String, fecha: String) {
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Box(Modifier.size(10.dp).clip(CircleShape).background(Petroleo700))
         Column(Modifier.weight(1f)) {
             Text(titulo, style = Texto.LabelM, color = TintaBase)
@@ -154,7 +171,11 @@ fun DarDeBajaScreen(onCerrar: () -> Unit, onConfirmar: () -> Unit) {
     ) {
         EncabezadoPantalla("Dar de baja", onAtras = onCerrar, cerrar = true)
         Tarjeta(radio = 24.dp) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Avatar("AT", lado = 48.dp)
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Text("Ana Torres", style = Texto.TitleS, color = TintaBase)
@@ -164,7 +185,10 @@ fun DarDeBajaScreen(onCerrar: () -> Unit, onConfirmar: () -> Unit) {
         }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Motivo de baja", style = Texto.LabelM, color = TintaSuave)
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 listOf("Renuncia", "Fin de contrato", "Otro").forEachIndexed { i, t ->
                     ChipOpcion(t, seleccionado = motivo == i, onClick = { motivo = i })
                 }

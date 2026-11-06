@@ -48,7 +48,13 @@ import com.example.access_tracker.ui.theme.Verde100
 import com.example.access_tracker.ui.theme.Verde600
 
 @Composable
-fun ChecarFueraScreen(onAvisos: () -> Unit, onRegistrarEntrada: () -> Unit, onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}, barra: @Composable () -> Unit = {}) {
+fun ChecarFueraScreen(
+    onAvisos: () -> Unit,
+    onRegistrarEntrada: () -> Unit,
+    onCambiarPassword: () -> Unit = {},
+    onCerrarSesion: () -> Unit = {},
+    barra: @Composable () -> Unit = {}
+) {
     PantallaBase(barra = barra) {
         BarraSuperiorLogo(avisos = 2, onAvisos = onAvisos, cuenta = { MenuCuenta(onCambiarPassword, onCerrarSesion) })
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -76,10 +82,25 @@ fun ChecarFueraScreen(onAvisos: () -> Unit, onRegistrarEntrada: () -> Unit, onCa
 }
 
 @Composable
-fun ChecarDentroScreen(onAvisos: () -> Unit, onRegistrarSalida: () -> Unit, onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}, barra: @Composable () -> Unit = {}) {
+fun ChecarDentroScreen(
+    onAvisos: () -> Unit,
+    onRegistrarSalida: () -> Unit,
+    onCambiarPassword: () -> Unit = {},
+    onCerrarSesion: () -> Unit = {},
+    barra: @Composable () -> Unit = {}
+) {
     PantallaBase(barra = barra, fondo = Petroleo700) {
-        BarraSuperiorLogo(avisos = 2, onAvisos = onAvisos, oscuro = true, cuenta = { MenuCuenta(onCambiarPassword, onCerrarSesion, oscuro = true) })
-        Row(Modifier.padding(top = 6.dp), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+        BarraSuperiorLogo(
+            avisos = 2,
+            onAvisos = onAvisos,
+            oscuro = true,
+            cuenta = { MenuCuenta(onCambiarPassword, onCerrarSesion, oscuro = true) }
+        )
+        Row(
+            Modifier.padding(top = 6.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Box(Modifier.size(14.dp).clip(CircleShape).background(Mostaza500))
             Text("Estás dentro", style = Texto.TitleM, color = FondoCrema)
         }
@@ -90,7 +111,13 @@ fun ChecarDentroScreen(onAvisos: () -> Unit, onRegistrarSalida: () -> Unit, onCa
         Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(5.dp)) {
                 repeat(8) { i ->
-                    Box(Modifier.weight(1f).height(14.dp).clip(RoundedCornerShape(7.dp)).background(if (i < 2) Mostaza500 else Petroleo500))
+                    Box(
+                        Modifier
+                            .weight(1f)
+                            .height(14.dp)
+                            .clip(RoundedCornerShape(7.dp))
+                            .background(if (i < 2) Mostaza500 else Petroleo500)
+                    )
                 }
             }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -108,10 +135,19 @@ fun ChecarDentroScreen(onAvisos: () -> Unit, onRegistrarSalida: () -> Unit, onCa
 }
 
 @Composable
-fun ChecarSinInternetScreen(onAvisos: () -> Unit, onRegistrarSalida: () -> Unit, onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}, barra: @Composable () -> Unit = {}) {
+fun ChecarSinInternetScreen(
+    onAvisos: () -> Unit,
+    onRegistrarSalida: () -> Unit,
+    onCambiarPassword: () -> Unit = {},
+    onCerrarSesion: () -> Unit = {},
+    barra: @Composable () -> Unit = {}
+) {
     PantallaBase(barra = barra, separacion = 16.dp) {
         BarraSuperiorLogo(avisos = 2, onAvisos = onAvisos, cuenta = { MenuCuenta(onCambiarPassword, onCerrarSesion) })
-        BannerConexion(EstadoBanner.SinConexion, "Sin conexión: tus registros se guardan en el dispositivo y se envían al reconectar.")
+        BannerConexion(
+            EstadoBanner.SinConexion,
+            "Sin conexión: tus registros se guardan en el dispositivo y se envían al reconectar."
+        )
         TurnoDeHoy()
         Column(
             Modifier.fillMaxWidth().padding(top = 6.dp),
@@ -122,7 +158,12 @@ fun ChecarSinInternetScreen(onAvisos: () -> Unit, onRegistrarSalida: () -> Unit,
                 Icono(Ico.Check, tint = Verde600, tamano = 22.dp)
                 Text("Entrada guardada", style = Texto.TitleM, color = TintaBase)
             }
-            Text("Registrada hoy a las 7:01 en este dispositivo", style = Texto.BodyM, color = TintaSuave, textAlign = TextAlign.Center)
+            Text(
+                "Registrada hoy a las 7:01 en este dispositivo",
+                style = Texto.BodyM,
+                color = TintaSuave,
+                textAlign = TextAlign.Center
+            )
         }
         BotonChecada("Registrar\nsalida", Ico.Logout, Mostaza500, Mostaza100, onRegistrarSalida)
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)) {
@@ -135,7 +176,14 @@ fun ChecarSinInternetScreen(onAvisos: () -> Unit, onRegistrarSalida: () -> Unit,
 @Composable
 private fun TurnoDeHoy() {
     Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        TarjetaDato("Sala", "Maternal A", Modifier.weight(1.3f), fondo = Mostaza500, tinta = TintaBase, estiloValor = Texto.TitleS)
+        TarjetaDato(
+            "Sala",
+            "Maternal A",
+            Modifier.weight(1.3f),
+            fondo = Mostaza500,
+            tinta = TintaBase,
+            estiloValor = Texto.TitleS
+        )
         TarjetaDato("Entras", "7:00", Modifier.weight(1f))
         TarjetaDato("Sales", "15:00", Modifier.weight(1f))
     }

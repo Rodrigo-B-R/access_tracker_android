@@ -47,7 +47,11 @@ fun CambioPasswordScreen(onGuardar: () -> Unit) {
         IconoCuadro(Ico.Lock)
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text("Crea tu contraseña", style = Texto.TitleL, color = TintaBase)
-            Text("Entraste con una contraseña temporal. Cámbiala para continuar.", style = Texto.BodyL, color = TintaSuave)
+            Text(
+                "Entraste con una contraseña temporal. Cámbiala para continuar.",
+                style = Texto.BodyL,
+                color = TintaSuave
+            )
         }
         CampoTexto("Contraseña temporal", temporal, { temporal = it }, esPassword = true)
         CampoTexto("Nueva contraseña", nueva, { nueva = it }, esPassword = true)

@@ -46,7 +46,11 @@ fun AvisoUrgente(
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             EtiquetaUrgente()
             Text(hace, style = Texto.BodyS, color = FondoBlanco)
         }
@@ -59,7 +63,10 @@ fun AvisoUrgente(
 @Composable
 fun EtiquetaUrgente(modifier: Modifier = Modifier, relleno: Int = 10) {
     Row(
-        modifier = modifier.clip(RoundedCornerShape(14.dp)).background(FondoBlanco).padding(horizontal = relleno.dp, vertical = 5.dp),
+        modifier = modifier
+            .clip(RoundedCornerShape(14.dp))
+            .background(FondoBlanco)
+            .padding(horizontal = relleno.dp, vertical = 5.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -71,7 +78,11 @@ fun EtiquetaUrgente(modifier: Modifier = Modifier, relleno: Int = 10) {
 @Composable
 fun AccionAviso(texto: String, icono: Ico, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     Row(
-        modifier = modifier.clip(RoundedCornerShape(20.dp)).background(FondoBlanco).clickable(onClick = onClick).padding(horizontal = 14.dp, vertical = 10.dp),
+        modifier = modifier
+            .clip(RoundedCornerShape(20.dp))
+            .background(FondoBlanco)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -103,7 +114,11 @@ fun AvisoItem(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Chip(etiqueta, tono = tono)
             Text(fecha, style = Texto.BodyS, color = TintaTenue)
         }

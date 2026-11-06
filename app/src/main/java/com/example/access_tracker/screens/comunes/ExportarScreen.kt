@@ -61,14 +61,25 @@ fun ExportarScreen(onAtras: () -> Unit, onDescargar: () -> Unit, direccion: Bool
         CampoFecha("Mes", "Septiembre 2026", formato = "MMMM yyyy")
         if (direccion) {
             CampoOpciones(
-                "Estancia", "Todas las estancias", listOf("Todas las estancias", "Estancia Cumbres", "Estancia San Nicolás", "Estancia Apodaca", "Estancia Guadalupe", "Estancia Escobedo"),
+                "Estancia", "Todas las estancias", listOf(
+                    "Todas las estancias",
+                    "Estancia Cumbres",
+                    "Estancia San Nicolás",
+                    "Estancia Apodaca",
+                    "Estancia Guadalupe",
+                    "Estancia Escobedo"
+                ),
                 inicio = { Icono(Ico.Building, tint = TintaSuave, tamano = 20.dp) },
             )
         }
         Text("Qué incluir", style = Texto.LabelM, color = TintaSuave)
         GrupoFilas {
             opciones.forEachIndexed { i, (titulo, detalle) ->
-                Row(Modifier.fillMaxWidth().padding(vertical = 14.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    Modifier.fillMaxWidth().padding(vertical = 14.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         Text(titulo, style = Texto.LabelL, color = TintaBase)
                         Text(detalle, style = Texto.BodyS, color = TintaSuave)
@@ -79,7 +90,11 @@ fun ExportarScreen(onAtras: () -> Unit, onDescargar: () -> Unit, direccion: Bool
             }
         }
         Row(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(FondoArena).padding(horizontal = 16.dp, vertical = 14.dp),
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
+                .background(FondoArena)
+                .padding(horizontal = 16.dp, vertical = 14.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {

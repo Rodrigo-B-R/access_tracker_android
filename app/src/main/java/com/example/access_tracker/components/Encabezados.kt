@@ -92,10 +92,19 @@ fun BarraSuperiorLogo(
     oscuro: Boolean = false,
     cuenta: (@Composable () -> Unit)? = null,
 ) {
-    Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Logo(sobreOscuro = oscuro)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            if (oscuro) AvisosPill(avisos, onAvisos, fondo = Petroleo500, tinta = FondoCrema) else AvisosPill(avisos, onAvisos)
+            if (oscuro) AvisosPill(
+                avisos,
+                onAvisos,
+                fondo = Petroleo500,
+                tinta = FondoCrema
+            ) else AvisosPill(avisos, onAvisos)
             cuenta?.invoke()
         }
     }
@@ -113,7 +122,11 @@ fun EncabezadoPantalla(
     eyebrow: String? = null,
     accion: (@Composable () -> Unit)? = null,
 ) {
-    Row(modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+    Row(
+        modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
         IconButton(
             onClick = onAtras,
             modifier = Modifier.size(48.dp),

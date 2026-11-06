@@ -72,11 +72,18 @@ private fun PestanaActiva(pestana: Pestana, vertical: Boolean, onSeleccion: (Pes
         .clickable { onSeleccion(pestana) }
     if (vertical) {
         Box(base, contentAlignment = Alignment.Center) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
                 Icono(pestana.icono, tint = TintaBase)
                 Text(pestana.etiqueta, style = Texto.LabelS, color = TintaBase, maxLines = 1)
             }
-            if (pestana.contador != null) Contador(pestana.contador, Modifier.align(Alignment.TopEnd).offset(x = (-2).dp, y = 2.dp), borde = Mostaza500)
+            if (pestana.contador != null) Contador(
+                pestana.contador,
+                Modifier.align(Alignment.TopEnd).offset(x = (-2).dp, y = 2.dp),
+                borde = Mostaza500
+            )
         }
     } else {
         Row(
@@ -97,14 +104,23 @@ private fun PestanaInactiva(pestana: Pestana, onSeleccion: (Pestana) -> Unit, mo
             Icono(pestana.icono, tint = FondoCrema)
             Text(pestana.etiqueta, style = Texto.LabelS, color = FondoCrema, maxLines = 1)
         }
-        if (pestana.contador != null) Contador(pestana.contador, Modifier.align(Alignment.TopEnd).offset(x = (-2).dp, y = 2.dp))
+        if (pestana.contador != null) Contador(
+            pestana.contador,
+            Modifier.align(Alignment.TopEnd).offset(x = (-2).dp, y = 2.dp)
+        )
     }
 }
 
 @Composable
 private fun Contador(valor: Int, modifier: Modifier = Modifier, borde: Color = TintaBase) {
     Box(
-        modifier = modifier.size(20.dp).clip(CircleShape).background(borde).padding(2.dp).clip(CircleShape).background(Coral500),
+        modifier = modifier
+            .size(20.dp)
+            .clip(CircleShape)
+            .background(borde)
+            .padding(2.dp)
+            .clip(CircleShape)
+            .background(Coral500),
         contentAlignment = Alignment.Center,
     ) {
         Text(valor.toString(), style = Texto.LabelS, color = TintaBase)

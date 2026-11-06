@@ -30,7 +30,10 @@ fun IndiceScreen(onAtras: () -> Unit, onAbrir: (String) -> Unit) {
             Tarjeta(relleno = 4.dp) {
                 seccion.entradas.forEach { entrada ->
                     Row(
-                        Modifier.fillMaxWidth().clickable { onAbrir(entrada.ruta) }.padding(horizontal = 12.dp, vertical = 12.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable { onAbrir(entrada.ruta) }
+                            .padding(horizontal = 12.dp, vertical = 12.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {

@@ -78,7 +78,11 @@ fun FiltroDesplegable(inicial: String, opciones: List<String>, radio: Dp = 26.dp
     var elegido by remember { mutableStateOf(inicial) }
     Box(modifier) {
         Row(
-            Modifier.clip(RoundedCornerShape(radio)).background(FondoArena).clickable { abierto = true }.padding(horizontal = 14.dp, vertical = 13.dp),
+            Modifier
+                .clip(RoundedCornerShape(radio))
+                .background(FondoArena)
+                .clickable { abierto = true }
+                .padding(horizontal = 14.dp, vertical = 13.dp),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -118,7 +122,11 @@ fun ChipOpcion(
         .border(1.dp, if (seleccionado || bloqueado) Color.Transparent else FondoArenaFuerte, forma)
         .clickable(enabled = !bloqueado, onClick = onClick)
         .padding(horizontal = 10.dp, vertical = 11.dp)
-    Row(base, horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        base,
+        horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         if (icono != null) Icono(icono, tint = if (seleccionado) Mostaza500 else TintaSuave, tamano = 18.dp)
         else if (seleccionado) Icono(Ico.Check, tint = Mostaza500, tamano = 14.dp)
         if (bloqueado) Icono(Ico.Lock, tint = TintaTenue, tamano = 14.dp)
@@ -134,16 +142,32 @@ fun ChipOpcion(
 
 @Composable
 fun TarjetaCifra(valor: String, etiqueta: String, fondo: Color, modifier: Modifier = Modifier) {
-    Column(modifier.fillMaxHeight().clip(RoundedCornerShape(20.dp)).background(fondo).padding(horizontal = 14.dp, vertical = 12.dp)) {
+    Column(
+        modifier
+            .fillMaxHeight()
+            .clip(RoundedCornerShape(20.dp))
+            .background(fondo)
+            .padding(horizontal = 14.dp, vertical = 12.dp)
+    ) {
         Text(valor, style = Texto.TitleL, color = TintaBase)
         Text(etiqueta, style = Texto.BodyS, color = TintaSuave)
     }
 }
 
 @Composable
-fun PildoraEstado(texto: String, icono: Ico, fondo: Color, tinta: Color, modifier: Modifier = Modifier, tintaIcono: Color = tinta) {
+fun PildoraEstado(
+    texto: String,
+    icono: Ico,
+    fondo: Color,
+    tinta: Color,
+    modifier: Modifier = Modifier,
+    tintaIcono: Color = tinta
+) {
     Row(
-        modifier = modifier.clip(RoundedCornerShape(20.dp)).background(fondo).padding(horizontal = 14.dp, vertical = 9.dp),
+        modifier = modifier
+            .clip(RoundedCornerShape(20.dp))
+            .background(fondo)
+            .padding(horizontal = 14.dp, vertical = 9.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -172,7 +196,10 @@ fun BotonChecada(
                     .clickable(onClick = onClick),
                 contentAlignment = Alignment.Center,
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Icono(icono, tint = TintaBase, tamano = 40.dp)
                     Text(texto, style = Texto.TitleL, color = TintaBase, textAlign = TextAlign.Center)
                 }
@@ -200,7 +227,13 @@ fun Interruptor(encendido: Boolean, onCambio: (Boolean) -> Unit) {
 fun BarraSegmentos(total: Int, llenos: Int, colorLleno: Color, colorVacio: Color, modifier: Modifier = Modifier) {
     Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
         repeat(total) { i ->
-            Box(Modifier.weight(1f).height(8.dp).clip(RoundedCornerShape(4.dp)).background(if (i < llenos) colorLleno else colorVacio))
+            Box(
+                Modifier
+                    .weight(1f)
+                    .height(8.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(if (i < llenos) colorLleno else colorVacio)
+            )
         }
     }
 }

@@ -38,8 +38,18 @@ fun PermisosScreen(onContinuar: () -> Unit) {
             Text("Antes de empezar", style = Texto.TitleL, color = TintaBase)
             Text("La app solo pide lo que necesita para funcionar.", style = Texto.BodyL, color = TintaSuave)
         }
-        PermisoFila(Ico.Pin, Mostaza100, "Ubicación", "Para comprobar que checas en la estancia. Solo se usa al registrar tu entrada o salida.")
-        PermisoFila(Ico.Bell, Coral100, "Notificaciones", "Para avisarte de cambios de horario, reuniones y avisos urgentes.")
+        PermisoFila(
+            Ico.Pin,
+            Mostaza100,
+            "Ubicación",
+            "Para comprobar que checas en la estancia. Solo se usa al registrar tu entrada o salida."
+        )
+        PermisoFila(
+            Ico.Bell,
+            Coral100,
+            "Notificaciones",
+            "Para avisarte de cambios de horario, reuniones y avisos urgentes."
+        )
         Nota("Si no das el permiso de ubicación, tus registros se guardan con la marca «sin ubicación» para que tu Responsable los revise.")
     }
 }

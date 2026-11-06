@@ -45,9 +45,26 @@ fun SesionExpiradaScreen(onIniciarSesion: () -> Unit) {
         PantallaBase {
             BarraSuperiorLogo(avisos = 2, onAvisos = {})
             Text("Hola, María", style = Texto.DisplayL, color = TintaBase)
-            Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                TarjetaDato("Turno de hoy", "Matutino", Modifier.weight(1f), fondo = Mostaza500, tinta = TintaBase, estiloValor = Texto.TitleM)
-                TarjetaDato("Horario", "7:00 – 15:00", Modifier.weight(1f), fondo = Petroleo700, tinta = FondoCrema, estiloValor = Texto.TitleM)
+            Row(
+                Modifier.fillMaxWidth().height(IntrinsicSize.Min),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                TarjetaDato(
+                    "Turno de hoy",
+                    "Matutino",
+                    Modifier.weight(1f),
+                    fondo = Mostaza500,
+                    tinta = TintaBase,
+                    estiloValor = Texto.TitleM
+                )
+                TarjetaDato(
+                    "Horario",
+                    "7:00 – 15:00",
+                    Modifier.weight(1f),
+                    fondo = Petroleo700,
+                    tinta = FondoCrema,
+                    estiloValor = Texto.TitleM
+                )
             }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.size(14.dp).clip(CircleShape).background(Mostaza500))

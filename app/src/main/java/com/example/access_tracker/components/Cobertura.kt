@@ -78,10 +78,18 @@ fun TarjetaSala(
             .padding(horizontal = 18.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(nombre, style = Texto.TitleS, color = TintaBase)
-                Text(detalle, style = if (faltante) Texto.LabelM else Texto.BodyM, color = if (faltante) TintaBase else TintaSuave)
+                Text(
+                    detalle,
+                    style = if (faltante) Texto.LabelM else Texto.BodyM,
+                    color = if (faltante) TintaBase else TintaSuave
+                )
             }
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 repeat(total) { i -> CuadroPersona(presente = i < presentes, color = tinta) }
@@ -89,7 +97,12 @@ fun TarjetaSala(
         }
         if (faltante && textoAccion != null) {
             Row(
-                Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(FondoBlanco).clickable(onClick = onAccion).padding(horizontal = 16.dp, vertical = 13.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(FondoBlanco)
+                    .clickable(onClick = onAccion)
+                    .padding(horizontal = 16.dp, vertical = 13.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically,
             ) {

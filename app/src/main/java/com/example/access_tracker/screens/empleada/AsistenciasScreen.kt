@@ -68,9 +68,17 @@ private fun DiaAsistencia(
 ) {
     Tarjeta(radio = 24.dp, relleno = 14.dp, borde = if (actual) Petroleo700 else null) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Column(
-                    Modifier.height(56.dp).width(52.dp).clip(RoundedCornerShape(16.dp)).background(if (actual) Petroleo700 else FondoArena),
+                    Modifier
+                        .height(56.dp)
+                        .width(52.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(if (actual) Petroleo700 else FondoArena),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                 ) {

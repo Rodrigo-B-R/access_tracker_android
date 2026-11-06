@@ -49,11 +49,19 @@ import com.example.access_tracker.ui.theme.Verde600
 import androidx.compose.ui.graphics.Color
 
 @Composable
-fun DirResumenScreen(onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}, barra: @Composable () -> Unit = {}) {
+fun DirResumenScreen(
+    onCambiarPassword: () -> Unit = {},
+    onCerrarSesion: () -> Unit = {},
+    barra: @Composable () -> Unit = {}
+) {
     var fecha by remember { mutableStateOf("Mié 7 oct") }
     var elegirFecha by remember { mutableStateOf(false) }
     if (elegirFecha) {
-        DialogoFecha(formato = "EEE d MMM", onCerrar = { elegirFecha = false }, onElegida = { fecha = it.replace(".", "") })
+        DialogoFecha(
+            formato = "EEE d MMM",
+            onCerrar = { elegirFecha = false },
+            onElegida = { fecha = it.replace(".", "") }
+        )
     }
     PantallaBase(
         barra = barra,
@@ -68,7 +76,11 @@ fun DirResumenScreen(onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> U
                     .padding(start = 24.dp, end = 24.dp, top = 16.dp, bottom = 18.dp),
                 verticalArrangement = Arrangement.spacedBy(18.dp),
             ) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         Text("Dirección", style = Texto.LabelM, color = Petroleo100)
                         Text("Resumen", style = Texto.DisplayL, color = FondoCrema, maxLines = 1, softWrap = false)
@@ -76,7 +88,11 @@ fun DirResumenScreen(onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> U
                     MenuCuenta(onCambiarPassword, onCerrarSesion, oscuro = true)
                 }
                 Row(
-                    Modifier.clip(RoundedCornerShape(24.dp)).background(Petroleo500).clickable { elegirFecha = true }.padding(horizontal = 16.dp, vertical = 12.dp),
+                    Modifier
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(Petroleo500)
+                        .clickable { elegirFecha = true }
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -91,15 +107,24 @@ fun DirResumenScreen(onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> U
         },
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Row(Modifier.fillMaxWidth().height(IntrinsicSize.Max), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(
+                Modifier.fillMaxWidth().height(IntrinsicSize.Max),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 EstanciaEstado("Apodaca", "Falta 1 en Maternal A", completa = false, Modifier.weight(1f))
                 EstanciaEstado("Escobedo", "Faltan 2 en Lactantes", completa = false, Modifier.weight(1f))
             }
-            Row(Modifier.fillMaxWidth().height(IntrinsicSize.Max), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(
+                Modifier.fillMaxWidth().height(IntrinsicSize.Max),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 EstanciaEstado("Cumbres", "Completa", completa = true, Modifier.weight(1f))
                 EstanciaEstado("San Nicolás", "Completa", completa = true, Modifier.weight(1f))
             }
-            Row(Modifier.fillMaxWidth().height(IntrinsicSize.Max), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(
+                Modifier.fillMaxWidth().height(IntrinsicSize.Max),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 EstanciaEstado("Guadalupe", "Completa", completa = true, Modifier.weight(1f))
                 Box(Modifier.weight(1f))
             }

@@ -22,19 +22,75 @@ val DmSans = FontFamily(
 )
 
 object Texto {
-    val DisplayXL = TextStyle(fontFamily = Bricolage, fontWeight = FontWeight.ExtraBold, fontSize = 76.sp, lineHeight = 73.sp, letterSpacing = (-0.04).em)
-    val DisplayL = TextStyle(fontFamily = Bricolage, fontWeight = FontWeight.ExtraBold, fontSize = 44.sp, lineHeight = 44.sp, letterSpacing = (-0.03).em)
-    val TitleL = TextStyle(fontFamily = Bricolage, fontWeight = FontWeight.ExtraBold, fontSize = 30.sp, lineHeight = 32.sp, letterSpacing = (-0.02).em)
-    val TitleM = TextStyle(fontFamily = Bricolage, fontWeight = FontWeight.Bold, fontSize = 22.sp, lineHeight = 26.sp, letterSpacing = (-0.01).em)
-    val TitleS = TextStyle(fontFamily = Bricolage, fontWeight = FontWeight.Bold, fontSize = 18.sp, lineHeight = 22.sp, letterSpacing = (-0.005).em)
-    val LabelL = TextStyle(fontFamily = Bricolage, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, lineHeight = 20.sp)
-    val LabelM = TextStyle(fontFamily = Bricolage, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, lineHeight = 17.sp)
-    val LabelS = TextStyle(fontFamily = Bricolage, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, lineHeight = 15.sp)
+    val DisplayXL = TextStyle(
+        fontFamily = Bricolage,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 76.sp,
+        lineHeight = 73.sp,
+        letterSpacing = (-0.04).em
+    )
+    val DisplayL = TextStyle(
+        fontFamily = Bricolage,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 44.sp,
+        lineHeight = 44.sp,
+        letterSpacing = (-0.03).em
+    )
+    val TitleL = TextStyle(
+        fontFamily = Bricolage,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 30.sp,
+        lineHeight = 32.sp,
+        letterSpacing = (-0.02).em
+    )
+    val TitleM = TextStyle(
+        fontFamily = Bricolage,
+        fontWeight = FontWeight.Bold,
+        fontSize = 22.sp,
+        lineHeight = 26.sp,
+        letterSpacing = (-0.01).em
+    )
+    val TitleS = TextStyle(
+        fontFamily = Bricolage,
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp,
+        lineHeight = 22.sp,
+        letterSpacing = (-0.005).em
+    )
+    val LabelL = TextStyle(
+        fontFamily = Bricolage,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
+        lineHeight = 20.sp
+    )
+    val LabelM = TextStyle(
+        fontFamily = Bricolage,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp,
+        lineHeight = 17.sp
+    )
+    val LabelS = TextStyle(
+        fontFamily = Bricolage,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 12.sp,
+        lineHeight = 15.sp
+    )
     val BodyL = TextStyle(fontFamily = DmSans, fontWeight = FontWeight.Normal, fontSize = 16.sp, lineHeight = 23.sp)
     val BodyM = TextStyle(fontFamily = DmSans, fontWeight = FontWeight.Normal, fontSize = 14.sp, lineHeight = 20.sp)
-    val BodyMMedium = TextStyle(fontFamily = DmSans, fontWeight = FontWeight.Medium, fontSize = 14.sp, lineHeight = 20.sp)
+    val BodyMMedium = TextStyle(
+        fontFamily = DmSans,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 20.sp
+    )
     val BodyS = TextStyle(fontFamily = DmSans, fontWeight = FontWeight.Normal, fontSize = 12.sp, lineHeight = 17.sp)
-    val Eyebrow = TextStyle(fontFamily = DmSans, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, lineHeight = 14.sp, letterSpacing = 0.08.em)
+    val Eyebrow = TextStyle(
+        fontFamily = DmSans,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 12.sp,
+        lineHeight = 14.sp,
+        letterSpacing = 0.08.em
+    )
 }
 
 val Typography = Typography(

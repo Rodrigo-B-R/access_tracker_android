@@ -40,7 +40,11 @@ fun ResHorarioPersonaScreen(onAtras: () -> Unit, onGuardar: () -> Unit) {
     ) {
         EncabezadoPantalla("Horario de la persona", onAtras = onAtras, eyebrow = "Horarios")
         Tarjeta(radio = 24.dp) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Avatar("AT", lado = 48.dp)
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Text("Ana Torres", style = Texto.TitleS, color = TintaBase)
@@ -55,12 +59,21 @@ fun ResHorarioPersonaScreen(onAtras: () -> Unit, onGuardar: () -> Unit) {
                 Text(dia, style = Texto.LabelL, color = TintaBase)
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Opciones.forEachIndexed { t, (nombre, icono) ->
-                        ChipOpcion(nombre, Modifier.weight(1f), seleccionado = turnos[i] == t, icono = icono, onClick = { turnos[i] = t })
+                        ChipOpcion(
+                            nombre,
+                            Modifier.weight(1f),
+                            seleccionado = turnos[i] == t,
+                            icono = icono,
+                            onClick = { turnos[i] = t }
+                        )
                     }
                 }
             }
         }
-        Nota("El horario se usa para saber quién debería estar cada día y avisar si una sala queda sin cubrir.", icono = Ico.Calendar)
+        Nota(
+            "El horario se usa para saber quién debería estar cada día y avisar si una sala queda sin cubrir.",
+            icono = Ico.Calendar
+        )
     }
 }
 

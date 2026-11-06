@@ -47,10 +47,17 @@ fun ResInicioScreen(
     barra: @Composable () -> Unit = {},
 ) {
     PantallaBase(barra = barra, separacion = 20.dp) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text("Estancia Cumbres", style = Texto.TitleM, color = TintaBase)
-                Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Icono(Ico.Cloud, tint = Verde600, tamano = 16.dp)
                     Text("Sincronizado · 9:08", style = Texto.LabelM, color = Verde600)
                 }
@@ -60,7 +67,11 @@ fun ResInicioScreen(
         }
         // Alerta
         Row(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(Rojo600).padding(start = 18.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(24.dp))
+                .background(Rojo600)
+                .padding(start = 18.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(14.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -71,7 +82,11 @@ fun ResInicioScreen(
             }
             Text(
                 "Atender", style = Texto.LabelM, color = TintaBase,
-                modifier = Modifier.clip(RoundedCornerShape(22.dp)).background(FondoBlanco).clickable(onClick = onAtender).padding(horizontal = 16.dp, vertical = 11.dp),
+                modifier = Modifier
+                    .clip(RoundedCornerShape(22.dp))
+                    .background(FondoBlanco)
+                    .clickable(onClick = onAtender)
+                    .padding(horizontal = 16.dp, vertical = 11.dp),
             )
         }
         // Indicadores
@@ -88,22 +103,41 @@ fun ResInicioScreen(
                 Text("2 sin checar", style = Texto.BodyS, color = Petroleo100)
             }
         }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Eyebrow("Cobertura por sala")
-            Text("Ver asistencia", style = Texto.LabelM, color = Petroleo700, modifier = Modifier.clickable(onClick = onVerAsistencia))
+            Text(
+                "Ver asistencia",
+                style = Texto.LabelM,
+                color = Petroleo700,
+                modifier = Modifier.clickable(onClick = onVerAsistencia)
+            )
         }
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Row(Modifier.fillMaxWidth().height(IntrinsicSize.Max), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(
+                Modifier.fillMaxWidth().height(IntrinsicSize.Max),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 SalaMini("Lactantes", 4, 4, Modifier.weight(1f))
                 SalaMini("Maternal A", 2, 3, Modifier.weight(1f), bajoMinimo = true)
             }
-            Row(Modifier.fillMaxWidth().height(IntrinsicSize.Max), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(
+                Modifier.fillMaxWidth().height(IntrinsicSize.Max),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 SalaMini("Maternal B", 3, 3, Modifier.weight(1f))
                 SalaMini("Preescolar", 5, 5, Modifier.weight(1f))
             }
         }
         Tarjeta(modifier = Modifier.clickable { onAtender() }, radio = 24.dp) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 IconoCuadro(Ico.Flag, fondo = Coral100, lado = 44.dp, radio = 14.dp, tamanoIcono = 24.dp)
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     Text("Turno sin cubrir · Maternal A", style = Texto.LabelL, color = TintaBase)

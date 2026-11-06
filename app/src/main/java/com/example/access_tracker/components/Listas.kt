@@ -77,7 +77,12 @@ fun FilaPersona(
 }
 
 @Composable
-fun Casilla(marcada: Boolean, modifier: Modifier = Modifier, bloqueada: Boolean = false, onClick: (() -> Unit)? = null) {
+fun Casilla(
+    marcada: Boolean,
+    modifier: Modifier = Modifier,
+    bloqueada: Boolean = false,
+    onClick: (() -> Unit)? = null
+) {
     Box(
         modifier = modifier
             .size(28.dp)
@@ -106,7 +111,10 @@ fun BotonCircular(
     lado: Dp = 48.dp,
     tint: Color = TintaBase,
 ) {
-    Box(modifier.size(lado).clip(CircleShape).background(fondo).clickable(onClick = onClick), contentAlignment = Alignment.Center) {
+    Box(
+        modifier.size(lado).clip(CircleShape).background(fondo).clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
         Icono(icono, tint = tint)
     }
 }
@@ -127,7 +135,11 @@ fun BotonFlotanteIcono(icono: Ico, color: Color, onClick: () -> Unit, modifier: 
 @Composable
 fun BarraBusqueda(texto: String, modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier.fillMaxWidth().clip(RoundedCornerShape(26.dp)).background(FondoArena).padding(horizontal = 18.dp, vertical = 14.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(26.dp))
+            .background(FondoArena)
+            .padding(horizontal = 18.dp, vertical = 14.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

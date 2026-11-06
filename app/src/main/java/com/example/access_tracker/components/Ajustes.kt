@@ -33,7 +33,11 @@ import androidx.compose.ui.text.TextStyle
 @Composable
 fun GrupoFilas(modifier: Modifier = Modifier, relleno: Dp = 16.dp, contenido: @Composable () -> Unit) {
     Column(
-        modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(FondoBlanco).padding(horizontal = relleno, vertical = 4.dp),
+        modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(24.dp))
+            .background(FondoBlanco)
+            .padding(horizontal = relleno, vertical = 4.dp),
     ) { contenido() }
 }
 
@@ -80,7 +84,11 @@ fun FilaInterruptor(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icono(icono, tint = if (apagado) TintaSuave else com.example.access_tracker.ui.theme.Petroleo700, tamano = 22.dp)
+        Icono(
+            icono,
+            tint = if (apagado) TintaSuave else com.example.access_tracker.ui.theme.Petroleo700,
+            tamano = 22.dp
+        )
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(titulo, style = Texto.LabelL, color = if (apagado) TintaSuave else TintaBase)
             if (descripcion != null) Text(descripcion, style = Texto.BodyS, color = TintaSuave)
@@ -92,14 +100,21 @@ fun FilaInterruptor(
 @Composable
 fun ContadorMinimo(icono: Ico, valor: Int, onCambio: (Int) -> Unit, modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier.clip(RoundedCornerShape(18.dp)).background(FondoArena).padding(start = 14.dp, end = 6.dp, top = 6.dp, bottom = 6.dp),
+        modifier = modifier
+            .clip(RoundedCornerShape(18.dp))
+            .background(FondoArena)
+            .padding(start = 14.dp, end = 6.dp, top = 6.dp, bottom = 6.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icono(icono, tint = TintaSuave, tamano = 18.dp)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
-                Modifier.size(30.dp).clip(CircleShape).background(FondoBlanco).clickable { if (valor > 0) onCambio(valor - 1) },
+                Modifier
+                    .size(30.dp)
+                    .clip(CircleShape)
+                    .background(FondoBlanco)
+                    .clickable { if (valor > 0) onCambio(valor - 1) },
                 contentAlignment = Alignment.Center,
             ) { Text("–", style = Texto.LabelL, color = TintaBase) }
             Box(Modifier.width(26.dp).height(30.dp), contentAlignment = Alignment.Center) {

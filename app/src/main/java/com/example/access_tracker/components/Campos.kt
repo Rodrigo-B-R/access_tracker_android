@@ -84,7 +84,11 @@ fun CampoTexto(
                     }
                 }
             } else null,
-            visualTransformation = if (esPassword && !verPassword) PasswordVisualTransformation() else VisualTransformation.None
+            visualTransformation = if (esPassword && !verPassword) {
+                PasswordVisualTransformation()
+            } else {
+                VisualTransformation.None
+            }
         )
     }
 }

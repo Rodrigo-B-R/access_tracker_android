@@ -11,7 +11,10 @@ object IndicePantallas {
             listOf(
                 EntradaIndice("Inicio de sesión", ScreenNames.Login.route),
                 EntradaIndice("Cambio de contraseña inicial", ScreenNames.CambioPassword.createRoute(Perfil.Empleada)),
-                EntradaIndice("Permisos de ubicación y notificaciones", ScreenNames.Permisos.createRoute(Perfil.Empleada)),
+                EntradaIndice(
+                    "Permisos de ubicación y notificaciones",
+                    ScreenNames.Permisos.createRoute(Perfil.Empleada)
+                ),
                 EntradaIndice("Sesión expirada", ScreenNames.SesionExpirada.route),
                 EntradaIndice("Aviso sin conexión", ScreenNames.AvisoSinConexion.route),
                 EntradaIndice("Exportar", ScreenNames.Exportar.createRoute(Perfil.Responsable)),
