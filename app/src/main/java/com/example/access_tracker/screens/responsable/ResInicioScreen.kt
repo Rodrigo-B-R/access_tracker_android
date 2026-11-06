@@ -30,7 +30,6 @@ import com.example.access_tracker.ui.theme.Access_trackerTheme
 import com.example.access_tracker.ui.theme.Coral100
 import com.example.access_tracker.ui.theme.FondoBlanco
 import com.example.access_tracker.ui.theme.FondoCrema
-import com.example.access_tracker.ui.theme.Mostaza500
 import com.example.access_tracker.ui.theme.Petroleo100
 import com.example.access_tracker.ui.theme.Petroleo700
 import com.example.access_tracker.ui.theme.Rojo600

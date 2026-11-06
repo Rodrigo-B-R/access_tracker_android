@@ -18,7 +18,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -29,22 +28,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.access_tracker.components.Boton
 import com.example.access_tracker.components.FiltroDesplegable
-import com.example.access_tracker.components.Casilla
-import com.example.access_tracker.components.Chip
-import com.example.access_tracker.components.Divisor
-import com.example.access_tracker.components.EncabezadoPantalla
-import com.example.access_tracker.components.EstiloBoton
 import com.example.access_tracker.components.EventoBitacora
 import com.example.access_tracker.components.Eyebrow
 import com.example.access_tracker.components.FiltroPill
-import com.example.access_tracker.components.GrupoFilas
 import com.example.access_tracker.components.Ico
 import com.example.access_tracker.components.MenuCuenta
-import com.example.access_tracker.components.IconoCuadro
 import com.example.access_tracker.components.Icono
-import com.example.access_tracker.components.Nota
 import com.example.access_tracker.components.PantallaBase
 import com.example.access_tracker.components.Segmentado
 import com.example.access_tracker.components.Tarjeta
@@ -52,8 +42,6 @@ import com.example.access_tracker.components.TonoChip
 import com.example.access_tracker.ui.theme.Access_trackerTheme
 import com.example.access_tracker.ui.theme.Coral100
 import com.example.access_tracker.ui.theme.Coral500
-import com.example.access_tracker.ui.theme.FondoArena
-import com.example.access_tracker.ui.theme.FondoBlanco
 import com.example.access_tracker.ui.theme.FondoCrema
 import com.example.access_tracker.ui.theme.Mostaza100
 import com.example.access_tracker.ui.theme.Mostaza500
@@ -62,7 +50,6 @@ import com.example.access_tracker.ui.theme.Petroleo700
 import com.example.access_tracker.ui.theme.Rojo100
 import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
-import com.example.access_tracker.ui.theme.TintaTenue
 import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde100
 

@@ -35,11 +35,9 @@ import com.example.access_tracker.components.TonoChip
 import com.example.access_tracker.ui.theme.Access_trackerTheme
 import com.example.access_tracker.ui.theme.Coral100
 import com.example.access_tracker.ui.theme.Coral500
-import com.example.access_tracker.ui.theme.FondoArena
 import com.example.access_tracker.ui.theme.FondoCrema
 import com.example.access_tracker.ui.theme.Mostaza100
 import com.example.access_tracker.ui.theme.Mostaza500
-import com.example.access_tracker.ui.theme.Petroleo100
 import com.example.access_tracker.ui.theme.Petroleo700
 import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.Verde100

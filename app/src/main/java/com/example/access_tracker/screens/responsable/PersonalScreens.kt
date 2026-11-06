@@ -24,7 +24,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.access_tracker.components.Avatar
@@ -46,9 +45,6 @@ import com.example.access_tracker.components.Tarjeta
 import com.example.access_tracker.components.TarjetaCifra
 import com.example.access_tracker.components.TonoChip
 import com.example.access_tracker.ui.theme.Access_trackerTheme
-import com.example.access_tracker.ui.theme.Coral500
-import com.example.access_tracker.ui.theme.FondoArena
-import com.example.access_tracker.ui.theme.FondoArenaFuerte
 import com.example.access_tracker.ui.theme.FondoCrema
 import com.example.access_tracker.ui.theme.Mostaza100
 import com.example.access_tracker.ui.theme.Mostaza500

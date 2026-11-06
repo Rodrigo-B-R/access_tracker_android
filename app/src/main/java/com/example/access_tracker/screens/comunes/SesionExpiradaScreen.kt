@@ -22,7 +22,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.access_tracker.components.AvisosPill
 import com.example.access_tracker.components.Boton
 import com.example.access_tracker.components.BarraSuperiorLogo
 import com.example.access_tracker.components.EstiloBoton

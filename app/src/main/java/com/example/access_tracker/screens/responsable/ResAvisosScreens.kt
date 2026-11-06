@@ -1,7 +1,6 @@
 package com.example.access_tracker.screens.responsable
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -22,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.access_tracker.components.Avatar
 import com.example.access_tracker.components.AvisoItem
 import com.example.access_tracker.components.AvisoUrgente
 import com.example.access_tracker.components.Boton
