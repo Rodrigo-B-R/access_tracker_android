@@ -12,19 +12,19 @@ import com.example.access_tracker.screens.empleada.ChecarSinInternetScreen
 import com.example.access_tracker.screens.empleada.HorarioScreen
 
 fun NavGraphBuilder.grafoEmpleada(nav: NavController) {
-    val irAAvisos = { nav.navigate(Rutas.EmpAvisos) }
-    val cambiarPassword = { nav.navigate(rutaCambioPassword(Perfil.Empleada)) }
+    val irAAvisos = { nav.navigate(ScreenNames.EmpAvisos.route) }
+    val cambiarPassword = { nav.navigate(ScreenNames.CambioPassword.createRoute(Perfil.Empleada)) }
     val salir = { nav.cerrarSesion() }
 
-    composable(Rutas.EmpChecar) {
+    composable(ScreenNames.EmpChecar.route) {
         ChecarFueraScreen(
             onAvisos = irAAvisos,
-            onRegistrarEntrada = { nav.navigate(Rutas.EmpChecarDentro) },
+            onRegistrarEntrada = { nav.navigate(ScreenNames.EmpChecarDentro.route) },
             onCambiarPassword = { cambiarPassword() },
             onCerrarSesion = { salir() },
         )
     }
-    composable(Rutas.EmpChecarDentro) {
+    composable(ScreenNames.EmpChecarDentro.route) {
         ChecarDentroScreen(
             onAvisos = irAAvisos,
             onRegistrarSalida = { nav.popBackStack() },
@@ -32,7 +32,7 @@ fun NavGraphBuilder.grafoEmpleada(nav: NavController) {
             onCerrarSesion = { salir() },
         )
     }
-    composable(Rutas.EmpChecarSinInternet) {
+    composable(ScreenNames.EmpChecarSinInternet.route) {
         ChecarSinInternetScreen(
             onAvisos = irAAvisos,
             onRegistrarSalida = { nav.popBackStack() },
@@ -40,14 +40,14 @@ fun NavGraphBuilder.grafoEmpleada(nav: NavController) {
             onCerrarSesion = { salir() },
         )
     }
-    composable(Rutas.EmpAsistencias) {
+    composable(ScreenNames.EmpAsistencias.route) {
         AsistenciasScreen()
     }
-    composable(Rutas.EmpHorario) { HorarioScreen() }
-    composable(Rutas.EmpAvisos) {
-        AvisosBandejaScreen(onAtras = { nav.popBackStack() }, onAbrirUrgente = { nav.navigate(Rutas.EmpAvisoDetalle) })
+    composable(ScreenNames.EmpHorario.route) { HorarioScreen() }
+    composable(ScreenNames.EmpAvisos.route) {
+        AvisosBandejaScreen(onAtras = { nav.popBackStack() }, onAbrirUrgente = { nav.navigate(ScreenNames.EmpAvisoDetalle.route) })
     }
-    composable(Rutas.EmpAvisoDetalle) {
+    composable(ScreenNames.EmpAvisoDetalle.route) {
         AvisoDetalleScreen(onAtras = { nav.popBackStack() }, onConfirmar = { nav.popBackStack() })
     }
 }

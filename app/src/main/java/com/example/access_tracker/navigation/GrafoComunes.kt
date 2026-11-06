@@ -13,23 +13,9 @@ import com.example.access_tracker.screens.comunes.LoginScreen
 import com.example.access_tracker.screens.comunes.PermisosScreen
 import com.example.access_tracker.screens.comunes.SesionExpiradaScreen
 
-private const val ArgPerfil = "perfil"
-private val ArgumentosPerfil = listOf(
-    navArgument(ArgPerfil) { type = NavType.StringType; defaultValue = Perfil.Empleada.name },
-)
-
-/** Ruta de la pantalla Exportar, compartida por Responsable y Dirección. */
-fun rutaExportar(perfil: Perfil) = "${Rutas.Exportar}?$ArgPerfil=${perfil.name}"
-
-/** Ruta del cambio de contraseña desde «Mi cuenta». */
-fun rutaCambioPassword(perfil: Perfil) = "${Rutas.CambioPassword}?$ArgPerfil=${perfil.name}"
-
-private fun perfilDe(nombre: String?) = Perfil.entries.firstOrNull { it.name == nombre } ?: Perfil.Empleada
-
 fun NavGraphBuilder.grafoComunes(nav: NavController) {
-    composable(Rutas.Login) {
+    composable(ScreenNames.Login.route) {
         LoginScreen(
-            // La cuenta decide el perfil: aquí se simula por la clave escrita.
             onIniciarSesion = { clave ->
                 val c = clave.lowercase()
                 val perfil = when {
@@ -37,30 +23,39 @@ fun NavGraphBuilder.grafoComunes(nav: NavController) {
                     "dir" in c -> Perfil.Direccion
                     else -> Perfil.Empleada
                 }
-                nav.navigate("${Rutas.CambioPassword}?$ArgPerfil=${perfil.name}")
+                nav.navigate(ScreenNames.CambioPassword.createRoute(perfil))
             },
-            onVerIndice = { nav.navigate(Rutas.Indice) },
+            onVerIndice = { nav.navigate(ScreenNames.Indice.route) },
         )
     }
-    composable("${Rutas.CambioPassword}?$ArgPerfil={$ArgPerfil}", arguments = ArgumentosPerfil) { entrada ->
-        val perfil = perfilDe(entrada.arguments?.getString(ArgPerfil))
-        CambioPasswordScreen(onGuardar = { nav.navigate("${Rutas.Permisos}?$ArgPerfil=${perfil.name}") })
+    composable(
+        route = ScreenNames.CambioPassword.route,
+        arguments = listOf(navArgument("perfil") { type = NavType.StringType })
+    ) { backStackEntry ->
+        val perfil = Perfil.valueOf(backStackEntry.arguments?.getString("perfil") ?: "Empleada")
+        CambioPasswordScreen(onGuardar = { nav.navigate(ScreenNames.Permisos.createRoute(perfil)) })
     }
-    composable("${Rutas.Permisos}?$ArgPerfil={$ArgPerfil}", arguments = ArgumentosPerfil) { entrada ->
-        val perfil = perfilDe(entrada.arguments?.getString(ArgPerfil))
+    composable(
+        route = ScreenNames.Permisos.route,
+        arguments = listOf(navArgument("perfil") { type = NavType.StringType })
+    ) { backStackEntry ->
+        val perfil = Perfil.valueOf(backStackEntry.arguments?.getString("perfil") ?: "Empleada")
         PermisosScreen(onContinuar = { nav.entrarAPerfil(perfil) })
     }
-    composable("${Rutas.Exportar}?$ArgPerfil={$ArgPerfil}", arguments = ArgumentosPerfil) { entrada ->
-        val perfil = perfilDe(entrada.arguments?.getString(ArgPerfil))
+    composable(
+        route = ScreenNames.Exportar.route,
+        arguments = listOf(navArgument("perfil") { type = NavType.StringType })
+    ) { backStackEntry ->
+        val perfil = backStackEntry.arguments?.getString("perfil")
         ExportarScreen(
             onAtras = { nav.popBackStack() },
             onDescargar = { nav.popBackStack() },
-            direccion = perfil == Perfil.Direccion,
+            direccion = perfil == "Direccion",
         )
     }
-    composable(Rutas.SesionExpirada) { SesionExpiradaScreen(onIniciarSesion = { nav.cerrarSesion() }) }
-    composable(Rutas.AvisoSinConexion) { AvisoSinConexionScreen() }
-    composable(Rutas.Indice) {
+    composable(ScreenNames.SesionExpirada.route) { SesionExpiradaScreen(onIniciarSesion = { nav.cerrarSesion() }) }
+    composable(ScreenNames.AvisoSinConexion.route) { AvisoSinConexionScreen() }
+    composable(ScreenNames.Indice.route) {
         IndiceScreen(onAtras = { nav.popBackStack() }, onAbrir = { nav.navigate(it) })
     }
 }

@@ -31,10 +31,10 @@ fun AppNavHost() {
     val ruta = entrada?.destination?.route
     val perfil = Pestanas.perfilDe(ruta)
     // «Checar · dentro» es la única pestaña con fondo petróleo: el desvanecido de la barra lo acompaña.
-    val fondoPantalla = if (ruta == Rutas.EmpChecarDentro) Petroleo700 else FondoCrema
+    val fondoPantalla = if (ruta == ScreenNames.EmpChecarDentro.route) Petroleo700 else FondoCrema
 
     Box(Modifier.fillMaxSize().background(FondoCrema)) {
-        NavHost(navController = nav, startDestination = Rutas.Login) {
+        NavHost(navController = nav, startDestination = ScreenNames.Login.route) {
             grafoComunes(nav)
             grafoEmpleada(nav)
             grafoResponsable(nav)
@@ -59,7 +59,7 @@ fun AppNavHost() {
                     .navigationBarsPadding()
                     .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                     // Bajo el velo del menú ⋮ la barra se ve atenuada.
-                    .alpha(if (ruta == Rutas.ResMenu) 0.55f else 1f),
+                    .alpha(if (ruta == ScreenNames.ResMenu.route) 0.55f else 1f),
             )
         }
     }
@@ -84,7 +84,7 @@ fun NavController.entrarAPerfil(perfil: Perfil) {
 
 /** Cierra la sesión y vuelve al login. */
 fun NavController.cerrarSesion() {
-    navigate(Rutas.Login) {
+    navigate(ScreenNames.Login.route) {
         popUpTo(graph.findStartDestination().id) { inclusive = true }
         launchSingleTop = true
     }

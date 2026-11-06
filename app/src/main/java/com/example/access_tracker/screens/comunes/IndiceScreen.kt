@@ -21,7 +21,6 @@ import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaTenue
 import com.example.access_tracker.ui.theme.Texto
 
-/** Vista de demostración: salta a cualquiera de las 49 pantallas del diseño. */
 @Composable
 fun IndiceScreen(onAtras: () -> Unit, onAbrir: (String) -> Unit) {
     PantallaBase(separacion = 12.dp) {

@@ -1,6 +1,5 @@
 package com.example.access_tracker.navigation
 
-import android.net.Uri
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
@@ -25,88 +24,85 @@ import com.example.access_tracker.screens.responsable.ResPersonalScreen
 
 fun NavGraphBuilder.grafoResponsable(nav: NavController) {
     val atras = { nav.popBackStack() }
-    val irAAvisos = { nav.navigate(Rutas.ResAvisos) }
+    val irAAvisos = { nav.navigate(ScreenNames.ResAvisos.route) }
 
     // Pestañas principales
-    composable(Rutas.ResInicio) {
+    composable(ScreenNames.ResInicio.route) {
         ResInicioScreen(
             onAvisos = irAAvisos,
-            onMenu = { nav.navigate(Rutas.ResMenu) },
-            onAtender = { nav.irAPestana(Perfil.Responsable, Rutas.ResAsistencia) },
-            onVerAsistencia = { nav.irAPestana(Perfil.Responsable, Rutas.ResAsistencia) },
+            onMenu = { nav.navigate(ScreenNames.ResMenu.route) },
+            onAtender = { nav.irAPestana(Perfil.Responsable, ScreenNames.ResAsistencia.route) },
+            onVerAsistencia = { nav.irAPestana(Perfil.Responsable, ScreenNames.ResAsistencia.route) },
         )
     }
-    composable(Rutas.ResAsistencia) {
+    composable(ScreenNames.ResAsistencia.route) {
         ResAsistenciaScreen(
             onAvisos = irAAvisos,
-            onTurnoCompleto = { nav.navigate(Rutas.ResRegistroTurno) },
+            onTurnoCompleto = { nav.navigate(ScreenNames.ResRegistroTurno.route) },
             onAusencia = { persona ->
-                nav.navigate(if (persona == null) Rutas.ResAusencia else "${Rutas.ResAusencia}?persona=${Uri.encode(persona)}")
+                nav.navigate(ScreenNames.ResAusencia.createRoute(persona ?: "Paola Reyes"))
             },
         )
     }
-    composable(Rutas.ResHorarios) {
-        ResHorariosScreen(onAvisos = irAAvisos, onPersona = { nav.navigate(Rutas.ResHorarioPersona) })
+    composable(ScreenNames.ResHorarios.route) {
+        ResHorariosScreen(onAvisos = irAAvisos, onPersona = { nav.navigate(ScreenNames.ResHorarioPersona.route) })
     }
-    composable(Rutas.ResHorarioPersona) { ResHorarioPersonaScreen(onAtras = { atras() }, onGuardar = { atras() }) }
-    composable(Rutas.ResPersonal) {
+    composable(ScreenNames.ResHorarioPersona.route) { ResHorarioPersonaScreen(onAtras = { atras() }, onGuardar = { atras() }) }
+    composable(ScreenNames.ResPersonal.route) {
         ResPersonalScreen(
             onAvisos = irAAvisos,
-            onPersona = { nav.navigate(Rutas.ResPerfilPersona) },
-            onAlta = { nav.navigate(Rutas.ResAltaPersonal) },
+            onPersona = { nav.navigate(ScreenNames.ResPerfilPersona.route) },
+            onAlta = { nav.navigate(ScreenNames.ResAltaPersonal.route) },
         )
     }
 
     // Registro de asistencia
-    composable(Rutas.ResRegistroTurno) { RegistroTurnoScreen(onCerrar = { atras() }, onRegistrar = { atras() }) }
+    composable(ScreenNames.ResRegistroTurno.route) { RegistroTurnoScreen(onCerrar = { atras() }, onRegistrar = { atras() }) }
     composable(
-        "${Rutas.ResAusencia}?persona={persona}",
-        arguments = listOf(navArgument("persona") { type = NavType.StringType; defaultValue = "Paola Reyes" }),
-    ) { entrada ->
+        route = ScreenNames.ResAusencia.route,
+        arguments = listOf(navArgument("persona") { type = NavType.StringType })
+    ) { backStackEntry ->
         RegistrarAusenciaScreen(
             onCerrar = { atras() },
-            // Vuelve a Asistencia sin restaurar el estado guardado de la pestaña, que incluiría este formulario.
-            onGuardar = {
-                if (!nav.popBackStack(Rutas.ResAsistencia, inclusive = false)) nav.irAPestana(Perfil.Responsable, Rutas.ResAsistencia)
-            },
-            persona = entrada.arguments?.getString("persona") ?: "Paola Reyes",
+            onGuardar = { atras() },
+            persona = backStackEntry.arguments?.getString("persona") ?: "Paola Reyes",
         )
     }
 
     // Personal
-    composable(Rutas.ResAltaPersonal) { AltaPersonalScreen(onCerrar = { atras() }, onGuardar = { atras() }) }
-    composable(Rutas.ResPerfilPersona) {
+    composable(ScreenNames.ResAltaPersonal.route) { AltaPersonalScreen(onCerrar = { atras() }, onGuardar = { atras() }) }
+    composable(ScreenNames.ResPerfilPersona.route) {
         PerfilPersonaScreen(
             onAtras = { atras() },
-            onEditar = { nav.navigate(Rutas.ResAltaPersonal) },
-            onBaja = { nav.navigate(Rutas.ResDarBaja) },
-            onHorario = { nav.navigate(Rutas.ResHorarioPersona) },
+            onEditar = { nav.navigate(ScreenNames.ResAltaPersonal.route) },
+            onBaja = { nav.navigate(ScreenNames.ResDarBaja.route) },
+            onHorario = { nav.navigate(ScreenNames.ResHorarioPersona.route) },
         )
     }
-    composable(Rutas.ResDarBaja) { DarDeBajaScreen(onCerrar = { atras() }, onConfirmar = { atras() }) }
+    composable(ScreenNames.ResDarBaja.route) { DarDeBajaScreen(onCerrar = { atras() }, onConfirmar = { atras() }) }
 
     // Avisos internos
-    composable(Rutas.ResAvisos) {
+    composable(ScreenNames.ResAvisos.route) {
         ResAvisosScreen(
             onAtras = { atras() },
-            onNuevo = { nav.navigate(Rutas.ResNuevoAviso) },
-            onEstadoLectura = { nav.navigate(Rutas.ResEstadoLectura) },
+            onNuevo = { nav.navigate(ScreenNames.ResNuevoAviso.route) },
+            onEstadoLectura = { nav.navigate(ScreenNames.ResEstadoLectura.route) },
         )
     }
-    composable(Rutas.ResNuevoAviso) { ResNuevoAvisoScreen(onCerrar = { atras() }, onEnviar = { atras() }) }
-    composable(Rutas.ResEstadoLectura) { ResEstadoLecturaScreen(onAtras = { atras() }, onRecordatorio = { atras() }) }
+    composable(ScreenNames.ResNuevoAviso.route) { ResNuevoAvisoScreen(onCerrar = { atras() }, onEnviar = { atras() }) }
+    composable(ScreenNames.ResEstadoLectura.route) { ResEstadoLecturaScreen(onAtras = { atras() }, onRecordatorio = { atras() }) }
 
     // Menú, salas y mínimos, bitácora
-    composable(Rutas.ResMenu) {
+    composable(ScreenNames.ResMenu.route) {
         ResMenuScreen(
             onCerrar = { atras() },
-            onBitacora = { nav.navigate(Rutas.ResBitacora) },
-            onSalas = { nav.navigate(Rutas.ResAjustesSalas) },
-            onExportar = { nav.navigate(rutaExportar(Perfil.Responsable)) },
-            onCuenta = { nav.navigate(rutaCambioPassword(Perfil.Responsable)) },
+            onBitacora = { nav.navigate(ScreenNames.ResBitacora.route) },
+            onSalas = { nav.navigate(ScreenNames.ResAjustesSalas.route) },
+            onExportar = { nav.navigate(ScreenNames.Exportar.createRoute(Perfil.Responsable)) },
+            onCuenta = { nav.navigate(ScreenNames.CambioPassword.createRoute(Perfil.Responsable)) },
             onCerrarSesion = { nav.cerrarSesion() },
         )
     }
-    composable(Rutas.ResAjustesSalas) { ResAjustesSalasScreen(onAtras = { atras() }, onGuardar = { atras() }) }
-    composable(Rutas.ResBitacora) { ResBitacoraScreen(onAtras = { atras() }) }
+    composable(ScreenNames.ResAjustesSalas.route) { ResAjustesSalasScreen(onAtras = { atras() }, onGuardar = { atras() }) }
+    composable(ScreenNames.ResBitacora.route) { ResBitacoraScreen(onAtras = { atras() }) }
 }
