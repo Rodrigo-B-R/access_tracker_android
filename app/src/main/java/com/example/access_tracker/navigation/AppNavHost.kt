@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -98,7 +97,7 @@ fun AppNavHost() {
                 arguments = listOf(navArgument("perfil") { type = NavType.StringType })
             ) { backStackEntry ->
                 val perfil = Perfil.valueOf(backStackEntry.arguments?.getString("perfil") ?: "Empleada")
-                PermisosScreen(onContinuar = { nav.entrarAPerfil(perfil) })
+                PermisosScreen(onContinuar = { entrarAPerfil(nav, perfil) })
             }
             composable(
                 route = ScreenNames.Exportar.route,
@@ -112,7 +111,7 @@ fun AppNavHost() {
                 )
             }
             composable(ScreenNames.SesionExpirada.route) {
-                SesionExpiradaScreen(onIniciarSesion = { nav.cerrarSesion() })
+                SesionExpiradaScreen(onIniciarSesion = { cerrarSesion(nav) })
             }
             composable(ScreenNames.AvisoSinConexion.route) {
                 AvisoSinConexionScreen()
@@ -127,7 +126,7 @@ fun AppNavHost() {
                     onAvisos = { nav.navigate(ScreenNames.EmpAvisos.route) },
                     onRegistrarEntrada = { nav.navigate(ScreenNames.EmpChecarDentro.route) },
                     onCambiarPassword = { nav.navigate(ScreenNames.CambioPassword.createRoute(Perfil.Empleada)) },
-                    onCerrarSesion = { nav.cerrarSesion() }
+                    onCerrarSesion = { cerrarSesion(nav) }
                 )
             }
             composable(ScreenNames.EmpChecarDentro.route) {
@@ -135,7 +134,7 @@ fun AppNavHost() {
                     onAvisos = { nav.navigate(ScreenNames.EmpAvisos.route) },
                     onRegistrarSalida = { nav.popBackStack() },
                     onCambiarPassword = { nav.navigate(ScreenNames.CambioPassword.createRoute(Perfil.Empleada)) },
-                    onCerrarSesion = { nav.cerrarSesion() }
+                    onCerrarSesion = { cerrarSesion(nav) }
                 )
             }
             composable(ScreenNames.EmpChecarSinInternet.route) {
@@ -143,7 +142,7 @@ fun AppNavHost() {
                     onAvisos = { nav.navigate(ScreenNames.EmpAvisos.route) },
                     onRegistrarSalida = { nav.popBackStack() },
                     onCambiarPassword = { nav.navigate(ScreenNames.CambioPassword.createRoute(Perfil.Empleada)) },
-                    onCerrarSesion = { nav.cerrarSesion() }
+                    onCerrarSesion = { cerrarSesion(nav) }
                 )
             }
             composable(ScreenNames.EmpAsistencias.route) {
@@ -167,8 +166,8 @@ fun AppNavHost() {
                 ResInicioScreen(
                     onAvisos = { nav.navigate(ScreenNames.ResAvisos.route) },
                     onMenu = { nav.navigate(ScreenNames.ResMenu.route) },
-                    onAtender = { nav.irAPestana(Perfil.Responsable, ScreenNames.ResAsistencia.route) },
-                    onVerAsistencia = { nav.irAPestana(Perfil.Responsable, ScreenNames.ResAsistencia.route) }
+                    onAtender = { irAPestana(nav, Perfil.Responsable, ScreenNames.ResAsistencia.route) },
+                    onVerAsistencia = { irAPestana(nav, Perfil.Responsable, ScreenNames.ResAsistencia.route) }
                 )
             }
             composable(ScreenNames.ResAsistencia.route) {
@@ -243,7 +242,7 @@ fun AppNavHost() {
                     onSalas = { nav.navigate(ScreenNames.ResAjustesSalas.route) },
                     onExportar = { nav.navigate(ScreenNames.Exportar.createRoute(Perfil.Responsable)) },
                     onCuenta = { nav.navigate(ScreenNames.CambioPassword.createRoute(Perfil.Responsable)) },
-                    onCerrarSesion = { nav.cerrarSesion() }
+                    onCerrarSesion = { cerrarSesion(nav) }
                 )
             }
             composable(ScreenNames.ResAjustesSalas.route) {
@@ -257,20 +256,20 @@ fun AppNavHost() {
             composable(ScreenNames.DirResumen.route) {
                 DirResumenScreen(
                     onCambiarPassword = { nav.navigate(ScreenNames.CambioPassword.createRoute(Perfil.Direccion)) },
-                    onCerrarSesion = { nav.cerrarSesion() }
+                    onCerrarSesion = { cerrarSesion(nav) }
                 )
             }
             composable(ScreenNames.DirEstadisticas.route) {
                 DirEstadisticasScreen(
                     onExportar = { nav.navigate(ScreenNames.Exportar.createRoute(Perfil.Direccion)) },
                     onCambiarPassword = { nav.navigate(ScreenNames.CambioPassword.createRoute(Perfil.Direccion)) },
-                    onCerrarSesion = { nav.cerrarSesion() }
+                    onCerrarSesion = { cerrarSesion(nav) }
                 )
             }
             composable(ScreenNames.DirBitacora.route) {
                 DirBitacoraScreen(
                     onCambiarPassword = { nav.navigate(ScreenNames.CambioPassword.createRoute(Perfil.Direccion)) },
-                    onCerrarSesion = { nav.cerrarSesion() }
+                    onCerrarSesion = { cerrarSesion(nav) }
                 )
             }
         }
@@ -287,7 +286,7 @@ fun AppNavHost() {
             BarraNavegacion(
                 pestanas = Pestanas.de(perfil),
                 activa = Pestanas.activaDe(ruta),
-                onSeleccion = { nav.irAPestana(perfil, it.ruta) },
+                onSeleccion = { irAPestana(nav, perfil, it.ruta) },
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .navigationBarsPadding()
@@ -299,27 +298,21 @@ fun AppNavHost() {
     }
 }
 
-/** Cambia de pestaña conservando el estado de cada una. */
-fun NavController.irAPestana(perfil: Perfil, ruta: String) {
-    navigate(ruta) {
-        popUpTo(Pestanas.inicio(perfil)) { saveState = true }
-        launchSingleTop = true
-        restoreState = true
-    }
-}
-
-/** Entra a un perfil y limpia el login de la pila. */
-fun NavController.entrarAPerfil(perfil: Perfil) {
-    navigate(Pestanas.inicio(perfil)) {
-        popUpTo(graph.findStartDestination().id) { inclusive = true }
+fun irAPestana(nav: NavController, perfil: Perfil, ruta: String) {
+    nav.navigate(ruta) {
+        popUpTo(Pestanas.inicio(perfil))
         launchSingleTop = true
     }
 }
 
-/** Cierra la sesión y vuelve al login. */
-fun NavController.cerrarSesion() {
-    navigate(ScreenNames.Login.route) {
-        popUpTo(graph.findStartDestination().id) { inclusive = true }
-        launchSingleTop = true
+fun entrarAPerfil(nav: NavController, perfil: Perfil) {
+    nav.navigate(Pestanas.inicio(perfil)) {
+        popUpTo(nav.graph.id) { inclusive = true }
+    }
+}
+
+fun cerrarSesion(nav: NavController) {
+    nav.navigate(ScreenNames.Login.route) {
+        popUpTo(nav.graph.id) { inclusive = true }
     }
 }
