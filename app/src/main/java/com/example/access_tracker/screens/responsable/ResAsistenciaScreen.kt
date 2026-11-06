@@ -46,7 +46,6 @@ import com.example.access_tracker.ui.theme.Verde100
 import com.example.access_tracker.ui.theme.Verde600
 import com.example.access_tracker.ui.theme.Texto
 
-/** Asistencia del día: quién llegó, quién no, y acceso al registro por turno completo. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ResAsistenciaScreen(

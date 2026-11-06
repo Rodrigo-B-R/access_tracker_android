@@ -45,7 +45,6 @@ import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde100
 
-/** Bitácora de la estancia: quién hizo qué y cuándo. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ResBitacoraScreen(onAtras: () -> Unit) {

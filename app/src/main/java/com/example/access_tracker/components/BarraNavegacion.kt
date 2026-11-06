@@ -34,7 +34,6 @@ data class Pestana(
     val contador: Int? = null,
 )
 
-/** Barra flotante oscura; la pestaña activa se expande con etiqueta junto al icono. */
 @Composable
 fun BarraNavegacion(
     pestanas: List<Pestana>,

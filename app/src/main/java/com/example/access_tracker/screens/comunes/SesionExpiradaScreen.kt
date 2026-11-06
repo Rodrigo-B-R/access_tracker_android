@@ -40,7 +40,6 @@ import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 
-/** Modal sobre cualquier pantalla; aquí se muestra sobre el inicio de la Empleada. */
 @Composable
 fun SesionExpiradaScreen(onIniciarSesion: () -> Unit) {
     Box(Modifier.fillMaxSize()) {

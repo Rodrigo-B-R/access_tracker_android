@@ -43,7 +43,6 @@ import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde100
 
-/** Pestaña Asistencias: la empleada solo ve lo suyo. */
 @Composable
 fun AsistenciasScreen(barra: @Composable () -> Unit = {}) {
     var periodo by remember { mutableIntStateOf(0) }

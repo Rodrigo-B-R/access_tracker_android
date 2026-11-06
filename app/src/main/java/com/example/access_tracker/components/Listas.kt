@@ -31,7 +31,6 @@ import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.TintaTenue
 import com.example.access_tracker.ui.theme.Texto
 
-/** Círculo con iniciales. */
 @Composable
 fun Avatar(
     iniciales: String,
@@ -45,7 +44,6 @@ fun Avatar(
     }
 }
 
-/** Fila de persona: avatar, nombre, detalle y un elemento final (chip, flecha...). */
 @Composable
 fun FilaPersona(
     iniciales: String,
@@ -78,7 +76,6 @@ fun FilaPersona(
     }
 }
 
-/** Casilla de selección: marcada (petróleo), vacía o ya registrada (arena, gris). */
 @Composable
 fun Casilla(marcada: Boolean, modifier: Modifier = Modifier, bloqueada: Boolean = false, onClick: (() -> Unit)? = null) {
     Box(
@@ -100,7 +97,6 @@ fun Flecha(modifier: Modifier = Modifier, tint: Color = TintaSuave) {
     Icono(Ico.Chevron, tint = tint, tamano = 20.dp, modifier = modifier)
 }
 
-/** Botón redondo con icono (más opciones, atrás, siguiente...). */
 @Composable
 fun BotonCircular(
     icono: Ico,
@@ -128,7 +124,6 @@ fun BotonFlotanteIcono(icono: Ico, color: Color, onClick: () -> Unit, modifier: 
     }
 }
 
-/** Caja de búsqueda (solo diseño). */
 @Composable
 fun BarraBusqueda(texto: String, modifier: Modifier = Modifier) {
     Row(
@@ -141,7 +136,6 @@ fun BarraBusqueda(texto: String, modifier: Modifier = Modifier) {
     }
 }
 
-/** Filtro tipo píldora («Todos 3», «Solicitudes 2»). */
 @Composable
 fun FiltroPill(texto: String, activo: Boolean, onClick: () -> Unit = {}, modifier: Modifier = Modifier) {
     Box(
@@ -153,7 +147,6 @@ fun FiltroPill(texto: String, activo: Boolean, onClick: () -> Unit = {}, modifie
     ) { Text(texto, style = Texto.LabelM, color = if (activo) FondoCrema else TintaBase) }
 }
 
-/** Etiqueta de sección con margen para listas agrupadas. */
 @Composable
 fun EncabezadoSeccion(texto: String, modifier: Modifier = Modifier) {
     Eyebrow(texto, modifier.fillMaxWidth().padding(start = 4.dp, end = 4.dp, top = 8.dp, bottom = 2.dp))

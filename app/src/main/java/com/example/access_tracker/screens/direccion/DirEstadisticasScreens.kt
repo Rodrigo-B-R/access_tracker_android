@@ -66,7 +66,6 @@ import com.example.access_tracker.ui.theme.TintaTenue
 import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde100
 
-/** Estadísticas de toda la fundación para el periodo elegido. Solo lectura. */
 @Composable
 fun DirEstadisticasScreen(onExportar: () -> Unit, onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}, barra: @Composable () -> Unit = {}) {
     var periodo by remember { mutableIntStateOf(0) }
@@ -160,7 +159,6 @@ private fun GrupoBarras(
     }
 }
 
-/** Bitácora de la fundación con selector por estancia. Solo lectura. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DirBitacoraScreen(onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}, barra: @Composable () -> Unit = {}) {

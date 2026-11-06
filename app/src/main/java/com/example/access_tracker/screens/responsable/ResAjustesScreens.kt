@@ -94,7 +94,6 @@ private fun OpcionMenu(icono: Ico, fondo: androidx.compose.ui.graphics.Color, ti
     }
 }
 
-/** Mínimo de personas por sala y turno. */
 @Composable
 fun ResAjustesSalasScreen(onAtras: () -> Unit, onGuardar: () -> Unit) {
     val salas = remember {

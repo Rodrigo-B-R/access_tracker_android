@@ -31,7 +31,6 @@ import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 
-/** Logo de Sonrisas de Cristal. Sobre fondo oscuro va en un círculo claro para que su texto negro se lea. */
 @Composable
 fun Logo(
     modifier: Modifier = Modifier,
@@ -47,7 +46,6 @@ fun Logo(
     )
 }
 
-/** Botón «N avisos» de la barra superior de la Empleada/o. */
 @Composable
 fun AvisosPill(
     cantidad: Int,
@@ -70,7 +68,6 @@ fun AvisosPill(
     }
 }
 
-/** Logo a la izquierda y avisos a la derecha. `oscuro` es la variante sobre fondo petróleo. */
 @Composable
 fun BarraSuperiorLogo(
     avisos: Int,
@@ -88,7 +85,6 @@ fun BarraSuperiorLogo(
     }
 }
 
-/** Encabezado de pantallas secundarias: botón circular (volver o cerrar) y título. */
 @Composable
 fun EncabezadoPantalla(
     titulo: String,
@@ -117,7 +113,6 @@ fun EncabezadoPantalla(
     }
 }
 
-/** «COMPONENTE» + título grande. */
 @Composable
 fun TituloConEyebrow(eyebrow: String, titulo: String, modifier: Modifier = Modifier) {
     Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -126,7 +121,6 @@ fun TituloConEyebrow(eyebrow: String, titulo: String, modifier: Modifier = Modif
     }
 }
 
-/** Título de pestaña con subtítulo suave debajo. */
 @Composable
 fun TituloPantalla(titulo: String, modifier: Modifier = Modifier, subtitulo: String? = null) {
     Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -135,7 +129,6 @@ fun TituloPantalla(titulo: String, modifier: Modifier = Modifier, subtitulo: Str
     }
 }
 
-/** Etiqueta de sección en mayúsculas pequeñas («Anteriores», «Turnos sin cubrir»). */
 @Composable
 fun Eyebrow(texto: String, modifier: Modifier = Modifier) {
     Text(texto.uppercase(), style = Texto.Eyebrow, color = TintaSuave, modifier = modifier)

@@ -32,7 +32,6 @@ import com.example.access_tracker.ui.theme.Texto
 private val Dias = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo")
 private val Opciones = listOf("Matutino" to Ico.Sun, "Vespertino" to Ico.Moon, "Descanso" to Ico.Coffee)
 
-/** Define qué días va una persona y en qué turno. 0 = matutino, 1 = vespertino, 2 = descanso. */
 @Composable
 fun ResHorarioPersonaScreen(onAtras: () -> Unit, onGuardar: () -> Unit) {
     val turnos = remember { mutableStateListOf(0, 0, 0, 0, 0, 2, 2) }

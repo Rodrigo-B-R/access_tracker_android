@@ -77,7 +77,6 @@ private val PersonasTurno = listOf(
     PersonaTurno("RM", "Rosa Medina", "Cocina", Mostaza100, TintaBase),
 )
 
-/** Registro de la entrada de todo un turno con una sola acción. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RegistroTurnoScreen(onCerrar: () -> Unit, onRegistrar: () -> Unit) {
@@ -120,7 +119,6 @@ fun RegistroTurnoScreen(onCerrar: () -> Unit, onRegistrar: () -> Unit) {
     }
 }
 
-/** Ausencia o incidencia de una persona (el retardo se calcula con la checada), con motivo en categoría general. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RegistrarAusenciaScreen(onCerrar: () -> Unit, onGuardar: () -> Unit, persona: String = "Paola Reyes") {
@@ -155,7 +153,6 @@ fun RegistrarAusenciaScreen(onCerrar: () -> Unit, onGuardar: () -> Unit, persona
         Nota("Solo la Responsable ve los motivos. No captures diagnósticos ni datos de niñas y niños.", icono = Ico.Shield)
     }
 }
-
 
 @Preview(showBackground = true, heightDp = 915, widthDp = 412)
 @Composable

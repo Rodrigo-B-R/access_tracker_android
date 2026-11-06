@@ -28,7 +28,6 @@ import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 
-/** Lista blanca agrupada: las filas se separan con una línea arena. */
 @Composable
 fun GrupoFilas(modifier: Modifier = Modifier, relleno: androidx.compose.ui.unit.Dp = 16.dp, contenido: @Composable () -> Unit) {
     Column(
@@ -41,7 +40,6 @@ fun Divisor(modifier: Modifier = Modifier) {
     Box(modifier.fillMaxWidth().height(1.dp).background(FondoArenaFuerte))
 }
 
-/** Fila de ajustes con icono en cuadro de color, título, descripción y flecha. */
 @Composable
 fun FilaAjuste(
     icono: Ico,
@@ -65,7 +63,6 @@ fun FilaAjuste(
     }
 }
 
-/** Fila con icono, título y un interruptor (permisos). */
 @Composable
 fun FilaInterruptor(
     icono: Ico,
@@ -90,7 +87,6 @@ fun FilaInterruptor(
     }
 }
 
-/** Ajuste numérico con – y + (mínimo de personas por turno). */
 @Composable
 fun ContadorMinimo(icono: Ico, valor: Int, onCambio: (Int) -> Unit, modifier: Modifier = Modifier) {
     Row(
@@ -115,7 +111,6 @@ fun ContadorMinimo(icono: Ico, valor: Int, onCambio: (Int) -> Unit, modifier: Mo
     }
 }
 
-/** Evento de la bitácora: icono de color, etiqueta de tipo, descripción y quién lo hizo. */
 @Composable
 fun EventoBitacora(
     icono: Ico,

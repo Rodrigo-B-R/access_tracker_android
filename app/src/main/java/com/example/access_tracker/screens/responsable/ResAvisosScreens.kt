@@ -55,7 +55,6 @@ import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde100
 import com.example.access_tracker.ui.theme.Verde600
 
-/** Avisos internos (extra): la Responsable envía y recibe de Dirección. */
 @Composable
 fun ResAvisosScreen(onAtras: () -> Unit, onNuevo: () -> Unit, onEstadoLectura: () -> Unit) {
     var filtro by remember { mutableIntStateOf(0) }
@@ -93,7 +92,6 @@ fun ResAvisosScreen(onAtras: () -> Unit, onNuevo: () -> Unit, onEstadoLectura: (
     }
 }
 
-/** Redacta un aviso: tipo, destinatarios y confirmación de lectura. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ResNuevoAvisoScreen(onCerrar: () -> Unit, onEnviar: () -> Unit) {
@@ -139,7 +137,6 @@ fun ResNuevoAvisoScreen(onCerrar: () -> Unit, onEnviar: () -> Unit) {
     }
 }
 
-/** Quién ya confirmó y quién falta, con recordatorio a los pendientes. */
 @Composable
 fun ResEstadoLecturaScreen(onAtras: () -> Unit, onRecordatorio: () -> Unit) {
     PantallaBase(

@@ -39,7 +39,6 @@ import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 
-/** Descarga un CSV con asistencias, incidencias, ausencias y movimientos. La usan Responsable (su estancia) y Dirección (elige estancia). */
 @Composable
 fun ExportarScreen(onAtras: () -> Unit, onDescargar: () -> Unit, direccion: Boolean = false) {
     var periodo by remember { mutableIntStateOf(1) }

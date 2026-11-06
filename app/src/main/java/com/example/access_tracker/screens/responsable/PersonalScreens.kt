@@ -60,7 +60,6 @@ import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde100
 
-/** Alta (o edición) de una persona: se crea la cuenta con contraseña temporal. */
 @Composable
 fun AltaPersonalScreen(onCerrar: () -> Unit, onGuardar: () -> Unit) {
     var nombre by remember { mutableStateOf("Marta Gil Soto") }
@@ -83,7 +82,6 @@ fun AltaPersonalScreen(onCerrar: () -> Unit, onGuardar: () -> Unit) {
     }
 }
 
-/** Ficha de una persona: datos, resumen del mes e historial. */
 @Composable
 fun PerfilPersonaScreen(onAtras: () -> Unit, onEditar: () -> Unit, onBaja: () -> Unit, onHorario: () -> Unit) {
     PantallaBase(
@@ -151,7 +149,6 @@ private fun EventoHistorial(titulo: String, fecha: String) {
     }
 }
 
-/** Baja o traslado: el historial se conserva y se anonimiza al año. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DarDeBajaScreen(onCerrar: () -> Unit, onConfirmar: () -> Unit) {

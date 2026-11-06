@@ -46,7 +46,6 @@ import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.TintaTenue
 import com.example.access_tracker.ui.theme.Texto
 
-/** Selector segmentado («Esta semana · Semana pasada · Mes»). */
 @Composable
 fun Segmentado(opciones: List<String>, seleccion: Int, onSeleccion: (Int) -> Unit, modifier: Modifier = Modifier) {
     Row(
@@ -73,7 +72,6 @@ fun Segmentado(opciones: List<String>, seleccion: Int, onSeleccion: (Int) -> Uni
     }
 }
 
-/** Filtro en píldora con menú («Todas», «Todas las salas»...). */
 @Composable
 fun FiltroDesplegable(inicial: String, opciones: List<String>, radio: androidx.compose.ui.unit.Dp = 26.dp, modifier: Modifier = Modifier) {
     var abierto by remember { mutableStateOf(false) }
@@ -98,7 +96,6 @@ fun FiltroDesplegable(inicial: String, opciones: List<String>, radio: androidx.c
     }
 }
 
-/** Opción tipo botón (tipo de solicitud, Entrada/Salida...). Con [icono] muestra ese icono en lugar de la palomita. */
 @Composable
 fun ChipOpcion(
     texto: String,
@@ -122,11 +119,9 @@ fun ChipOpcion(
         .clickable(enabled = !bloqueado, onClick = onClick)
         .padding(horizontal = 10.dp, vertical = 11.dp)
     Row(base, horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally), verticalAlignment = Alignment.CenterVertically) {
-        // Con icono propio no hay palomita: la selección solo cambia el color.
         if (icono != null) Icono(icono, tint = if (seleccionado) Mostaza500 else TintaSuave, tamano = 18.dp)
         else if (seleccionado) Icono(Ico.Check, tint = Mostaza500, tamano = 14.dp)
         if (bloqueado) Icono(Ico.Lock, tint = TintaTenue, tamano = 14.dp)
-        // Una sola línea: la palomita nunca debe empujar el texto a un salto de línea.
         Text(
             texto,
             style = Texto.LabelM,
@@ -137,7 +132,6 @@ fun ChipOpcion(
     }
 }
 
-/** Cifra grande con etiqueta pequeña («4 · días trabajados»). */
 @Composable
 fun TarjetaCifra(valor: String, etiqueta: String, fondo: Color, modifier: Modifier = Modifier) {
     Column(modifier.fillMaxHeight().clip(RoundedCornerShape(20.dp)).background(fondo).padding(horizontal = 14.dp, vertical = 12.dp)) {
@@ -146,7 +140,6 @@ fun TarjetaCifra(valor: String, etiqueta: String, fondo: Color, modifier: Modifi
     }
 }
 
-/** Píldora de estado con icono (zona válida, sincronizado...). */
 @Composable
 fun PildoraEstado(texto: String, icono: Ico, fondo: Color, tinta: Color, modifier: Modifier = Modifier, tintaIcono: Color = tinta) {
     Row(
@@ -159,7 +152,6 @@ fun PildoraEstado(texto: String, icono: Ico, fondo: Color, tinta: Color, modifie
     }
 }
 
-/** Botón circular grande de Checar con halo. */
 @Composable
 fun BotonChecada(
     texto: String,
@@ -204,7 +196,6 @@ fun Interruptor(encendido: Boolean, onCambio: (Boolean) -> Unit) {
     )
 }
 
-/** Barra de progreso en segmentos (confirmaciones de lectura). */
 @Composable
 fun BarraSegmentos(total: Int, llenos: Int, colorLleno: Color, colorVacio: Color, modifier: Modifier = Modifier) {
     Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {

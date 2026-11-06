@@ -55,7 +55,6 @@ private val Cuadricula = listOf(
     "Rosa M." to "MMMMM··",
 )
 
-/** Horarios y turnos de la semana: cuadrícula persona × día. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ResHorariosScreen(onAvisos: () -> Unit, onPersona: () -> Unit, barra: @Composable () -> Unit = {}) {

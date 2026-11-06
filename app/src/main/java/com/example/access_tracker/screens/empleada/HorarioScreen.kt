@@ -38,7 +38,6 @@ import com.example.access_tracker.ui.theme.Texto
 
 private enum class EstadoDia { Normal, Hoy, Descanso }
 
-/** Pestaña Horario: semana con turnos y sala asignada. */
 @Composable
 fun HorarioScreen(barra: @Composable () -> Unit = {}) {
     PantallaBase(barra = barra, separacion = 16.dp) {

@@ -39,7 +39,6 @@ import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde600
 
-/** Pestaña Inicio de la Responsable: alertas, indicadores del día y cobertura por sala. */
 @Composable
 fun ResInicioScreen(
     onAvisos: () -> Unit,

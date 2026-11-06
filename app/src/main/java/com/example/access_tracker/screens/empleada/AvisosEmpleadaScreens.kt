@@ -40,7 +40,6 @@ import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 
-/** Campana de la barra superior. Los urgentes van arriba; los no leídos se marcan en coral. */
 @Composable
 fun AvisosBandejaScreen(onAtras: () -> Unit, onAbrirUrgente: () -> Unit) {
     PantallaBase(separacion = 16.dp) {
@@ -58,7 +57,6 @@ fun AvisosBandejaScreen(onAtras: () -> Unit, onAbrirUrgente: () -> Unit) {
     }
 }
 
-/** Llega como notificación push; al tocarla se abre el aviso. Sin internet, la confirmación se envía al reconectar. */
 @Composable
 fun AvisoDetalleScreen(onAtras: () -> Unit, onConfirmar: () -> Unit) {
     PantallaBase(

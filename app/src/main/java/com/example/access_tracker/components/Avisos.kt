@@ -29,7 +29,6 @@ import com.example.access_tracker.ui.theme.TintaTenue
 import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde600
 
-/** Aviso urgente: tarjeta roja que va arriba de la bandeja. */
 @Composable
 fun AvisoUrgente(
     titulo: String,
@@ -70,7 +69,6 @@ fun EtiquetaUrgente(modifier: Modifier = Modifier, relleno: Int = 10) {
     }
 }
 
-/** Botón blanco pequeño que se pone dentro de un aviso urgente. */
 @Composable
 fun AccionAviso(texto: String, icono: Ico, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     Row(
@@ -83,7 +81,6 @@ fun AccionAviso(texto: String, icono: Ico, modifier: Modifier = Modifier, onClic
     }
 }
 
-/** Aviso anterior en la bandeja. `sinLeer` lo resalta con borde coral sobre blanco. */
 @Composable
 fun AvisoItem(
     etiqueta: String,

@@ -25,7 +25,7 @@ sealed class ScreenNames(val route: String) {
     data object EmpAvisos : ScreenNames("emp_avisos")
     data object EmpAvisoDetalle : ScreenNames("emp_aviso_detalle")
 
-    // Responsable (la Asistente usa las mismas pantallas)
+    // Responsable y Asistente
     data object ResInicio : ScreenNames("res_inicio")
     data object ResAsistencia : ScreenNames("res_asistencia")
     data object ResHorarios : ScreenNames("res_horarios")

@@ -32,7 +32,6 @@ import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 
-/** Campana con contador, para el encabezado de la Asistente. */
 @Composable
 fun BotonCampana(contador: Int, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Box(modifier.size(48.dp)) {
@@ -57,10 +56,6 @@ fun BotonCampana(contador: Int, onClick: () -> Unit, modifier: Modifier = Modifi
     }
 }
 
-/**
- * Tarjeta de cobertura por sala: cuadritos llenos = personas presentes, punteados = faltantes.
- * Con `faltante` se marca en coral y ofrece avisar a la Responsable.
- */
 @Composable
 fun TarjetaSala(
     nombre: String,
@@ -114,7 +109,6 @@ fun CuadroPersona(presente: Boolean, color: Color, lado: Dp = 24.dp, radio: Dp =
     }
 }
 
-/** Versión compacta de la sala para la cuadrícula de 2 columnas del inicio de la Responsable. */
 @Composable
 fun SalaMini(
     nombre: String,
