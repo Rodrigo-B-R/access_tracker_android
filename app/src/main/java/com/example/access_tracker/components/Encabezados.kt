@@ -2,10 +2,8 @@ package com.example.access_tracker.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,17 +11,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -31,11 +26,9 @@ import androidx.compose.ui.unit.dp
 import com.example.access_tracker.R
 import com.example.access_tracker.ui.theme.FondoArena
 import com.example.access_tracker.ui.theme.FondoCrema
-import com.example.access_tracker.ui.theme.Petroleo100
 import com.example.access_tracker.ui.theme.Petroleo500
 import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
-import com.example.access_tracker.ui.theme.TintaTenue
 import com.example.access_tracker.ui.theme.Texto
 
 /** Logo de Sonrisas de Cristal. Sobre fondo oscuro va en un círculo claro para que su texto negro se lea. */
@@ -109,10 +102,13 @@ fun EncabezadoPantalla(
     accion: (@Composable () -> Unit)? = null,
 ) {
     Row(modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-        Box(
-            Modifier.size(48.dp).clip(CircleShape).background(fondoBoton).clickable(onClick = onAtras),
-            contentAlignment = Alignment.Center,
-        ) { Icono(if (cerrar) Ico.X else Ico.Back, tint = TintaBase) }
+        IconButton(
+            onClick = onAtras,
+            modifier = Modifier.size(48.dp),
+            colors = IconButtonDefaults.iconButtonColors(containerColor = fondoBoton)
+        ) {
+            Icono(if (cerrar) Ico.X else Ico.Back, tint = TintaBase)
+        }
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             if (eyebrow != null) Text(eyebrow.uppercase(), style = Texto.Eyebrow, color = TintaSuave)
             Text(titulo, style = if (grande) Texto.TitleL else Texto.TitleM, color = tinta)

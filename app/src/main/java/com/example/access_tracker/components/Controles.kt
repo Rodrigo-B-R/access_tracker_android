@@ -13,11 +13,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -187,21 +189,19 @@ fun BotonChecada(
     }
 }
 
-/** Interruptor de 52×32: petróleo con perilla mostaza cuando está encendido. */
 @Composable
-fun Interruptor(encendido: Boolean, onCambio: (Boolean) -> Unit, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .width(52.dp)
-            .height(32.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(if (encendido) Petroleo700 else FondoArena)
-            .clickable { onCambio(!encendido) }
-            .padding(4.dp),
-        contentAlignment = if (encendido) Alignment.CenterEnd else Alignment.CenterStart,
-    ) {
-        Box(Modifier.size(24.dp).clip(CircleShape).background(if (encendido) Mostaza500 else FondoBlanco))
-    }
+fun Interruptor(encendido: Boolean, onCambio: (Boolean) -> Unit) {
+    Switch(
+        checked = encendido,
+        onCheckedChange = onCambio,
+        colors = SwitchDefaults.colors(
+            checkedTrackColor = Petroleo700,
+            checkedThumbColor = Mostaza500,
+            uncheckedTrackColor = FondoArena,
+            uncheckedThumbColor = FondoBlanco,
+            uncheckedBorderColor = FondoArenaFuerte
+        )
+    )
 }
 
 /** Barra de progreso en segmentos (confirmaciones de lectura). */
@@ -214,21 +214,15 @@ fun BarraSegmentos(total: Int, llenos: Int, colorLleno: Color, colorVacio: Color
     }
 }
 
-/** Botón flotante con icono y texto («+ Nueva», «+ Reportar»). */
 @Composable
 fun BotonFlotante(texto: String, onClick: () -> Unit, modifier: Modifier = Modifier, icono: Ico = Ico.Plus) {
-    Row(
-        modifier = modifier
-            .height(60.dp)
-            .shadow(12.dp, RoundedCornerShape(30.dp), ambientColor = TintaBase, spotColor = TintaBase)
-            .clip(RoundedCornerShape(30.dp))
-            .background(Mostaza500)
-            .clickable(onClick = onClick)
-            .padding(start = 18.dp, end = 22.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Icono(icono, tint = TintaBase)
-        Text(texto, style = Texto.LabelL, color = TintaBase)
-    }
+    ExtendedFloatingActionButton(
+        onClick = onClick,
+        modifier = modifier,
+        shape = RoundedCornerShape(30.dp),
+        containerColor = Mostaza500,
+        contentColor = TintaBase,
+        icon = { Icono(icono, tint = TintaBase) },
+        text = { Text(texto, style = Texto.LabelL) }
+    )
 }

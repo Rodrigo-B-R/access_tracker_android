@@ -12,12 +12,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -115,18 +115,17 @@ fun BotonCircular(
     }
 }
 
-/** Botón flotante cuadrado redondeado, solo icono. */
 @Composable
 fun BotonFlotanteIcono(icono: Ico, color: Color, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .size(64.dp)
-            .shadow(12.dp, RoundedCornerShape(22.dp), ambientColor = TintaBase, spotColor = TintaBase)
-            .clip(RoundedCornerShape(22.dp))
-            .background(color)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center,
-    ) { Icono(icono, tint = TintaBase, tamano = 26.dp) }
+    FloatingActionButton(
+        onClick = onClick,
+        modifier = modifier.size(64.dp),
+        shape = RoundedCornerShape(22.dp),
+        containerColor = color,
+        contentColor = TintaBase
+    ) {
+        Icono(icono, tint = TintaBase, tamano = 26.dp)
+    }
 }
 
 /** Caja de búsqueda (solo diseño). */
