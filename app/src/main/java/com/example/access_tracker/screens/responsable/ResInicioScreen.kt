@@ -104,7 +104,7 @@ fun ResInicioScreen(
                 SalaMini("Preescolar", 5, 5, Modifier.weight(1f))
             }
         }
-        Tarjeta(radio = 24.dp, onClick = onAtender) {
+        Tarjeta(modifier = Modifier.clickable { onAtender() }, radio = 24.dp) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
                 IconoCuadro(Ico.Flag, fondo = Coral100, lado = 44.dp, radio = 14.dp, tamanoIcono = 24.dp)
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
