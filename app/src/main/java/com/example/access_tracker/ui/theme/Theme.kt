@@ -4,18 +4,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 
-// El diseño solo define tema claro y no usa color dinámico: la paleta es de la marca.
 private val EsquemaClaro = lightColorScheme(
     primary = Petroleo700,
     onPrimary = FondoCrema,
+    primaryContainer = Petroleo100,
+    onPrimaryContainer = Petroleo700,
     secondary = Mostaza500,
     onSecondary = TintaBase,
     tertiary = Coral500,
     onTertiary = TintaBase,
+    tertiaryContainer = Mostaza100,
+    onTertiaryContainer = TintaBase,
     background = FondoCrema,
     onBackground = TintaBase,
     surface = FondoCrema,
     onSurface = TintaBase,
+    surfaceContainer = FondoBlanco,
+    surfaceContainerHigh = FondoBlanco,
+    surfaceContainerHighest = FondoArena,
     surfaceVariant = FondoArena,
     onSurfaceVariant = TintaSuave,
     outline = TintaTenue,

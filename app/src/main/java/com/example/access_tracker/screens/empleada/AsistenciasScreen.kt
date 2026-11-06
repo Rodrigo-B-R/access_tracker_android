@@ -1,14 +1,12 @@
 package com.example.access_tracker.screens.empleada
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -23,8 +21,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.access_tracker.components.Chip
-import com.example.access_tracker.components.Ico
-import com.example.access_tracker.components.Icono
 import com.example.access_tracker.components.PantallaBase
 import com.example.access_tracker.components.Segmentado
 import com.example.access_tracker.components.Tarjeta
@@ -43,11 +39,10 @@ import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde100
 
-/** Pestaña Asistencias: la empleada solo ve lo suyo. */
 @Composable
-fun AsistenciasScreen() {
+fun AsistenciasScreen(barra: @Composable () -> Unit = {}) {
     var periodo by remember { mutableIntStateOf(0) }
-    PantallaBase(conBarra = true, separacion = 16.dp) {
+    PantallaBase(barra = barra, separacion = 16.dp) {
         TituloPantalla("Mis asistencias")
         Segmentado(listOf("Esta semana", "Semana pasada", "Mes"), periodo, { periodo = it })
         Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -73,9 +68,17 @@ private fun DiaAsistencia(
 ) {
     Tarjeta(radio = 24.dp, relleno = 14.dp, borde = if (actual) Petroleo700 else null) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Column(
-                    Modifier.height(56.dp).width(52.dp).clip(RoundedCornerShape(16.dp)).background(if (actual) Petroleo700 else FondoArena),
+                    Modifier
+                        .height(56.dp)
+                        .width(52.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(if (actual) Petroleo700 else FondoArena),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                 ) {

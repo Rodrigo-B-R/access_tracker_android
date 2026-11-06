@@ -22,6 +22,7 @@ import com.example.access_tracker.ui.theme.Mostaza100
 import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun PermisosScreen(onContinuar: () -> Unit) {
@@ -37,14 +38,24 @@ fun PermisosScreen(onContinuar: () -> Unit) {
             Text("Antes de empezar", style = Texto.TitleL, color = TintaBase)
             Text("La app solo pide lo que necesita para funcionar.", style = Texto.BodyL, color = TintaSuave)
         }
-        PermisoFila(Ico.Pin, Mostaza100, "Ubicación", "Para comprobar que checas en la estancia. Solo se usa al registrar tu entrada o salida.")
-        PermisoFila(Ico.Bell, Coral100, "Notificaciones", "Para avisarte de cambios de horario, reuniones y avisos urgentes.")
+        PermisoFila(
+            Ico.Pin,
+            Mostaza100,
+            "Ubicación",
+            "Para comprobar que checas en la estancia. Solo se usa al registrar tu entrada o salida."
+        )
+        PermisoFila(
+            Ico.Bell,
+            Coral100,
+            "Notificaciones",
+            "Para avisarte de cambios de horario, reuniones y avisos urgentes."
+        )
         Nota("Si no das el permiso de ubicación, tus registros se guardan con la marca «sin ubicación» para que tu Responsable los revise.")
     }
 }
 
 @Composable
-private fun PermisoFila(icono: Ico, fondo: androidx.compose.ui.graphics.Color, titulo: String, texto: String) {
+private fun PermisoFila(icono: Ico, fondo: Color, titulo: String, texto: String) {
     Tarjeta(radio = 24.dp) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
             IconoCuadro(icono, fondo = fondo, lado = 44.dp, radio = 14.dp, tamanoIcono = 24.dp)

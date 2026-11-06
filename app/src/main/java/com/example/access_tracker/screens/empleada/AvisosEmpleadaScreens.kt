@@ -40,7 +40,6 @@ import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 
-/** Campana de la barra superior. Los urgentes van arriba; los no leídos se marcan en coral. */
 @Composable
 fun AvisosBandejaScreen(onAtras: () -> Unit, onAbrirUrgente: () -> Unit) {
     PantallaBase(separacion = 16.dp) {
@@ -52,13 +51,34 @@ fun AvisosBandejaScreen(onAtras: () -> Unit, onAbrirUrgente: () -> Unit) {
             onClick = onAbrirUrgente,
         ) { AccionAviso("Pide confirmar lectura", Ico.Eye, onClick = onAbrirUrgente) }
         Eyebrow("Anteriores")
-        AvisoItem("Cambio de horario", TonoChip.Alerta, "Ayer", "Nuevo horario de comida desde el lunes", sinLeer = true) { SinLeer() }
-        AvisoItem("Reunión", TonoChip.Info, "Lun 5 oct", "Reunión de personal el viernes a las 9:00") { LecturaConfirmada() }
-        AvisoItem("Recordatorio", TonoChip.Neutro, "Vie 2 oct", "Entregar las bitácoras al cierre del turno") { LecturaConfirmada() }
+        AvisoItem(
+            "Cambio de horario",
+            TonoChip.Alerta,
+            "Ayer",
+            "Nuevo horario de comida desde el lunes",
+            sinLeer = true
+        ) {
+            SinLeer()
+        }
+        AvisoItem(
+            "Reunión",
+            TonoChip.Info,
+            "Lun 5 oct",
+            "Reunión de personal el viernes a las 9:00"
+        ) {
+            LecturaConfirmada()
+        }
+        AvisoItem(
+            "Recordatorio",
+            TonoChip.Neutro,
+            "Vie 2 oct",
+            "Entregar las bitácoras al cierre del turno"
+        ) {
+            LecturaConfirmada()
+        }
     }
 }
 
-/** Llega como notificación push; al tocarla se abre el aviso. Sin internet, la confirmación se envía al reconectar. */
 @Composable
 fun AvisoDetalleScreen(onAtras: () -> Unit, onConfirmar: () -> Unit) {
     PantallaBase(
@@ -74,13 +94,23 @@ fun AvisoDetalleScreen(onAtras: () -> Unit, onConfirmar: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 EncabezadoPantalla("Aviso", onAtras = onAtras, fondoBoton = FondoBlanco, tinta = FondoBlanco)
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     EtiquetaUrgente(relleno = 12)
                     Text("Hoy 10:12", style = Texto.BodyM, color = FondoBlanco)
                 }
                 Text("Cierre anticipado por lluvia", style = Texto.DisplayL, color = FondoBlanco)
-                Row(Modifier.padding(bottom = 8.dp), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Box(Modifier.size(32.dp).clip(CircleShape).background(FondoBlanco), contentAlignment = Alignment.Center) {
+                Row(
+                    Modifier.padding(bottom = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        Modifier.size(32.dp).clip(CircleShape).background(FondoBlanco),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Text("MG", style = Texto.LabelS, color = Rojo600)
                     }
                     Text("De: Responsable · Estancia Cumbres", style = Texto.LabelM, color = FondoBlanco)
@@ -94,7 +124,13 @@ fun AvisoDetalleScreen(onAtras: () -> Unit, onConfirmar: () -> Unit) {
                 "Avisen a las familias y revisen que no quede nadie en las salas antes de salir.",
             style = Texto.BodyL, color = TintaBase,
         )
-        Nota("La Responsable ve quién ya confirmó la lectura.", icono = Ico.Eye, fondo = FondoArena, tint = TintaSuave, colorTexto = TintaSuave)
+        Nota(
+            "La Responsable ve quién ya confirmó la lectura.",
+            icono = Ico.Eye,
+            fondo = FondoArena,
+            tint = TintaSuave,
+            colorTexto = TintaSuave
+        )
     }
 }
 

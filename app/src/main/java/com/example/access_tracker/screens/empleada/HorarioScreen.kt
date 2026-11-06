@@ -38,10 +38,9 @@ import com.example.access_tracker.ui.theme.Texto
 
 private enum class EstadoDia { Normal, Hoy, Descanso }
 
-/** Pestaña Horario: semana con turnos y sala asignada. */
 @Composable
-fun HorarioScreen() {
-    PantallaBase(conBarra = true, separacion = 16.dp) {
+fun HorarioScreen(barra: @Composable () -> Unit = {}) {
+    PantallaBase(barra = barra, separacion = 16.dp) {
         TituloPantalla("Mi horario")
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             DiaSemana("L", "5", EstadoDia.Normal, Modifier.weight(1f))
@@ -62,7 +61,11 @@ fun HorarioScreen() {
 @Composable
 private fun DiaSemana(letra: String, numero: String, estado: EstadoDia, modifier: Modifier = Modifier) {
     val fondo = when (estado) { EstadoDia.Hoy -> Mostaza500; EstadoDia.Descanso -> FondoArena; else -> FondoBlanco }
-    val punto = when (estado) { EstadoDia.Hoy -> TintaBase; EstadoDia.Descanso -> FondoArenaFuerte; else -> Petroleo700 }
+    val punto = when (estado) {
+        EstadoDia.Hoy -> TintaBase
+        EstadoDia.Descanso -> FondoArenaFuerte
+        else -> Petroleo700
+    }
     Column(
         modifier.clip(RoundedCornerShape(22.dp)).background(fondo).padding(vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,

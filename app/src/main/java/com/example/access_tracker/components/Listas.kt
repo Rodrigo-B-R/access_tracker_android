@@ -12,12 +12,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -31,7 +31,6 @@ import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.TintaTenue
 import com.example.access_tracker.ui.theme.Texto
 
-/** Círculo con iniciales. */
 @Composable
 fun Avatar(
     iniciales: String,
@@ -45,7 +44,6 @@ fun Avatar(
     }
 }
 
-/** Fila de persona: avatar, nombre, detalle y un elemento final (chip, flecha...). */
 @Composable
 fun FilaPersona(
     iniciales: String,
@@ -64,7 +62,7 @@ fun FilaPersona(
             .fillMaxWidth()
             .clip(RoundedCornerShape(20.dp))
             .background(fondo)
-            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+            .clickable(enabled = onClick != null) { onClick?.invoke() }
             .padding(start = 12.dp, end = 14.dp, top = 12.dp, bottom = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -78,16 +76,20 @@ fun FilaPersona(
     }
 }
 
-/** Casilla de selección: marcada (petróleo), vacía o ya registrada (arena, gris). */
 @Composable
-fun Casilla(marcada: Boolean, modifier: Modifier = Modifier, bloqueada: Boolean = false, onClick: (() -> Unit)? = null) {
+fun Casilla(
+    marcada: Boolean,
+    modifier: Modifier = Modifier,
+    bloqueada: Boolean = false,
+    onClick: (() -> Unit)? = null
+) {
     Box(
         modifier = modifier
             .size(28.dp)
             .clip(RoundedCornerShape(9.dp))
             .background(if (bloqueada) FondoArena else if (marcada) Petroleo700 else Color.Transparent)
-            .then(if (!marcada && !bloqueada) Modifier.border(2.dp, TintaTenue, RoundedCornerShape(9.dp)) else Modifier)
-            .then(if (onClick != null && !bloqueada) Modifier.clickable(onClick = onClick) else Modifier),
+            .border(2.dp, if (marcada || bloqueada) Color.Transparent else TintaTenue, RoundedCornerShape(9.dp))
+            .clickable(enabled = onClick != null && !bloqueada) { onClick?.invoke() },
         contentAlignment = Alignment.Center,
     ) {
         if (bloqueada) Icono(Ico.Check, tint = TintaTenue, tamano = 18.dp)
@@ -100,7 +102,6 @@ fun Flecha(modifier: Modifier = Modifier, tint: Color = TintaSuave) {
     Icono(Ico.Chevron, tint = tint, tamano = 20.dp, modifier = modifier)
 }
 
-/** Botón redondo con icono (más opciones, atrás, siguiente...). */
 @Composable
 fun BotonCircular(
     icono: Ico,
@@ -110,30 +111,35 @@ fun BotonCircular(
     lado: Dp = 48.dp,
     tint: Color = TintaBase,
 ) {
-    Box(modifier.size(lado).clip(CircleShape).background(fondo).clickable(onClick = onClick), contentAlignment = Alignment.Center) {
+    Box(
+        modifier.size(lado).clip(CircleShape).background(fondo).clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
         Icono(icono, tint = tint)
     }
 }
 
-/** Botón flotante cuadrado redondeado, solo icono. */
 @Composable
 fun BotonFlotanteIcono(icono: Ico, color: Color, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .size(64.dp)
-            .shadow(12.dp, RoundedCornerShape(22.dp), ambientColor = TintaBase, spotColor = TintaBase)
-            .clip(RoundedCornerShape(22.dp))
-            .background(color)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center,
-    ) { Icono(icono, tint = TintaBase, tamano = 26.dp) }
+    FloatingActionButton(
+        onClick = onClick,
+        modifier = modifier.size(64.dp),
+        shape = RoundedCornerShape(22.dp),
+        containerColor = color,
+        contentColor = TintaBase
+    ) {
+        Icono(icono, tint = TintaBase, tamano = 26.dp)
+    }
 }
 
-/** Caja de búsqueda (solo diseño). */
 @Composable
 fun BarraBusqueda(texto: String, modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier.fillMaxWidth().clip(RoundedCornerShape(26.dp)).background(FondoArena).padding(horizontal = 18.dp, vertical = 14.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(26.dp))
+            .background(FondoArena)
+            .padding(horizontal = 18.dp, vertical = 14.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -142,7 +148,6 @@ fun BarraBusqueda(texto: String, modifier: Modifier = Modifier) {
     }
 }
 
-/** Filtro tipo píldora («Todos 3», «Solicitudes 2»). */
 @Composable
 fun FiltroPill(texto: String, activo: Boolean, onClick: () -> Unit = {}, modifier: Modifier = Modifier) {
     Box(
@@ -154,7 +159,6 @@ fun FiltroPill(texto: String, activo: Boolean, onClick: () -> Unit = {}, modifie
     ) { Text(texto, style = Texto.LabelM, color = if (activo) FondoCrema else TintaBase) }
 }
 
-/** Etiqueta de sección con margen para listas agrupadas. */
 @Composable
 fun EncabezadoSeccion(texto: String, modifier: Modifier = Modifier) {
     Eyebrow(texto, modifier.fillMaxWidth().padding(start = 4.dp, end = 4.dp, top = 8.dp, bottom = 2.dp))

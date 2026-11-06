@@ -27,7 +27,6 @@ enum class EstadoBanner(val fondo: Color, val texto: Color, val icono: Ico, val 
     Sincronizado(Verde100, Verde600, Ico.Cloud, Verde600),
 }
 
-/** Banner de conexión que puede aparecer sobre cualquier pantalla. */
 @Composable
 fun BannerConexion(estado: EstadoBanner, texto: String, modifier: Modifier = Modifier) {
     Row(

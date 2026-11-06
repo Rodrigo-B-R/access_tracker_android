@@ -29,47 +29,53 @@ import com.example.access_tracker.components.FilaPersona
 import com.example.access_tracker.components.Ico
 import com.example.access_tracker.components.Icono
 import com.example.access_tracker.components.PantallaBase
-import com.example.access_tracker.components.sobreBarra
 import com.example.access_tracker.components.Segmentado
 import com.example.access_tracker.components.TituloPantalla
 import com.example.access_tracker.components.TonoChip
 import com.example.access_tracker.ui.theme.Access_trackerTheme
 import com.example.access_tracker.ui.theme.Coral100
 import com.example.access_tracker.ui.theme.Coral500
-import com.example.access_tracker.ui.theme.FondoArena
 import com.example.access_tracker.ui.theme.FondoCrema
 import com.example.access_tracker.ui.theme.Mostaza100
 import com.example.access_tracker.ui.theme.Mostaza500
-import com.example.access_tracker.ui.theme.Petroleo100
 import com.example.access_tracker.ui.theme.Petroleo700
 import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.Verde100
 import com.example.access_tracker.ui.theme.Verde600
 import com.example.access_tracker.ui.theme.Texto
 
-/** Asistencia del día: quién llegó, quién no, y acceso al registro por turno completo. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ResAsistenciaScreen(
     onAvisos: () -> Unit,
     onTurnoCompleto: () -> Unit,
     onAusencia: (persona: String?) -> Unit,
+    barra: @Composable () -> Unit = {},
 ) {
     var turno by remember { mutableIntStateOf(0) }
     PantallaBase(
-        conBarra = true,
+        barra = barra,
         separacion = 16.dp,
-        overlay = {
-            BotonFlotanteIcono(Ico.Plus, Coral500, { onAusencia(null) }, Modifier.align(Alignment.BottomEnd).sobreBarra())
-        },
+        botonFlotante = { BotonFlotanteIcono(Ico.Plus, Coral500, { onAusencia(null) }, Modifier.padding(end = 8.dp)) },
     ) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Column(Modifier.weight(1f)) { TituloPantalla("Asistencia", subtitulo = "Miércoles 7 de octubre") }
             BotonCampana(3, onAvisos)
         }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Segmentado(listOf("Matutino", "Vespertino"), turno, { turno = it }, Modifier.weight(1f))
-            FiltroDesplegable("Todas las salas", listOf("Todas las salas", "Lactantes", "Maternal A", "Maternal B", "Preescolar"))
+            FiltroDesplegable(
+                "Todas las salas",
+                listOf("Todas las salas", "Lactantes", "Maternal A", "Maternal B", "Preescolar")
+            )
         }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Chip("3 presentes", tono = TonoChip.Exito)
@@ -78,21 +84,81 @@ fun ResAsistenciaScreen(
             Chip("1 ausente", tono = TonoChip.Peligro)
         }
         Row(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(Petroleo700).clickable(onClick = onTurnoCompleto).padding(horizontal = 16.dp, vertical = 14.dp),
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(24.dp))
+                .background(Petroleo700)
+                .clickable(onClick = onTurnoCompleto)
+                .padding(horizontal = 16.dp, vertical = 14.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icono(Ico.Users, tint = Mostaza500)
-            Text("Registrar entrada de turno completo", style = Texto.LabelL, color = FondoCrema, modifier = Modifier.weight(1f))
+            Text(
+                "Registrar entrada de turno completo",
+                style = Texto.LabelL,
+                color = FondoCrema,
+                modifier = Modifier.weight(1f)
+            )
             Icono(Ico.Chevron, tint = FondoCrema, tamano = 20.dp)
         }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilaPersona("AT", "Ana Torres", "Maternal A · Entrada 7:25", onClick = { onAusencia("Ana Torres") }) { Chip("Retardo", tono = TonoChip.Alerta) }
-            FilaPersona("LH", "Lucía Herrera", "Lactantes · Entrada 6:58", onClick = { onAusencia("Lucía Herrera") }, fondoAvatar = Mostaza100, tintaAvatar = TintaBase) { Chip("Presente", tono = TonoChip.Exito) }
-            FilaPersona("CR", "Carmen Ruiz", "Maternal B · Entrada 7:02", onClick = { onAusencia("Carmen Ruiz") }, fondoAvatar = Coral100, tintaAvatar = TintaBase) { Chip("Presente", tono = TonoChip.Exito) }
-            FilaPersona("SD", "Sofía Díaz", "Preescolar · Sin checar", onClick = { onAusencia("Sofía Díaz") }, fondoAvatar = Verde100, tintaAvatar = Verde600) { Chip("Sin checar", tono = TonoChip.Neutro) }
-            FilaPersona("PR", "Paola Reyes", "Maternal A · Ausente", onClick = { onAusencia("Paola Reyes") }) { Chip("Ausente", tono = TonoChip.Peligro) }
-            FilaPersona("RM", "Rosa Medina", "Cocina · Entrada 6:45", onClick = { onAusencia("Rosa Medina") }, fondoAvatar = Mostaza100, tintaAvatar = TintaBase) { Chip("Presente", tono = TonoChip.Exito) }
+            FilaPersona(
+                "AT",
+                "Ana Torres",
+                "Maternal A · Entrada 7:25",
+                onClick = { onAusencia("Ana Torres") }
+            ) {
+                Chip("Retardo", tono = TonoChip.Alerta)
+            }
+            FilaPersona(
+                "LH",
+                "Lucía Herrera",
+                "Lactantes · Entrada 6:58",
+                onClick = { onAusencia("Lucía Herrera") },
+                fondoAvatar = Mostaza100,
+                tintaAvatar = TintaBase
+            ) {
+                Chip("Presente", tono = TonoChip.Exito)
+            }
+            FilaPersona(
+                "CR",
+                "Carmen Ruiz",
+                "Maternal B · Entrada 7:02",
+                onClick = { onAusencia("Carmen Ruiz") },
+                fondoAvatar = Coral100,
+                tintaAvatar = TintaBase
+            ) {
+                Chip("Presente", tono = TonoChip.Exito)
+            }
+            FilaPersona(
+                "SD",
+                "Sofía Díaz",
+                "Preescolar · Sin checar",
+                onClick = { onAusencia("Sofía Díaz") },
+                fondoAvatar = Verde100,
+                tintaAvatar = Verde600
+            ) {
+                Chip("Sin checar", tono = TonoChip.Neutro)
+            }
+            FilaPersona(
+                "PR",
+                "Paola Reyes",
+                "Maternal A · Ausente",
+                onClick = { onAusencia("Paola Reyes") }
+            ) {
+                Chip("Ausente", tono = TonoChip.Peligro)
+            }
+            FilaPersona(
+                "RM",
+                "Rosa Medina",
+                "Cocina · Entrada 6:45",
+                onClick = { onAusencia("Rosa Medina") },
+                fondoAvatar = Mostaza100,
+                tintaAvatar = TintaBase
+            ) {
+                Chip("Presente", tono = TonoChip.Exito)
+            }
         }
     }
 }

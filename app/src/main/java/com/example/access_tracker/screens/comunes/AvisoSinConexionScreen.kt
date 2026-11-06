@@ -23,7 +23,6 @@ import com.example.access_tracker.ui.theme.Access_trackerTheme
 import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.Texto
 
-/** Es un componente, no una pantalla: banner sobre cualquier pantalla y marcas por registro. */
 @Composable
 fun AvisoSinConexionScreen() {
     PantallaBase(separacion = 14.dp) {
@@ -42,7 +41,11 @@ fun AvisoSinConexionScreen() {
 @Composable
 private fun RegistroMarcado(titulo: String, hora: String, estado: String, tono: TonoChip) {
     Tarjeta {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(titulo, style = Texto.LabelL, color = TintaBase)
                 Chip(estado, tono = tono)

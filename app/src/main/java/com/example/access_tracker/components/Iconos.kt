@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import com.example.access_tracker.R
 import com.example.access_tracker.ui.theme.TintaBase
 
-/** Iconos de Fundamentos → Iconos (Figma). */
 enum class Ico(@DrawableRes val res: Int) {
     Home(R.drawable.ic_home),
     Users(R.drawable.ic_users),

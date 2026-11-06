@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,12 +54,15 @@ private val Cuadricula = listOf(
     "Rosa M." to "MMMMM··",
 )
 
-/** Horarios y turnos de la semana: cuadrícula persona × día. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ResHorariosScreen(onAvisos: () -> Unit, onPersona: () -> Unit) {
-    PantallaBase(conBarra = true, separacion = 16.dp) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+fun ResHorariosScreen(onAvisos: () -> Unit, onPersona: () -> Unit, barra: @Composable () -> Unit = {}) {
+    PantallaBase(barra = barra, separacion = 16.dp) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Column(Modifier.weight(1f)) { TituloPantalla("Horarios") }
             BotonCampana(3, onAvisos)
         }
@@ -70,10 +72,20 @@ fun ResHorariosScreen(onAvisos: () -> Unit, onPersona: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             BotonCircular(Ico.Back, {}, fondo = FondoBlanco, lado = 40.dp)
-            Text("5 – 11 de octubre", style = Texto.LabelL, color = TintaBase, textAlign = TextAlign.Center, modifier = Modifier.weight(1f))
+            Text(
+                "5 – 11 de octubre",
+                style = Texto.LabelL,
+                color = TintaBase,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(1f)
+            )
             BotonCircular(Ico.Chevron, {}, fondo = FondoBlanco, lado = 40.dp)
         }
-        Text("Cada semana repite la anterior. Toca el nombre de una persona para cambiar sus días y turnos.", style = Texto.BodyS, color = TintaTenue)
+        Text(
+            "Cada semana repite la anterior. Toca el nombre de una persona para cambiar sus días y turnos.",
+            style = Texto.BodyS,
+            color = TintaTenue
+        )
         FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Chip("M · Matutino", tono = TonoChip.Info)
             Chip("V · Vespertino", tono = TonoChip.Alerta)
@@ -81,8 +93,14 @@ fun ResHorariosScreen(onAvisos: () -> Unit, onPersona: () -> Unit) {
             Chip("Sin cubrir", tono = TonoChip.Peligro)
         }
         Tarjeta(radio = 24.dp, relleno = 0.dp) {
-            Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
+            Column(
+                Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 14.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Box(Modifier.width(76.dp).height(20.dp))
                     Semana.forEachIndexed { i, dia ->
                         Box(Modifier.weight(1f).height(20.dp), contentAlignment = Alignment.Center) {
@@ -91,8 +109,14 @@ fun ResHorariosScreen(onAvisos: () -> Unit, onPersona: () -> Unit) {
                     }
                 }
                 Cuadricula.forEach { (nombre, turnos) ->
-                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Box(Modifier.width(76.dp).height(36.dp).clickable(onClick = onPersona), contentAlignment = Alignment.CenterStart) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            Modifier.width(76.dp).height(36.dp).clickable(onClick = onPersona),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
                             Text(nombre, style = Texto.LabelM, color = TintaBase, maxLines = 1)
                         }
                         turnos.forEach { celda -> CeldaTurno(celda, Modifier.weight(1f)) }
@@ -101,12 +125,21 @@ fun ResHorariosScreen(onAvisos: () -> Unit, onPersona: () -> Unit) {
             }
         }
         Row(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(Rojo100).padding(horizontal = 16.dp, vertical = 14.dp),
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
+                .background(Rojo100)
+                .padding(horizontal = 16.dp, vertical = 14.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icono(Ico.Alert, tint = Rojo600, tamano = 22.dp)
-            Text("Miércoles · Sofía Díaz: turno sin cubrir en Maternal A.", style = Texto.BodyMMedium, color = TintaBase, modifier = Modifier.weight(1f))
+            Text(
+                "Miércoles · Sofía Díaz: turno sin cubrir en Maternal A.",
+                style = Texto.BodyMMedium,
+                color = TintaBase,
+                modifier = Modifier.weight(1f)
+            )
         }
     }
 }

@@ -7,20 +7,20 @@ enum class Perfil { Empleada, Responsable, Direccion }
 
 object Pestanas {
     val Empleada = listOf(
-        Pestana(Rutas.EmpChecar, "Checar", Ico.Fingerprint),
-        Pestana(Rutas.EmpAsistencias, "Asistencias", Ico.Calcheck),
-        Pestana(Rutas.EmpHorario, "Horario", Ico.Calendar),
+        Pestana(ScreenNames.EmpChecar.route, "Checar", Ico.Fingerprint),
+        Pestana(ScreenNames.EmpAsistencias.route, "Asistencias", Ico.Calcheck),
+        Pestana(ScreenNames.EmpHorario.route, "Horario", Ico.Calendar),
     )
     val Responsable = listOf(
-        Pestana(Rutas.ResInicio, "Inicio", Ico.Home),
-        Pestana(Rutas.ResAsistencia, "Asistencia", Ico.Users),
-        Pestana(Rutas.ResHorarios, "Horarios", Ico.Calendar),
-        Pestana(Rutas.ResPersonal, "Personal", Ico.Idcard),
+        Pestana(ScreenNames.ResInicio.route, "Inicio", Ico.Home),
+        Pestana(ScreenNames.ResAsistencia.route, "Asistencia", Ico.Users),
+        Pestana(ScreenNames.ResHorarios.route, "Horarios", Ico.Calendar),
+        Pestana(ScreenNames.ResPersonal.route, "Personal", Ico.Idcard),
     )
     val Direccion = listOf(
-        Pestana(Rutas.DirResumen, "Resumen", Ico.Home),
-        Pestana(Rutas.DirEstadisticas, "Estadísticas", Ico.Chart),
-        Pestana(Rutas.DirBitacora, "Bitácora", Ico.History),
+        Pestana(ScreenNames.DirResumen.route, "Resumen", Ico.Home),
+        Pestana(ScreenNames.DirEstadisticas.route, "Estadísticas", Ico.Chart),
+        Pestana(ScreenNames.DirBitacora.route, "Bitácora", Ico.History),
     )
 
     fun de(perfil: Perfil) = when (perfil) {
@@ -28,19 +28,6 @@ object Pestanas {
         Perfil.Responsable -> Responsable
         Perfil.Direccion -> Direccion
     }
-
-    // Variantes de estado de una pestaña: se ven con la barra y la misma pestaña activa.
-    private val variantes = mapOf(
-        Rutas.EmpChecarDentro to Rutas.EmpChecar,
-        Rutas.EmpChecarSinInternet to Rutas.EmpChecar,
-        Rutas.ResMenu to Rutas.ResInicio,
-    )
-
-    /** Pestaña que se marca como activa para una ruta (la misma ruta, o la pestaña de la que es variante). */
-    fun activaDe(ruta: String?): String? = variantes[ruta] ?: ruta
-
-    /** Perfil dueño de la ruta si es una pestaña principal (la barra solo se muestra ahí). */
-    fun perfilDe(ruta: String?): Perfil? = activaDe(ruta).let { activa -> Perfil.entries.firstOrNull { p -> de(p).any { it.ruta == activa } } }
 
     fun inicio(perfil: Perfil) = de(perfil).first().ruta
 }
