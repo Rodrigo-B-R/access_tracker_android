@@ -1,7 +1,6 @@
 package com.example.access_tracker.screens.responsable
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -22,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.access_tracker.components.Avatar
 import com.example.access_tracker.components.AvisoItem
 import com.example.access_tracker.components.AvisoUrgente
 import com.example.access_tracker.components.Boton
@@ -55,15 +53,12 @@ import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde100
 import com.example.access_tracker.ui.theme.Verde600
 
-/** Avisos internos (extra): la Responsable envía y recibe de Dirección. */
 @Composable
 fun ResAvisosScreen(onAtras: () -> Unit, onNuevo: () -> Unit, onEstadoLectura: () -> Unit) {
     var filtro by remember { mutableIntStateOf(0) }
     PantallaBase(
         separacion = 16.dp,
-        overlay = {
-            BotonFlotante("Nuevo aviso", onNuevo, Modifier.align(Alignment.BottomEnd).padding(end = 24.dp, bottom = 48.dp))
-        },
+        botonFlotante = { BotonFlotante("Nuevo aviso", onNuevo, Modifier.padding(end = 8.dp, bottom = 32.dp)) },
     ) {
         EncabezadoPantalla("Avisos", onAtras = onAtras, grande = true)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -80,13 +75,25 @@ fun ResAvisosScreen(onAtras: () -> Unit, onNuevo: () -> Unit, onEstadoLectura: (
                 }
             }
         }
-        AvisoItem("Cambio de horario", TonoChip.Alerta, "ayer", "Nuevo horario de comida desde el lunes", fondo = FondoBlanco) {
+        AvisoItem(
+            "Cambio de horario",
+            TonoChip.Alerta,
+            "ayer",
+            "Nuevo horario de comida desde el lunes",
+            fondo = FondoBlanco
+        ) {
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                 Icono(Ico.Check, tint = Verde600, tamano = 16.dp)
                 Text("14 de 14 confirmaron", style = Texto.BodyS, color = Verde600)
             }
         }
-        AvisoItem("Reunión", TonoChip.Info, "lun 5 oct", "Reunión de personal el viernes a las 9:00", fondo = FondoBlanco) {
+        AvisoItem(
+            "Reunión",
+            TonoChip.Info,
+            "lun 5 oct",
+            "Reunión de personal el viernes a las 9:00",
+            fondo = FondoBlanco
+        ) {
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                 Icono(Ico.Check, tint = Verde600, tamano = 16.dp)
                 Text("Lectura confirmada", style = Texto.BodyS, color = Verde600)
@@ -95,7 +102,6 @@ fun ResAvisosScreen(onAtras: () -> Unit, onNuevo: () -> Unit, onEstadoLectura: (
     }
 }
 
-/** Redacta un aviso: tipo, destinatarios y confirmación de lectura. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ResNuevoAvisoScreen(onCerrar: () -> Unit, onEnviar: () -> Unit) {
@@ -110,10 +116,13 @@ fun ResNuevoAvisoScreen(onCerrar: () -> Unit, onEnviar: () -> Unit) {
     ) {
         EncabezadoPantalla("Nuevo aviso", onAtras = onCerrar, cerrar = true)
         CampoTexto("Título", titulo, { titulo = it })
-        CampoTexto("Mensaje", mensaje, { mensaje = it }, activo = true, lineas = 3)
+        CampoTexto("Mensaje", mensaje, { mensaje = it }, lineas = 3)
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Tipo", style = Texto.LabelM, color = TintaSuave)
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 listOf("Cambio de horario", "Reunión", "Recordatorio", "Urgente").forEachIndexed { i, t ->
                     ChipOpcion(t, seleccionado = tipo == i, onClick = { tipo = i })
                 }
@@ -121,14 +130,21 @@ fun ResNuevoAvisoScreen(onCerrar: () -> Unit, onEnviar: () -> Unit) {
         }
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Destinatarios", style = Texto.LabelM, color = TintaSuave)
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 listOf("Todo el personal", "Un turno", "Una sala", "Personas").forEachIndexed { i, t ->
                     ChipOpcion(t, seleccionado = destino == i, onClick = { destino = i })
                 }
             }
         }
         Row(
-            Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(FondoBlanco).padding(horizontal = 16.dp, vertical = 14.dp),
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(20.dp))
+                .background(FondoBlanco)
+                .padding(horizontal = 16.dp, vertical = 14.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -141,7 +157,6 @@ fun ResNuevoAvisoScreen(onCerrar: () -> Unit, onEnviar: () -> Unit) {
     }
 }
 
-/** Quién ya confirmó y quién falta, con recordatorio a los pendientes. */
 @Composable
 fun ResEstadoLecturaScreen(onAtras: () -> Unit, onRecordatorio: () -> Unit) {
     PantallaBase(
@@ -153,7 +168,11 @@ fun ResEstadoLecturaScreen(onAtras: () -> Unit, onRecordatorio: () -> Unit) {
             Modifier.fillMaxWidth().clip(RoundedCornerShape(28.dp)).background(Petroleo700).padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Chip("Urgente", tono = TonoChip.Peligro)
                 Text("Hoy 10:12", style = Texto.BodyS, color = Petroleo100)
             }
@@ -166,14 +185,48 @@ fun ResEstadoLecturaScreen(onAtras: () -> Unit, onRecordatorio: () -> Unit) {
         }
         EncabezadoSeccion("Sin confirmar · 5")
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            FilaPersona("SD", "Sofía Díaz", "Preescolar", fondoAvatar = Verde100, tintaAvatar = Verde600, ladoAvatar = 40.dp) { Chip("Sin leer", tono = TonoChip.Peligro) }
-            FilaPersona("PR", "Paola Reyes", "Maternal A", ladoAvatar = 40.dp) { Chip("Sin leer", tono = TonoChip.Peligro) }
-            FilaPersona("RM", "Rosa Medina", "Cocina", fondoAvatar = Mostaza100, tintaAvatar = TintaBase, ladoAvatar = 40.dp) { Chip("Sin leer", tono = TonoChip.Peligro) }
+            FilaPersona(
+                "SD",
+                "Sofía Díaz",
+                "Preescolar",
+                fondoAvatar = Verde100,
+                tintaAvatar = Verde600,
+                ladoAvatar = 40.dp
+            ) {
+                Chip("Sin leer", tono = TonoChip.Peligro)
+            }
+            FilaPersona(
+                "PR",
+                "Paola Reyes",
+                "Maternal A",
+                ladoAvatar = 40.dp
+            ) {
+                Chip("Sin leer", tono = TonoChip.Peligro)
+            }
+            FilaPersona(
+                "RM",
+                "Rosa Medina",
+                "Cocina",
+                fondoAvatar = Mostaza100,
+                tintaAvatar = TintaBase,
+                ladoAvatar = 40.dp
+            ) {
+                Chip("Sin leer", tono = TonoChip.Peligro)
+            }
         }
         EncabezadoSeccion("Confirmaron · 9")
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             FilaPersona("AT", "Ana Torres", "Maternal A", ladoAvatar = 40.dp) { HoraConfirmada("10:14") }
-            FilaPersona("LH", "Lucía Herrera", "Lactantes", fondoAvatar = Mostaza100, tintaAvatar = TintaBase, ladoAvatar = 40.dp) { HoraConfirmada("10:15") }
+            FilaPersona(
+                "LH",
+                "Lucía Herrera",
+                "Lactantes",
+                fondoAvatar = Mostaza100,
+                tintaAvatar = TintaBase,
+                ladoAvatar = 40.dp
+            ) {
+                HoraConfirmada("10:15")
+            }
         }
     }
 }

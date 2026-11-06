@@ -27,12 +27,17 @@ import com.example.access_tracker.ui.theme.FondoCrema
 import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.text.TextStyle
 
-/** Lista blanca agrupada: las filas se separan con una línea arena. */
 @Composable
-fun GrupoFilas(modifier: Modifier = Modifier, relleno: androidx.compose.ui.unit.Dp = 16.dp, contenido: @Composable () -> Unit) {
+fun GrupoFilas(modifier: Modifier = Modifier, relleno: Dp = 16.dp, contenido: @Composable () -> Unit) {
     Column(
-        modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(FondoBlanco).padding(horizontal = relleno, vertical = 4.dp),
+        modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(24.dp))
+            .background(FondoBlanco)
+            .padding(horizontal = relleno, vertical = 4.dp),
     ) { contenido() }
 }
 
@@ -41,7 +46,6 @@ fun Divisor(modifier: Modifier = Modifier) {
     Box(modifier.fillMaxWidth().height(1.dp).background(FondoArenaFuerte))
 }
 
-/** Fila de ajustes con icono en cuadro de color, título, descripción y flecha. */
 @Composable
 fun FilaAjuste(
     icono: Ico,
@@ -65,7 +69,6 @@ fun FilaAjuste(
     }
 }
 
-/** Fila con icono, título y un interruptor (permisos). */
 @Composable
 fun FilaInterruptor(
     icono: Ico,
@@ -81,7 +84,11 @@ fun FilaInterruptor(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Icono(icono, tint = if (apagado) TintaSuave else com.example.access_tracker.ui.theme.Petroleo700, tamano = 22.dp)
+        Icono(
+            icono,
+            tint = if (apagado) TintaSuave else com.example.access_tracker.ui.theme.Petroleo700,
+            tamano = 22.dp
+        )
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(titulo, style = Texto.LabelL, color = if (apagado) TintaSuave else TintaBase)
             if (descripcion != null) Text(descripcion, style = Texto.BodyS, color = TintaSuave)
@@ -90,18 +97,24 @@ fun FilaInterruptor(
     }
 }
 
-/** Ajuste numérico con – y + (mínimo de personas por turno). */
 @Composable
 fun ContadorMinimo(icono: Ico, valor: Int, onCambio: (Int) -> Unit, modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier.clip(RoundedCornerShape(18.dp)).background(FondoArena).padding(start = 14.dp, end = 6.dp, top = 6.dp, bottom = 6.dp),
+        modifier = modifier
+            .clip(RoundedCornerShape(18.dp))
+            .background(FondoArena)
+            .padding(start = 14.dp, end = 6.dp, top = 6.dp, bottom = 6.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icono(icono, tint = TintaSuave, tamano = 18.dp)
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
-                Modifier.size(30.dp).clip(CircleShape).background(FondoBlanco).clickable { if (valor > 0) onCambio(valor - 1) },
+                Modifier
+                    .size(30.dp)
+                    .clip(CircleShape)
+                    .background(FondoBlanco)
+                    .clickable { if (valor > 0) onCambio(valor - 1) },
                 contentAlignment = Alignment.Center,
             ) { Text("–", style = Texto.LabelL, color = TintaBase) }
             Box(Modifier.width(26.dp).height(30.dp), contentAlignment = Alignment.Center) {
@@ -115,7 +128,6 @@ fun ContadorMinimo(icono: Ico, valor: Int, onCambio: (Int) -> Unit, modifier: Mo
     }
 }
 
-/** Evento de la bitácora: icono de color, etiqueta de tipo, descripción y quién lo hizo. */
 @Composable
 fun EventoBitacora(
     icono: Ico,
@@ -127,7 +139,7 @@ fun EventoBitacora(
     modifier: Modifier = Modifier,
     motivo: String? = null,
     estancia: String? = null,
-    estiloTitulo: androidx.compose.ui.text.TextStyle = Texto.LabelM,
+    estiloTitulo: TextStyle = Texto.LabelM,
 ) {
     Row(
         modifier.fillMaxWidth().clip(RoundedCornerShape(22.dp)).background(FondoBlanco).padding(14.dp),

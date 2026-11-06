@@ -18,11 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.access_tracker.ui.theme.Coral500
@@ -36,7 +32,6 @@ import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 
-/** Campana con contador, para el encabezado de la Asistente. */
 @Composable
 fun BotonCampana(contador: Int, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Box(modifier.size(48.dp)) {
@@ -61,10 +56,6 @@ fun BotonCampana(contador: Int, onClick: () -> Unit, modifier: Modifier = Modifi
     }
 }
 
-/**
- * Tarjeta de cobertura por sala: cuadritos llenos = personas presentes, punteados = faltantes.
- * Con `faltante` se marca en coral y ofrece avisar a la Responsable.
- */
 @Composable
 fun TarjetaSala(
     nombre: String,
@@ -83,14 +74,22 @@ fun TarjetaSala(
             .fillMaxWidth()
             .clip(RoundedCornerShape(26.dp))
             .background(if (faltante) Coral500 else FondoArena)
-            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+            .clickable(enabled = onClick != null) { onClick?.invoke() }
             .padding(horizontal = 18.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(nombre, style = Texto.TitleS, color = TintaBase)
-                Text(detalle, style = if (faltante) Texto.LabelM else Texto.BodyM, color = if (faltante) TintaBase else TintaSuave)
+                Text(
+                    detalle,
+                    style = if (faltante) Texto.LabelM else Texto.BodyM,
+                    color = if (faltante) TintaBase else TintaSuave
+                )
             }
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 repeat(total) { i -> CuadroPersona(presente = i < presentes, color = tinta) }
@@ -98,7 +97,12 @@ fun TarjetaSala(
         }
         if (faltante && textoAccion != null) {
             Row(
-                Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(FondoBlanco).clickable(onClick = onAccion).padding(horizontal = 16.dp, vertical = 13.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(FondoBlanco)
+                    .clickable(onClick = onAccion)
+                    .padding(horizontal = 16.dp, vertical = 13.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -109,25 +113,15 @@ fun TarjetaSala(
     }
 }
 
-/** Cuadrito de una persona: lleno si está presente, punteado si falta. */
 @Composable
 fun CuadroPersona(presente: Boolean, color: Color, lado: Dp = 24.dp, radio: Dp = 8.dp, colorFaltante: Color = color) {
     if (presente) {
         Box(Modifier.size(lado).clip(RoundedCornerShape(radio)).background(color))
     } else {
-        Box(
-            Modifier.size(lado).drawBehind {
-                drawRoundRect(
-                    color = colorFaltante,
-                    cornerRadius = CornerRadius(radio.toPx()),
-                    style = Stroke(2.dp.toPx(), pathEffect = PathEffect.dashPathEffect(floatArrayOf(4.dp.toPx(), 3.dp.toPx()))),
-                )
-            },
-        )
+        Box(Modifier.size(lado).border(2.dp, colorFaltante, RoundedCornerShape(radio)))
     }
 }
 
-/** Versión compacta de la sala para la cuadrícula de 2 columnas del inicio de la Responsable. */
 @Composable
 fun SalaMini(
     nombre: String,
@@ -141,7 +135,7 @@ fun SalaMini(
         modifier = modifier
             .clip(forma)
             .background(if (bajoMinimo) Rojo100 else FondoArena)
-            .then(if (bajoMinimo) Modifier.border(2.dp, Rojo600, forma) else Modifier)
+            .border(2.dp, if (bajoMinimo) Rojo600 else Color.Transparent, forma)
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {

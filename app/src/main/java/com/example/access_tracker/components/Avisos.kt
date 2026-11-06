@@ -1,6 +1,5 @@
 package com.example.access_tracker.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,7 +28,6 @@ import com.example.access_tracker.ui.theme.TintaTenue
 import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde600
 
-/** Aviso urgente: tarjeta roja que va arriba de la bandeja. */
 @Composable
 fun AvisoUrgente(
     titulo: String,
@@ -44,11 +42,15 @@ fun AvisoUrgente(
             .fillMaxWidth()
             .clip(RoundedCornerShape(28.dp))
             .background(Rojo600)
-            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+            .clickable(enabled = onClick != null) { onClick?.invoke() }
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             EtiquetaUrgente()
             Text(hace, style = Texto.BodyS, color = FondoBlanco)
         }
@@ -61,7 +63,10 @@ fun AvisoUrgente(
 @Composable
 fun EtiquetaUrgente(modifier: Modifier = Modifier, relleno: Int = 10) {
     Row(
-        modifier = modifier.clip(RoundedCornerShape(14.dp)).background(FondoBlanco).padding(horizontal = relleno.dp, vertical = 5.dp),
+        modifier = modifier
+            .clip(RoundedCornerShape(14.dp))
+            .background(FondoBlanco)
+            .padding(horizontal = relleno.dp, vertical = 5.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -70,11 +75,14 @@ fun EtiquetaUrgente(modifier: Modifier = Modifier, relleno: Int = 10) {
     }
 }
 
-/** Botón blanco pequeño que se pone dentro de un aviso urgente. */
 @Composable
 fun AccionAviso(texto: String, icono: Ico, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     Row(
-        modifier = modifier.clip(RoundedCornerShape(20.dp)).background(FondoBlanco).clickable(onClick = onClick).padding(horizontal = 14.dp, vertical = 10.dp),
+        modifier = modifier
+            .clip(RoundedCornerShape(20.dp))
+            .background(FondoBlanco)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -83,7 +91,6 @@ fun AccionAviso(texto: String, icono: Ico, modifier: Modifier = Modifier, onClic
     }
 }
 
-/** Aviso anterior en la bandeja. `sinLeer` lo resalta con borde coral sobre blanco. */
 @Composable
 fun AvisoItem(
     etiqueta: String,
@@ -102,12 +109,16 @@ fun AvisoItem(
             .fillMaxWidth()
             .clip(forma)
             .background(fondo ?: if (sinLeer) FondoBlanco else FondoArena)
-            .then(if (sinLeer) Modifier.border(BorderStroke(2.dp, Coral500), forma) else Modifier)
-            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+            .border(2.dp, if (sinLeer) Coral500 else Color.Transparent, forma)
+            .clickable(enabled = onClick != null) { onClick?.invoke() }
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Chip(etiqueta, tono = tono)
             Text(fecha, style = Texto.BodyS, color = TintaTenue)
         }

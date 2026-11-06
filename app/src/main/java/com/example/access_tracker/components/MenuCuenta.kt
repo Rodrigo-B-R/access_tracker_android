@@ -19,7 +19,6 @@ import com.example.access_tracker.ui.theme.Rojo600
 import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.Texto
 
-/** Botón ⋮ con las opciones de la cuenta: cambiar contraseña y cerrar sesión. `oscuro` es para fondos petróleo. */
 @Composable
 fun MenuCuenta(
     onCambiarPassword: () -> Unit,

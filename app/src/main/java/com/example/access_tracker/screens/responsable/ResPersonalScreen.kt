@@ -22,7 +22,6 @@ import com.example.access_tracker.components.FilaPersona
 import com.example.access_tracker.components.Flecha
 import com.example.access_tracker.components.Ico
 import com.example.access_tracker.components.PantallaBase
-import com.example.access_tracker.components.sobreBarra
 import com.example.access_tracker.components.Segmentado
 import com.example.access_tracker.components.TituloPantalla
 import com.example.access_tracker.ui.theme.Access_trackerTheme
@@ -33,18 +32,24 @@ import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.Verde100
 import com.example.access_tracker.ui.theme.Verde600
 
-/** Pestaña Personal: lista agrupada por rol, con alta de personas. */
 @Composable
-fun ResPersonalScreen(onAvisos: () -> Unit, onPersona: () -> Unit, onAlta: () -> Unit) {
+fun ResPersonalScreen(
+    onAvisos: () -> Unit,
+    onPersona: () -> Unit,
+    onAlta: () -> Unit,
+    barra: @Composable () -> Unit = {}
+) {
     var vista by remember { mutableIntStateOf(0) }
     PantallaBase(
-        conBarra = true,
+        barra = barra,
         separacion = 16.dp,
-        overlay = {
-            BotonFlotanteIcono(Ico.Userplus, Mostaza500, onAlta, Modifier.align(Alignment.BottomEnd).sobreBarra())
-        },
+        botonFlotante = { BotonFlotanteIcono(Ico.Userplus, Mostaza500, onAlta, Modifier.padding(end = 8.dp)) },
     ) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Column(Modifier.weight(1f)) { TituloPantalla("Personal", subtitulo = "16 personas activas") }
             BotonCampana(3, onAvisos)
         }
@@ -53,13 +58,53 @@ fun ResPersonalScreen(onAvisos: () -> Unit, onPersona: () -> Unit, onAlta: () ->
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             EncabezadoSeccion("Maestras titulares · 3")
             FilaPersona("AT", "Ana Torres", "Maternal A", ladoAvatar = 40.dp, onClick = onPersona) { Flecha() }
-            FilaPersona("LH", "Lucía Herrera", "Lactantes", fondoAvatar = Mostaza100, tintaAvatar = TintaBase, ladoAvatar = 40.dp, onClick = onPersona) { Flecha() }
-            FilaPersona("CR", "Carmen Ruiz", "Maternal B", fondoAvatar = Coral100, tintaAvatar = TintaBase, ladoAvatar = 40.dp, onClick = onPersona) { Flecha() }
+            FilaPersona(
+                "LH",
+                "Lucía Herrera",
+                "Lactantes",
+                fondoAvatar = Mostaza100,
+                tintaAvatar = TintaBase,
+                ladoAvatar = 40.dp,
+                onClick = onPersona
+            ) {
+                Flecha()
+            }
+            FilaPersona(
+                "CR",
+                "Carmen Ruiz",
+                "Maternal B",
+                fondoAvatar = Coral100,
+                tintaAvatar = TintaBase,
+                ladoAvatar = 40.dp,
+                onClick = onPersona
+            ) {
+                Flecha()
+            }
             EncabezadoSeccion("Asistentes · 2")
-            FilaPersona("SD", "Sofía Díaz", "Preescolar", fondoAvatar = Verde100, tintaAvatar = Verde600, ladoAvatar = 40.dp, onClick = onPersona) { Flecha() }
+            FilaPersona(
+                "SD",
+                "Sofía Díaz",
+                "Preescolar",
+                fondoAvatar = Verde100,
+                tintaAvatar = Verde600,
+                ladoAvatar = 40.dp,
+                onClick = onPersona
+            ) {
+                Flecha()
+            }
             FilaPersona("PR", "Paola Reyes", "Maternal A", ladoAvatar = 40.dp, onClick = onPersona) { Flecha() }
             EncabezadoSeccion("Cocina · 1")
-            FilaPersona("RM", "Rosa Medina", "Cocina", fondoAvatar = Mostaza100, tintaAvatar = TintaBase, ladoAvatar = 40.dp, onClick = onPersona) { Flecha() }
+            FilaPersona(
+                "RM",
+                "Rosa Medina",
+                "Cocina",
+                fondoAvatar = Mostaza100,
+                tintaAvatar = TintaBase,
+                ladoAvatar = 40.dp,
+                onClick = onPersona
+            ) {
+                Flecha()
+            }
         }
     }
 }

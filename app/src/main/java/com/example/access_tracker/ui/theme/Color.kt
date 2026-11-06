@@ -2,7 +2,6 @@ package com.example.access_tracker.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Variables de la colección «Color» del Figma (Fundamentos → Colores)
 val FondoCrema = Color(0xFFFCF6EE)
 val FondoArena = Color(0xFFF4EBDD)
 val FondoArenaFuerte = Color(0xFFEADFCD)

@@ -22,7 +22,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.access_tracker.components.AvisosPill
 import com.example.access_tracker.components.Boton
 import com.example.access_tracker.components.BarraSuperiorLogo
 import com.example.access_tracker.components.EstiloBoton
@@ -40,16 +39,32 @@ import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 
-/** Modal sobre cualquier pantalla; aquí se muestra sobre el inicio de la Empleada. */
 @Composable
 fun SesionExpiradaScreen(onIniciarSesion: () -> Unit) {
     Box(Modifier.fillMaxSize()) {
         PantallaBase {
             BarraSuperiorLogo(avisos = 2, onAvisos = {})
             Text("Hola, María", style = Texto.DisplayL, color = TintaBase)
-            Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                TarjetaDato("Turno de hoy", "Matutino", Modifier.weight(1f), fondo = Mostaza500, tinta = TintaBase, estiloValor = Texto.TitleM)
-                TarjetaDato("Horario", "7:00 – 15:00", Modifier.weight(1f), fondo = Petroleo700, tinta = FondoCrema, estiloValor = Texto.TitleM)
+            Row(
+                Modifier.fillMaxWidth().height(IntrinsicSize.Min),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                TarjetaDato(
+                    "Turno de hoy",
+                    "Matutino",
+                    Modifier.weight(1f),
+                    fondo = Mostaza500,
+                    tinta = TintaBase,
+                    estiloValor = Texto.TitleM
+                )
+                TarjetaDato(
+                    "Horario",
+                    "7:00 – 15:00",
+                    Modifier.weight(1f),
+                    fondo = Petroleo700,
+                    tinta = FondoCrema,
+                    estiloValor = Texto.TitleM
+                )
             }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.size(14.dp).clip(CircleShape).background(Mostaza500))
