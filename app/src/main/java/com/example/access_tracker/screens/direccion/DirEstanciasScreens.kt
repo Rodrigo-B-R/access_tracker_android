@@ -81,7 +81,6 @@ fun DirResumenScreen(onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> U
     if (elegirFecha) DialogoFecha(fecha, { elegirFecha = false }, { fecha = it })
     PantallaBase(
         barra = barra,
-        conBarra = true,
         separacion = 18.dp,
         cabecera = {
             Column(

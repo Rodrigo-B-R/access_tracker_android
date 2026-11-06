@@ -59,7 +59,7 @@ private val Cuadricula = listOf(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ResHorariosScreen(onAvisos: () -> Unit, onPersona: () -> Unit, barra: @Composable () -> Unit = {}) {
-    PantallaBase(barra = barra, conBarra = true, separacion = 16.dp) {
+    PantallaBase(barra = barra, separacion = 16.dp) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) { TituloPantalla("Horarios") }
             BotonCampana(3, onAvisos)

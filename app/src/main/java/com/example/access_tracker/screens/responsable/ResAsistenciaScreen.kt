@@ -29,7 +29,6 @@ import com.example.access_tracker.components.FilaPersona
 import com.example.access_tracker.components.Ico
 import com.example.access_tracker.components.Icono
 import com.example.access_tracker.components.PantallaBase
-import com.example.access_tracker.components.sobreBarra
 import com.example.access_tracker.components.Segmentado
 import com.example.access_tracker.components.TituloPantalla
 import com.example.access_tracker.components.TonoChip
@@ -59,11 +58,8 @@ fun ResAsistenciaScreen(
     var turno by remember { mutableIntStateOf(0) }
     PantallaBase(
         barra = barra,
-        conBarra = true,
         separacion = 16.dp,
-        overlay = {
-            BotonFlotanteIcono(Ico.Plus, Coral500, { onAusencia(null) }, Modifier.align(Alignment.BottomEnd).sobreBarra())
-        },
+        botonFlotante = { BotonFlotanteIcono(Ico.Plus, Coral500, { onAusencia(null) }, Modifier.padding(end = 8.dp)) },
     ) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f)) { TituloPantalla("Asistencia", subtitulo = "Miércoles 7 de octubre") }

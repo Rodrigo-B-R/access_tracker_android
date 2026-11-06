@@ -71,7 +71,7 @@ import com.example.access_tracker.ui.theme.Verde100
 @Composable
 fun DirEstadisticasScreen(onExportar: () -> Unit, onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}, barra: @Composable () -> Unit = {}) {
     var periodo by remember { mutableIntStateOf(0) }
-    PantallaBase(barra = barra, conBarra = true, separacion = 14.dp) {
+    PantallaBase(barra = barra, separacion = 14.dp) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Eyebrow("Dirección")
@@ -166,7 +166,7 @@ private fun GrupoBarras(
 @Composable
 fun DirBitacoraScreen(onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}, barra: @Composable () -> Unit = {}) {
     var filtro by remember { mutableIntStateOf(0) }
-    PantallaBase(barra = barra, conBarra = true, separacion = 14.dp) {
+    PantallaBase(barra = barra, separacion = 14.dp) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Eyebrow("Dirección")

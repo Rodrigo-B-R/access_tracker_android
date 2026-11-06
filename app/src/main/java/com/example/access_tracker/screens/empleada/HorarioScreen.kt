@@ -41,7 +41,7 @@ private enum class EstadoDia { Normal, Hoy, Descanso }
 /** Pestaña Horario: semana con turnos y sala asignada. */
 @Composable
 fun HorarioScreen(barra: @Composable () -> Unit = {}) {
-    PantallaBase(barra = barra, conBarra = true, separacion = 16.dp) {
+    PantallaBase(barra = barra, separacion = 16.dp) {
         TituloPantalla("Mi horario")
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             DiaSemana("L", "5", EstadoDia.Normal, Modifier.weight(1f))

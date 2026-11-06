@@ -61,9 +61,7 @@ fun ResAvisosScreen(onAtras: () -> Unit, onNuevo: () -> Unit, onEstadoLectura: (
     var filtro by remember { mutableIntStateOf(0) }
     PantallaBase(
         separacion = 16.dp,
-        overlay = {
-            BotonFlotante("Nuevo aviso", onNuevo, Modifier.align(Alignment.BottomEnd).padding(end = 24.dp, bottom = 48.dp))
-        },
+        botonFlotante = { BotonFlotante("Nuevo aviso", onNuevo, Modifier.padding(end = 8.dp, bottom = 32.dp)) },
     ) {
         EncabezadoPantalla("Avisos", onAtras = onAtras, grande = true)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
