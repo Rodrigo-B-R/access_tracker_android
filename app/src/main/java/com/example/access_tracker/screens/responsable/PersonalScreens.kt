@@ -177,7 +177,7 @@ fun DarDeBajaScreen(onCerrar: () -> Unit, onConfirmar: () -> Unit) {
                 }
             }
         }
-        CampoFecha("Fecha de baja", "9 de octubre")
+        CampoFecha("Fecha de baja", "Viernes 9 de octubre")
         Nota(
             "La persona sale de la plantilla activa. El historial se conserva y se anonimiza un año después de la baja.",
             icono = Ico.History, fondo = Mostaza100, tint = TintaBase,

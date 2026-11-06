@@ -75,10 +75,10 @@ import com.example.access_tracker.ui.theme.Verde600
 
 @Composable
 fun DirResumenScreen(onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}, barra: @Composable () -> Unit = {}) {
-    var fecha by remember { mutableStateOf("7 de octubre") }
+    var fecha by remember { mutableStateOf("Mié 7 oct") }
     var elegirFecha by remember { mutableStateOf(false) }
     if (elegirFecha) {
-        DialogoFecha(formato = "d 'de' MMMM", onCerrar = { elegirFecha = false }, onElegida = { fecha = it })
+        DialogoFecha(formato = "EEE d MMM", onCerrar = { elegirFecha = false }, onElegida = { fecha = it.replace(".", "") })
     }
     PantallaBase(
         barra = barra,

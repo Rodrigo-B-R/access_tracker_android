@@ -120,7 +120,7 @@ fun CampoOpciones(
 }
 
 @Composable
-fun CampoFecha(etiqueta: String, valorInicial: String, formato: String = "d 'de' MMMM") {
+fun CampoFecha(etiqueta: String, valorInicial: String, formato: String = "EEEE d 'de' MMMM") {
     var fecha by remember { mutableStateOf(valorInicial) }
     var abierto by remember { mutableStateOf(false) }
 
@@ -167,7 +167,7 @@ fun DialogoFecha(formato: String, onCerrar: () -> Unit, onElegida: (String) -> U
 fun CampoHora(etiqueta: String, valorInicial: String) {
     var hora by remember { mutableStateOf(valorInicial) }
     var abierto by remember { mutableStateOf(false) }
-    val estado = rememberTimePickerState(initialHour = 7, initialMinute = 0, is24Hour = true)
+    val estado = rememberTimePickerState(initialHour = 7, initialMinute = 0, is24Hour = false)
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(etiqueta, style = Texto.LabelM, color = TintaSuave)
@@ -179,7 +179,9 @@ fun CampoHora(etiqueta: String, valorInicial: String) {
             confirmButton = {
                 TextButton(
                     onClick = {
-                        hora = "${estado.hour}:${estado.minute.toString().padStart(2, '0')}"
+                        val hora12 = if (estado.hour % 12 == 0) 12 else estado.hour % 12
+                        val ampm = if (estado.hour < 12) "a. m." else "p. m."
+                        hora = "$hora12:${estado.minute.toString().padStart(2, '0')} $ampm"
                         abierto = false
                     }
                 ) {

@@ -97,7 +97,7 @@ fun RegistroTurnoScreen(onCerrar: () -> Unit, onRegistrar: () -> Unit) {
                 ChipOpcion("Vespertino", Modifier.weight(1f), seleccionado = !matutino, onClick = { matutino = false })
             }
         }
-        CampoHora("Hora de entrada", "7:00")
+        CampoHora("Hora de entrada", "7:00 a. m.")
         Row(
             Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(Petroleo100).padding(horizontal = 16.dp, vertical = 14.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -135,7 +135,7 @@ fun RegistrarAusenciaScreen(onCerrar: () -> Unit, onGuardar: () -> Unit, persona
             "Persona", persona, listOf("Ana Torres", "Lucía Herrera", "Carmen Ruiz", "Sofía Díaz", "Paola Reyes", "Rosa Medina"),
             inicio = { Avatar(persona.split(" ").take(2).joinToString("") { it.take(1) }.uppercase(), lado = 28.dp) },
         )
-        CampoFecha("Fecha", "7 de octubre")
+        CampoFecha("Fecha", "Miércoles 7 de octubre")
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Tipo", style = Texto.LabelM, color = TintaSuave)
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
