@@ -54,7 +54,6 @@ fun LoginScreen(
 ) {
     var clave by remember { mutableStateOf("ana.torres") }
     var password by remember { mutableStateOf("1234567890") }
-    var verPassword by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -102,10 +101,7 @@ fun LoginScreen(
             verticalArrangement = Arrangement.spacedBy(18.dp),
         ) {
             CampoTexto("Clave", clave, { clave = it }, icono = Ico.Idcard)
-            CampoTexto(
-                "Contraseña", password, { password = it }, icono = Ico.Lock,
-                esPassword = true, visible = verPassword, onAlternarVisible = { verPassword = !verPassword },
-            )
+            CampoTexto("Contraseña", password, { password = it }, icono = Ico.Lock, esPassword = true)
             Boton("Iniciar sesión", onClick = { onIniciarSesion(clave) })
             Text(
                 text = "¿Olvidaste tu contraseña? Pídela a tu Responsable.",

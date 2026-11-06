@@ -68,7 +68,7 @@ fun AltaPersonalScreen(onCerrar: () -> Unit, onGuardar: () -> Unit) {
         pie = { Boton("Guardar y crear cuenta", onGuardar, estilo = EstiloBoton.Oscuro) },
     ) {
         EncabezadoPantalla("Alta de personal", onAtras = onCerrar, cerrar = true, eyebrow = "Personal")
-        CampoTexto("Nombre completo", nombre, { nombre = it }, activo = true)
+        CampoTexto("Nombre completo", nombre, { nombre = it })
         CampoSelector("Tipo de personal", "Maestra titular", icono = Ico.Chevdown, opciones = listOf("Maestra titular", "Asistente", "Auxiliar", "Cocina", "Intendencia"))
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             CampoSelector("Sala", "Maternal A", Modifier.weight(1f), icono = Ico.Chevdown, opciones = listOf("Lactantes", "Maternal A", "Maternal B", "Preescolar"))

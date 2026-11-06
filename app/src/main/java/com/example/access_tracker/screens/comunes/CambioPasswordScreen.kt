@@ -39,9 +39,6 @@ fun CambioPasswordScreen(onGuardar: () -> Unit) {
     var temporal by remember { mutableStateOf("12345678") }
     var nueva by remember { mutableStateOf("Cristal2026") }
     var confirmar by remember { mutableStateOf("Cristal2026") }
-    var verTemporal by remember { mutableStateOf(false) }
-    var verNueva by remember { mutableStateOf(false) }
-    var verConfirmar by remember { mutableStateOf(false) }
 
     PantallaBase(
         separacion = 16.dp,
@@ -52,9 +49,9 @@ fun CambioPasswordScreen(onGuardar: () -> Unit) {
             Text("Crea tu contraseña", style = Texto.TitleL, color = TintaBase)
             Text("Entraste con una contraseña temporal. Cámbiala para continuar.", style = Texto.BodyL, color = TintaSuave)
         }
-        CampoTexto("Contraseña temporal", temporal, { temporal = it }, esPassword = true, visible = verTemporal, onAlternarVisible = { verTemporal = !verTemporal })
-        CampoTexto("Nueva contraseña", nueva, { nueva = it }, esPassword = true, visible = verNueva, onAlternarVisible = { verNueva = !verNueva }, activo = true)
-        CampoTexto("Confirmar nueva contraseña", confirmar, { confirmar = it }, esPassword = true, visible = verConfirmar, onAlternarVisible = { verConfirmar = !verConfirmar })
+        CampoTexto("Contraseña temporal", temporal, { temporal = it }, esPassword = true)
+        CampoTexto("Nueva contraseña", nueva, { nueva = it }, esPassword = true)
+        CampoTexto("Confirmar nueva contraseña", confirmar, { confirmar = it }, esPassword = true)
         Tarjeta {
             androidx.compose.foundation.layout.Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text("Tu contraseña debe tener", style = Texto.LabelM, color = TintaSuave)

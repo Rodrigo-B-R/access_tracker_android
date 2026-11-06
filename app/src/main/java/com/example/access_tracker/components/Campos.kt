@@ -12,14 +12,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -35,7 +36,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -53,55 +53,50 @@ import com.example.access_tracker.ui.theme.Petroleo700
 import com.example.access_tracker.ui.theme.FondoCrema
 import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
-import com.example.access_tracker.ui.theme.TintaTenue
 import com.example.access_tracker.ui.theme.Texto
 
 private val FormaCampo = RoundedCornerShape(18.dp)
 
-/** Campo de texto del diseño: etiqueta arriba, caja blanca con borde arena (petróleo si está activo). */
 @Composable
 fun CampoTexto(
     etiqueta: String,
     valor: String,
     onCambio: (String) -> Unit,
-    modifier: Modifier = Modifier,
     icono: Ico? = null,
     esPassword: Boolean = false,
-    visible: Boolean = false,
-    onAlternarVisible: (() -> Unit)? = null,
-    activo: Boolean = false,
-    placeholder: String = "",
     lineas: Int = 1,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 ) {
-    Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    var verPassword by remember { mutableStateOf(false) }
+
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(etiqueta, style = Texto.LabelM, color = TintaSuave)
-        CajaCampo(activo) {
-            if (icono != null) Icono(icono, tint = TintaSuave, tamano = 20.dp)
-            BasicTextField(
-                value = valor,
-                onValueChange = onCambio,
-                modifier = Modifier.weight(1f),
-                singleLine = lineas == 1,
-                minLines = lineas,
-                textStyle = Texto.BodyL.copy(color = TintaBase),
-                cursorBrush = SolidColor(Petroleo700),
-                visualTransformation = if (esPassword && !visible) PasswordVisualTransformation('•') else VisualTransformation.None,
-                keyboardOptions = keyboardOptions,
-                decorationBox = { interno ->
-                    if (valor.isEmpty() && placeholder.isNotEmpty()) Text(placeholder, style = Texto.BodyL, color = TintaTenue)
-                    interno()
-                },
-            )
-            if (esPassword) {
-                Icono(
-                    Ico.Eye,
-                    tint = TintaSuave,
-                    tamano = 20.dp,
-                    modifier = Modifier.clickable { onAlternarVisible?.invoke() },
-                )
-            }
-        }
+        OutlinedTextField(
+            value = valor,
+            onValueChange = onCambio,
+            modifier = Modifier.fillMaxWidth(),
+            textStyle = Texto.BodyL,
+            singleLine = lineas == 1,
+            minLines = lineas,
+            shape = RoundedCornerShape(18.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = FondoBlanco,
+                unfocusedContainerColor = FondoBlanco,
+                focusedBorderColor = Petroleo700,
+                unfocusedBorderColor = FondoArenaFuerte,
+                cursorColor = Petroleo700
+            ),
+            leadingIcon = if (icono != null) {
+                { Icono(icono, tint = TintaSuave, tamano = 20.dp) }
+            } else null,
+            trailingIcon = if (esPassword) {
+                {
+                    IconButton(onClick = { verPassword = !verPassword }) {
+                        Icono(Ico.Eye, tint = TintaSuave, tamano = 20.dp)
+                    }
+                }
+            } else null,
+            visualTransformation = if (esPassword && !verPassword) PasswordVisualTransformation() else VisualTransformation.None
+        )
     }
 }
 

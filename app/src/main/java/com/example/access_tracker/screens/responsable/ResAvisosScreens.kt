@@ -108,7 +108,7 @@ fun ResNuevoAvisoScreen(onCerrar: () -> Unit, onEnviar: () -> Unit) {
     ) {
         EncabezadoPantalla("Nuevo aviso", onAtras = onCerrar, cerrar = true)
         CampoTexto("Título", titulo, { titulo = it })
-        CampoTexto("Mensaje", mensaje, { mensaje = it }, activo = true, lineas = 3)
+        CampoTexto("Mensaje", mensaje, { mensaje = it }, lineas = 3)
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Tipo", style = Texto.LabelM, color = TintaSuave)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
