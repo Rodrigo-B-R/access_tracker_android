@@ -73,12 +73,13 @@ import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde100
 import com.example.access_tracker.ui.theme.Verde600
 
-/** Resumen de Dirección (solo lectura): cuántas estancias están completas y cuáles tienen faltante. */
 @Composable
 fun DirResumenScreen(onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}, barra: @Composable () -> Unit = {}) {
-    var fecha by remember { mutableStateOf("Mié 7 oct") }
+    var fecha by remember { mutableStateOf("7 de octubre") }
     var elegirFecha by remember { mutableStateOf(false) }
-    if (elegirFecha) DialogoFecha(fecha, { elegirFecha = false }, { fecha = it })
+    if (elegirFecha) {
+        DialogoFecha(formato = "d 'de' MMMM", onCerrar = { elegirFecha = false }, onElegida = { fecha = it })
+    }
     PantallaBase(
         barra = barra,
         separacion = 18.dp,

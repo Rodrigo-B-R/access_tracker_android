@@ -34,7 +34,9 @@ import androidx.compose.ui.unit.dp
 import com.example.access_tracker.components.Avatar
 import com.example.access_tracker.components.Boton
 import com.example.access_tracker.components.Casilla
-import com.example.access_tracker.components.CampoSelector
+import com.example.access_tracker.components.CampoFecha
+import com.example.access_tracker.components.CampoHora
+import com.example.access_tracker.components.CampoOpciones
 import com.example.access_tracker.components.CampoTexto
 import com.example.access_tracker.components.Chip
 import com.example.access_tracker.components.ChipOpcion
@@ -95,7 +97,7 @@ fun RegistroTurnoScreen(onCerrar: () -> Unit, onRegistrar: () -> Unit) {
                 ChipOpcion("Vespertino", Modifier.weight(1f), seleccionado = !matutino, onClick = { matutino = false })
             }
         }
-        CampoSelector("Hora de entrada", "7:00 a. m.", icono = Ico.Clock)
+        CampoHora("Hora de entrada", "7:00")
         Row(
             Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(Petroleo100).padding(horizontal = 16.dp, vertical = 14.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -129,12 +131,11 @@ fun RegistrarAusenciaScreen(onCerrar: () -> Unit, onGuardar: () -> Unit, persona
         pie = { Boton("Guardar registro", onGuardar, estilo = EstiloBoton.Oscuro) },
     ) {
         EncabezadoPantalla("Registrar ausencia o incidencia", onAtras = onCerrar, cerrar = true)
-        CampoSelector(
-            "Persona", persona, icono = Ico.Chevdown,
-            opciones = listOf("Ana Torres", "Lucía Herrera", "Carmen Ruiz", "Sofía Díaz", "Paola Reyes", "Rosa Medina"),
+        CampoOpciones(
+            "Persona", persona, listOf("Ana Torres", "Lucía Herrera", "Carmen Ruiz", "Sofía Díaz", "Paola Reyes", "Rosa Medina"),
             inicio = { Avatar(persona.split(" ").take(2).joinToString("") { it.take(1) }.uppercase(), lado = 28.dp) },
         )
-        CampoSelector("Fecha", "Miércoles 7 de octubre", icono = Ico.Calendar)
+        CampoFecha("Fecha", "7 de octubre")
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Tipo", style = Texto.LabelM, color = TintaSuave)
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {

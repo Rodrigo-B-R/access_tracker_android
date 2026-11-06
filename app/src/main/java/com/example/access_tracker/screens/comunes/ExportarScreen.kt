@@ -20,7 +20,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.access_tracker.components.Boton
-import com.example.access_tracker.components.CampoSelector
+import com.example.access_tracker.components.CampoFecha
+import com.example.access_tracker.components.CampoOpciones
 import com.example.access_tracker.components.Casilla
 import com.example.access_tracker.components.Divisor
 import com.example.access_tracker.components.EncabezadoPantalla
@@ -58,11 +59,10 @@ fun ExportarScreen(onAtras: () -> Unit, onDescargar: () -> Unit, direccion: Bool
             Text("Periodo", style = Texto.LabelM, color = TintaSuave)
             Segmentado(listOf("Semana", "Mes", "Personalizado"), periodo, { periodo = it })
         }
-        CampoSelector("Mes", "Septiembre 2026", icono = Ico.Calendar)
+        CampoFecha("Mes", "Septiembre 2026", formato = "MMMM yyyy")
         if (direccion) {
-            CampoSelector(
-                "Estancia", "Todas las estancias", icono = Ico.Chevdown,
-                opciones = listOf("Todas las estancias", "Estancia Cumbres", "Estancia San Nicolás", "Estancia Apodaca", "Estancia Guadalupe", "Estancia Escobedo"),
+            CampoOpciones(
+                "Estancia", "Todas las estancias", listOf("Todas las estancias", "Estancia Cumbres", "Estancia San Nicolás", "Estancia Apodaca", "Estancia Guadalupe", "Estancia Escobedo"),
                 inicio = { Icono(Ico.Building, tint = TintaSuave, tamano = 20.dp) },
             )
         }

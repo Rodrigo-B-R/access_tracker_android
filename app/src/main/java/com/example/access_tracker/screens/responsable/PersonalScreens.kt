@@ -30,7 +30,8 @@ import androidx.compose.ui.unit.dp
 import com.example.access_tracker.components.Avatar
 import com.example.access_tracker.components.Boton
 import com.example.access_tracker.components.BotonCircular
-import com.example.access_tracker.components.CampoSelector
+import com.example.access_tracker.components.CampoFecha
+import com.example.access_tracker.components.CampoOpciones
 import com.example.access_tracker.components.CampoTexto
 import com.example.access_tracker.components.Chip
 import com.example.access_tracker.components.ChipOpcion
@@ -69,10 +70,10 @@ fun AltaPersonalScreen(onCerrar: () -> Unit, onGuardar: () -> Unit) {
     ) {
         EncabezadoPantalla("Alta de personal", onAtras = onCerrar, cerrar = true, eyebrow = "Personal")
         CampoTexto("Nombre completo", nombre, { nombre = it })
-        CampoSelector("Tipo de personal", "Maestra titular", icono = Ico.Chevdown, opciones = listOf("Maestra titular", "Asistente", "Auxiliar", "Cocina", "Intendencia"))
+        CampoOpciones("Tipo de personal", "Maestra titular", listOf("Maestra titular", "Asistente", "Auxiliar", "Cocina", "Intendencia"))
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            CampoSelector("Sala", "Maternal A", Modifier.weight(1f), icono = Ico.Chevdown, opciones = listOf("Lactantes", "Maternal A", "Maternal B", "Preescolar"))
-            CampoSelector("Turno", "Matutino", Modifier.weight(1f), icono = Ico.Chevdown, opciones = listOf("Matutino", "Vespertino", "Mixto"))
+            CampoOpciones("Sala", "Maternal A", listOf("Lactantes", "Maternal A", "Maternal B", "Preescolar"), Modifier.weight(1f))
+            CampoOpciones("Turno", "Matutino", listOf("Matutino", "Vespertino", "Mixto"), Modifier.weight(1f))
         }
         CampoTexto("Clave de acceso", clave, { clave = it }, icono = Ico.Idcard)
         Nota(
@@ -176,7 +177,7 @@ fun DarDeBajaScreen(onCerrar: () -> Unit, onConfirmar: () -> Unit) {
                 }
             }
         }
-        CampoSelector("Fecha de baja", "Viernes 9 de octubre", icono = Ico.Calendar)
+        CampoFecha("Fecha de baja", "9 de octubre")
         Nota(
             "La persona sale de la plantilla activa. El historial se conserva y se anonimiza un año después de la baja.",
             icono = Ico.History, fondo = Mostaza100, tint = TintaBase,

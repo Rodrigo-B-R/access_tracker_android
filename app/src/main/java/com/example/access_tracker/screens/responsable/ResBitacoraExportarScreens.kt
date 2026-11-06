@@ -22,7 +22,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.access_tracker.components.Boton
-import com.example.access_tracker.components.CampoSelector
 import com.example.access_tracker.components.Casilla
 import com.example.access_tracker.components.Divisor
 import com.example.access_tracker.components.EncabezadoPantalla
