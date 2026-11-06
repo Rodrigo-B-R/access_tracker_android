@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -57,14 +56,29 @@ fun LoginScreen(
     var password by remember { mutableStateOf("1234567890") }
     var verPassword by remember { mutableStateOf(false) }
 
-    Column(Modifier.fillMaxSize().background(Petroleo700)) {
-        // La zona superior ocupa lo que deje libre el formulario: el título nunca queda bajo la tarjeta.
-        Box(Modifier.weight(1f).fillMaxWidth()) {
-            MotivoPlantilla(Modifier.align(Alignment.TopEnd).statusBarsPadding().padding(top = 16.dp, end = 24.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Petroleo700)
+    ) {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+        ) {
+            MotivoPlantilla(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .statusBarsPadding()
+                    .padding(top = 16.dp, end = 24.dp)
+            )
 
             Column(
-                Modifier.fillMaxSize().statusBarsPadding().padding(horizontal = 24.dp).padding(top = 16.dp, bottom = 28.dp),
-                verticalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .statusBarsPadding()
+                    .padding(start = 24.dp, end = 24.dp, top = 16.dp, bottom = 28.dp),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Logo(lado = 80.dp, sobreOscuro = true)
                 Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
@@ -94,13 +108,21 @@ fun LoginScreen(
             )
             Boton("Iniciar sesión", onClick = { onIniciarSesion(clave) })
             Text(
-                "¿Olvidaste tu contraseña? Pídela a tu Responsable.",
-                style = Texto.BodyM, color = TintaSuave, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth(),
+                text = "¿Olvidaste tu contraseña? Pídela a tu Responsable.",
+                style = Texto.BodyM,
+                color = TintaSuave,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
             Text(
-                "Ver índice de pantallas (demo)",
-                style = Texto.BodyS, color = TintaTenue, textDecoration = TextDecoration.Underline, textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().clickable(onClick = onVerIndice),
+                text = "Ver índice de pantallas (demo)",
+                style = Texto.BodyS,
+                color = TintaTenue,
+                textDecoration = TextDecoration.Underline,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onVerIndice() }
             )
         }
     }
