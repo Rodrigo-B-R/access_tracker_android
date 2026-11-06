@@ -1,6 +1,7 @@
 package com.example.access_tracker.screens.responsable
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,48 +22,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.access_tracker.components.Avatar
 import com.example.access_tracker.components.Boton
-import com.example.access_tracker.components.Chip
 import com.example.access_tracker.components.ContadorMinimo
-import com.example.access_tracker.components.Divisor
 import com.example.access_tracker.components.EncabezadoPantalla
 import com.example.access_tracker.components.EstiloBoton
-import com.example.access_tracker.components.Eyebrow
-import com.example.access_tracker.components.FilaAjuste
-import com.example.access_tracker.components.FilaInterruptor
-import com.example.access_tracker.components.GrupoFilas
 import com.example.access_tracker.components.Ico
 import com.example.access_tracker.components.IconoCuadro
 import com.example.access_tracker.components.Icono
-import com.example.access_tracker.components.Nota
 import com.example.access_tracker.components.PantallaBase
 import com.example.access_tracker.components.Tarjeta
-import com.example.access_tracker.components.TonoChip
 import com.example.access_tracker.ui.theme.Access_trackerTheme
 import com.example.access_tracker.ui.theme.Coral100
 import com.example.access_tracker.ui.theme.FondoBlanco
-import com.example.access_tracker.ui.theme.FondoCrema
 import com.example.access_tracker.ui.theme.Mostaza100
-import com.example.access_tracker.ui.theme.Mostaza500
 import com.example.access_tracker.ui.theme.Petroleo100
-import com.example.access_tracker.ui.theme.Petroleo700
 import com.example.access_tracker.ui.theme.Rojo100
-import com.example.access_tracker.ui.theme.Rojo600
 import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.TintaTenue
 import com.example.access_tracker.ui.theme.Texto
-import com.example.access_tracker.ui.theme.Verde100
-import com.example.access_tracker.ui.theme.Verde600
 
 @Composable
 fun ResMenuScreen(
@@ -150,13 +131,7 @@ fun ResAjustesSalasScreen(onAtras: () -> Unit, onGuardar: () -> Unit) {
             Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(24.dp))
-                .drawBehind {
-                    drawRoundRect(
-                        color = TintaTenue,
-                        cornerRadius = CornerRadius(24.dp.toPx()),
-                        style = Stroke(1.5.dp.toPx(), pathEffect = PathEffect.dashPathEffect(floatArrayOf(8.dp.toPx(), 6.dp.toPx()))),
-                    )
-                }
+                .border(1.5.dp, TintaTenue, RoundedCornerShape(24.dp))
                 .clickable { }
                 .padding(horizontal = 18.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),

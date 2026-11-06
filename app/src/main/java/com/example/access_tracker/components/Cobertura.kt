@@ -18,11 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.access_tracker.ui.theme.Coral500
@@ -109,21 +105,12 @@ fun TarjetaSala(
     }
 }
 
-/** Cuadrito de una persona: lleno si está presente, punteado si falta. */
 @Composable
 fun CuadroPersona(presente: Boolean, color: Color, lado: Dp = 24.dp, radio: Dp = 8.dp, colorFaltante: Color = color) {
     if (presente) {
         Box(Modifier.size(lado).clip(RoundedCornerShape(radio)).background(color))
     } else {
-        Box(
-            Modifier.size(lado).drawBehind {
-                drawRoundRect(
-                    color = colorFaltante,
-                    cornerRadius = CornerRadius(radio.toPx()),
-                    style = Stroke(2.dp.toPx(), pathEffect = PathEffect.dashPathEffect(floatArrayOf(4.dp.toPx(), 3.dp.toPx()))),
-                )
-            },
-        )
+        Box(Modifier.size(lado).border(2.dp, colorFaltante, RoundedCornerShape(radio)))
     }
 }
 

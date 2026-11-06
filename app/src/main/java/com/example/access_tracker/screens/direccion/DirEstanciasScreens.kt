@@ -1,14 +1,11 @@
 package com.example.access_tracker.screens.direccion
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,44 +20,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.access_tracker.components.Boton
-import com.example.access_tracker.components.BotonFlotante
-import com.example.access_tracker.components.CampoTexto
-import com.example.access_tracker.components.EncabezadoPantalla
-import com.example.access_tracker.components.EstiloBoton
-import com.example.access_tracker.components.Eyebrow
-import com.example.access_tracker.components.Divisor
-import com.example.access_tracker.components.Flecha
-import com.example.access_tracker.components.GrupoFilas
 import com.example.access_tracker.components.DialogoFecha
 import com.example.access_tracker.components.Ico
 import com.example.access_tracker.components.MenuCuenta
-import com.example.access_tracker.components.IconoCuadro
 import com.example.access_tracker.components.Icono
-import com.example.access_tracker.components.Nota
 import com.example.access_tracker.components.PantallaBase
-import com.example.access_tracker.components.SalaMini
-import com.example.access_tracker.components.Tarjeta
-import com.example.access_tracker.components.TituloPantalla
 import com.example.access_tracker.ui.theme.Access_trackerTheme
-import com.example.access_tracker.ui.theme.Coral100
 import com.example.access_tracker.ui.theme.Coral500
 import com.example.access_tracker.ui.theme.FondoArena
-import com.example.access_tracker.ui.theme.FondoArenaFuerte
 import com.example.access_tracker.ui.theme.FondoBlanco
 import com.example.access_tracker.ui.theme.FondoCrema
-import com.example.access_tracker.ui.theme.Mostaza100
 import com.example.access_tracker.ui.theme.Petroleo100
 import com.example.access_tracker.ui.theme.Petroleo500
 import com.example.access_tracker.ui.theme.Petroleo700
@@ -68,7 +43,6 @@ import com.example.access_tracker.ui.theme.Rojo100
 import com.example.access_tracker.ui.theme.Rojo600
 import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
-import com.example.access_tracker.ui.theme.TintaTenue
 import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde100
 import com.example.access_tracker.ui.theme.Verde600
@@ -151,7 +125,7 @@ private fun EstanciaEstado(nombre: String, estado: String, completa: Boolean, mo
         modifier = modifier
             .clip(forma)
             .background(if (completa) Verde100 else Rojo100)
-            .then(if (!completa) Modifier.border(BorderStroke(2.dp, Rojo600), forma) else Modifier)
+            .border(2.dp, if (completa) Verde100 else Rojo600, forma)
             .padding(18.dp),
         verticalArrangement = Arrangement.spacedBy(28.dp),
     ) {

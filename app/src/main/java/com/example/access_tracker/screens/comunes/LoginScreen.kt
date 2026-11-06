@@ -1,14 +1,15 @@
 package com.example.access_tracker.screens.comunes
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -22,11 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -124,28 +120,25 @@ fun LoginScreen(
     }
 }
 
-/** Cuadrícula decorativa de 4×4 («Motivo · plantilla»). */
 @Composable
 private fun MotivoPlantilla(modifier: Modifier = Modifier) {
-    val lado = 38.dp
-    val paso = 48.dp
-    val mostaza = setOf(1 to 1, 3 to 3)
-    Box(modifier.size(182.dp)) {
-        for (fila in 0..3) for (col in 0..3) {
-            val celda = Modifier.offset(paso * col, paso * fila).size(lado)
-            when {
-                fila to col in mostaza -> Box(celda.clip(RoundedCornerShape(11.dp)).background(Mostaza500))
-                fila == 2 && col == 2 -> Box(
-                    celda.drawBehind {
-                        drawRoundRect(
-                            color = Coral500,
-                            cornerRadius = CornerRadius(11.dp.toPx()),
-                            size = Size(size.width, size.height),
-                            style = Stroke(2.5.dp.toPx(), pathEffect = PathEffect.dashPathEffect(floatArrayOf(6.dp.toPx(), 4.dp.toPx()))),
+    val forma = RoundedCornerShape(11.dp)
+    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        for (fila in 0..3) {
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                for (col in 0..3) {
+                    if (fila == 2 && col == 2) {
+                        Box(Modifier.size(38.dp).border(2.dp, Coral500, forma))
+                    } else {
+                        val color = if (fila == col && fila % 2 == 1) Mostaza500 else Petroleo500
+                        Box(
+                            modifier = Modifier
+                                .size(38.dp)
+                                .clip(forma)
+                                .background(color)
                         )
-                    },
-                )
-                else -> Box(celda.clip(RoundedCornerShape(11.dp)).background(Petroleo500))
+                    }
+                }
             }
         }
     }
