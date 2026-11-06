@@ -1,37 +1,26 @@
 package com.example.access_tracker.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.example.access_tracker.R
 
-// Bricolage Grotesque para títulos, números y etiquetas. DM Sans para texto corrido.
-@OptIn(ExperimentalTextApi::class)
-private fun variable(res: Int, peso: FontWeight) = Font(
-    resId = res,
-    weight = peso,
-    variationSettings = FontVariation.Settings(FontVariation.weight(peso.weight)),
-)
-
 val Bricolage = FontFamily(
-    variable(R.font.bricolage_grotesque, FontWeight.SemiBold),
-    variable(R.font.bricolage_grotesque, FontWeight.Bold),
-    variable(R.font.bricolage_grotesque, FontWeight.ExtraBold),
+    Font(R.font.bricolage_grotesque_semibold, FontWeight.SemiBold),
+    Font(R.font.bricolage_grotesque_bold, FontWeight.Bold),
+    Font(R.font.bricolage_grotesque_extrabold, FontWeight.ExtraBold),
 )
 
 val DmSans = FontFamily(
-    variable(R.font.dm_sans, FontWeight.Normal),
-    variable(R.font.dm_sans, FontWeight.Medium),
-    variable(R.font.dm_sans, FontWeight.SemiBold),
+    Font(R.font.dm_sans_regular, FontWeight.Normal),
+    Font(R.font.dm_sans_medium, FontWeight.Medium),
+    Font(R.font.dm_sans_semibold, FontWeight.SemiBold),
 )
 
-// Estilos de texto del Figma (Fundamentos → Tipografía)
 object Texto {
     val DisplayXL = TextStyle(fontFamily = Bricolage, fontWeight = FontWeight.ExtraBold, fontSize = 76.sp, lineHeight = 73.sp, letterSpacing = (-0.04).em)
     val DisplayL = TextStyle(fontFamily = Bricolage, fontWeight = FontWeight.ExtraBold, fontSize = 44.sp, lineHeight = 44.sp, letterSpacing = (-0.03).em)
