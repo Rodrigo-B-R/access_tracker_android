@@ -46,8 +46,9 @@ import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde100
 import com.example.access_tracker.ui.theme.Verde600
+import androidx.compose.ui.graphics.Color
 
-private data class PersonaTurno(val iniciales: String, val nombre: String, val sala: String, val fondo: androidx.compose.ui.graphics.Color, val tinta: androidx.compose.ui.graphics.Color)
+private data class PersonaTurno(val iniciales: String, val nombre: String, val sala: String, val fondo: Color, val tinta: Color)
 
 private val PersonasTurno = listOf(
     PersonaTurno("AT", "Ana Torres", "Maternal A", Petroleo100, Petroleo700),

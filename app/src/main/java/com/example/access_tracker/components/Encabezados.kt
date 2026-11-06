@@ -30,6 +30,8 @@ import com.example.access_tracker.ui.theme.Petroleo500
 import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 
 @Composable
 fun Logo(
@@ -37,13 +39,27 @@ fun Logo(
     lado: Dp = 48.dp,
     sobreOscuro: Boolean = false,
 ) {
-    Image(
-        painter = painterResource(R.drawable.logo_sonrisas),
-        contentDescription = "Sonrisas de Cristal",
-        modifier = modifier
-            .size(lado)
-            .then(if (sobreOscuro) Modifier.clip(CircleShape).background(FondoCrema).padding(lado * 0.06f) else Modifier),
-    )
+    if (sobreOscuro) {
+        Box(
+            modifier = modifier
+                .size(lado)
+                .clip(CircleShape)
+                .background(FondoCrema)
+                .padding(5.dp)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.logo_sonrisas),
+                contentDescription = "Sonrisas de Cristal",
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+    } else {
+        Image(
+            painter = painterResource(R.drawable.logo_sonrisas),
+            contentDescription = "Sonrisas de Cristal",
+            modifier = modifier.size(lado)
+        )
+    }
 }
 
 @Composable

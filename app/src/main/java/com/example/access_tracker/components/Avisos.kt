@@ -1,6 +1,5 @@
 package com.example.access_tracker.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -43,7 +42,7 @@ fun AvisoUrgente(
             .fillMaxWidth()
             .clip(RoundedCornerShape(28.dp))
             .background(Rojo600)
-            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+            .clickable(enabled = onClick != null) { onClick?.invoke() }
             .padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
@@ -99,8 +98,8 @@ fun AvisoItem(
             .fillMaxWidth()
             .clip(forma)
             .background(fondo ?: if (sinLeer) FondoBlanco else FondoArena)
-            .then(if (sinLeer) Modifier.border(BorderStroke(2.dp, Coral500), forma) else Modifier)
-            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+            .border(2.dp, if (sinLeer) Coral500 else Color.Transparent, forma)
+            .clickable(enabled = onClick != null) { onClick?.invoke() }
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {

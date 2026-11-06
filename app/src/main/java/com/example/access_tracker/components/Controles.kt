@@ -1,6 +1,5 @@
 package com.example.access_tracker.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -45,6 +44,7 @@ import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.TintaTenue
 import com.example.access_tracker.ui.theme.Texto
+import androidx.compose.ui.unit.Dp
 
 @Composable
 fun Segmentado(opciones: List<String>, seleccion: Int, onSeleccion: (Int) -> Unit, modifier: Modifier = Modifier) {
@@ -73,7 +73,7 @@ fun Segmentado(opciones: List<String>, seleccion: Int, onSeleccion: (Int) -> Uni
 }
 
 @Composable
-fun FiltroDesplegable(inicial: String, opciones: List<String>, radio: androidx.compose.ui.unit.Dp = 26.dp, modifier: Modifier = Modifier) {
+fun FiltroDesplegable(inicial: String, opciones: List<String>, radio: Dp = 26.dp, modifier: Modifier = Modifier) {
     var abierto by remember { mutableStateOf(false) }
     var elegido by remember { mutableStateOf(inicial) }
     Box(modifier) {
@@ -115,7 +115,7 @@ fun ChipOpcion(
                 else -> FondoBlanco
             },
         )
-        .then(if (!seleccionado && !bloqueado) Modifier.border(BorderStroke(1.dp, FondoArenaFuerte), forma) else Modifier)
+        .border(1.dp, if (seleccionado || bloqueado) Color.Transparent else FondoArenaFuerte, forma)
         .clickable(enabled = !bloqueado, onClick = onClick)
         .padding(horizontal = 10.dp, vertical = 11.dp)
     Row(base, horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally), verticalAlignment = Alignment.CenterVertically) {

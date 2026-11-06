@@ -74,7 +74,7 @@ fun TarjetaSala(
             .fillMaxWidth()
             .clip(RoundedCornerShape(26.dp))
             .background(if (faltante) Coral500 else FondoArena)
-            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+            .clickable(enabled = onClick != null) { onClick?.invoke() }
             .padding(horizontal = 18.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
@@ -122,7 +122,7 @@ fun SalaMini(
         modifier = modifier
             .clip(forma)
             .background(if (bajoMinimo) Rojo100 else FondoArena)
-            .then(if (bajoMinimo) Modifier.border(2.dp, Rojo600, forma) else Modifier)
+            .border(2.dp, if (bajoMinimo) Rojo600 else Color.Transparent, forma)
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {

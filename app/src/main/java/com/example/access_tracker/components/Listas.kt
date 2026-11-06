@@ -62,7 +62,7 @@ fun FilaPersona(
             .fillMaxWidth()
             .clip(RoundedCornerShape(20.dp))
             .background(fondo)
-            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
+            .clickable(enabled = onClick != null) { onClick?.invoke() }
             .padding(start = 12.dp, end = 14.dp, top = 12.dp, bottom = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -83,8 +83,8 @@ fun Casilla(marcada: Boolean, modifier: Modifier = Modifier, bloqueada: Boolean 
             .size(28.dp)
             .clip(RoundedCornerShape(9.dp))
             .background(if (bloqueada) FondoArena else if (marcada) Petroleo700 else Color.Transparent)
-            .then(if (!marcada && !bloqueada) Modifier.border(2.dp, TintaTenue, RoundedCornerShape(9.dp)) else Modifier)
-            .then(if (onClick != null && !bloqueada) Modifier.clickable(onClick = onClick) else Modifier),
+            .border(2.dp, if (marcada || bloqueada) Color.Transparent else TintaTenue, RoundedCornerShape(9.dp))
+            .clickable(enabled = onClick != null && !bloqueada) { onClick?.invoke() },
         contentAlignment = Alignment.Center,
     ) {
         if (bloqueada) Icono(Ico.Check, tint = TintaTenue, tamano = 18.dp)

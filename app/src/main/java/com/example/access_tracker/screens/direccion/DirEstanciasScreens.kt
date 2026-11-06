@@ -46,6 +46,7 @@ import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde100
 import com.example.access_tracker.ui.theme.Verde600
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun DirResumenScreen(onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> Unit = {}, barra: @Composable () -> Unit = {}) {
@@ -107,7 +108,7 @@ fun DirResumenScreen(onCambiarPassword: () -> Unit = {}, onCerrarSesion: () -> U
 }
 
 @Composable
-private fun Cifra(valor: String, etiqueta: String, fondo: androidx.compose.ui.graphics.Color, modifier: Modifier) {
+private fun Cifra(valor: String, etiqueta: String, fondo: Color, modifier: Modifier) {
     Row(
         modifier.clip(RoundedCornerShape(28.dp)).background(fondo).padding(horizontal = 20.dp, vertical = 18.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),

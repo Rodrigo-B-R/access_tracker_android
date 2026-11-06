@@ -27,9 +27,11 @@ import com.example.access_tracker.ui.theme.FondoCrema
 import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.text.TextStyle
 
 @Composable
-fun GrupoFilas(modifier: Modifier = Modifier, relleno: androidx.compose.ui.unit.Dp = 16.dp, contenido: @Composable () -> Unit) {
+fun GrupoFilas(modifier: Modifier = Modifier, relleno: Dp = 16.dp, contenido: @Composable () -> Unit) {
     Column(
         modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)).background(FondoBlanco).padding(horizontal = relleno, vertical = 4.dp),
     ) { contenido() }
@@ -122,7 +124,7 @@ fun EventoBitacora(
     modifier: Modifier = Modifier,
     motivo: String? = null,
     estancia: String? = null,
-    estiloTitulo: androidx.compose.ui.text.TextStyle = Texto.LabelM,
+    estiloTitulo: TextStyle = Texto.LabelM,
 ) {
     Row(
         modifier.fillMaxWidth().clip(RoundedCornerShape(22.dp)).background(FondoBlanco).padding(14.dp),

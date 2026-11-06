@@ -22,6 +22,7 @@ import com.example.access_tracker.ui.theme.Mostaza100
 import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun PermisosScreen(onContinuar: () -> Unit) {
@@ -44,7 +45,7 @@ fun PermisosScreen(onContinuar: () -> Unit) {
 }
 
 @Composable
-private fun PermisoFila(icono: Ico, fondo: androidx.compose.ui.graphics.Color, titulo: String, texto: String) {
+private fun PermisoFila(icono: Ico, fondo: Color, titulo: String, texto: String) {
     Tarjeta(radio = 24.dp) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
             IconoCuadro(icono, fondo = fondo, lado = 44.dp, radio = 14.dp, tamanoIcono = 24.dp)

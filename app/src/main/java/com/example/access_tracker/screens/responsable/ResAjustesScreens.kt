@@ -44,6 +44,7 @@ import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.TintaTenue
 import com.example.access_tracker.ui.theme.Texto
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun ResMenuScreen(
@@ -80,7 +81,7 @@ fun ResMenuScreen(
 }
 
 @Composable
-private fun OpcionMenu(icono: Ico, fondo: androidx.compose.ui.graphics.Color, titulo: String, detalle: String, onClick: () -> Unit) {
+private fun OpcionMenu(icono: Ico, fondo: Color, titulo: String, detalle: String, onClick: () -> Unit) {
     Row(
         Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).clickable(onClick = onClick).padding(horizontal = 12.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),

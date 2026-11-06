@@ -32,6 +32,7 @@ import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde100
 import com.example.access_tracker.ui.theme.Verde600
+import androidx.compose.foundation.layout.Column
 
 @Composable
 fun CambioPasswordScreen(onGuardar: () -> Unit) {
@@ -44,7 +45,7 @@ fun CambioPasswordScreen(onGuardar: () -> Unit) {
         pie = { Boton("Guardar y continuar", onClick = onGuardar, estilo = EstiloBoton.Oscuro) },
     ) {
         IconoCuadro(Ico.Lock)
-        androidx.compose.foundation.layout.Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text("Crea tu contraseña", style = Texto.TitleL, color = TintaBase)
             Text("Entraste con una contraseña temporal. Cámbiala para continuar.", style = Texto.BodyL, color = TintaSuave)
         }
@@ -52,7 +53,7 @@ fun CambioPasswordScreen(onGuardar: () -> Unit) {
         CampoTexto("Nueva contraseña", nueva, { nueva = it }, esPassword = true)
         CampoTexto("Confirmar nueva contraseña", confirmar, { confirmar = it }, esPassword = true)
         Tarjeta {
-            androidx.compose.foundation.layout.Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text("Tu contraseña debe tener", style = Texto.LabelM, color = TintaSuave)
                 Requisito("Al menos 8 caracteres", cumplido = true)
                 Requisito("Una mayúscula y una minúscula", cumplido = true)
