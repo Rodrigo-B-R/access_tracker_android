@@ -78,7 +78,7 @@ fun FilaPersona(
     }
 }
 
-/** Casilla de selección: marcada (petróleo), vacía o ya registrada (arena, gris). */
+/** Casilla de selección: marcada color petroleo , vacía o ya registrada color arena gris */
 @Composable
 fun Casilla(marcada: Boolean, modifier: Modifier = Modifier, bloqueada: Boolean = false, onClick: (() -> Unit)? = null) {
     Box(
@@ -100,7 +100,7 @@ fun Flecha(modifier: Modifier = Modifier, tint: Color = TintaSuave) {
     Icono(Ico.Chevron, tint = tint, tamano = 20.dp, modifier = modifier)
 }
 
-/** Botón redondo con icono (más opciones, atrás, siguiente...). */
+/** Botón redondo con icono  */
 @Composable
 fun BotonCircular(
     icono: Ico,
@@ -115,7 +115,7 @@ fun BotonCircular(
     }
 }
 
-/** Botón flotante cuadrado redondeado, solo icono. */
+/** Botón flotante cuadrado redondeado  */
 @Composable
 fun BotonFlotanteIcono(icono: Ico, color: Color, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Box(
@@ -142,7 +142,7 @@ fun BarraBusqueda(texto: String, modifier: Modifier = Modifier) {
     }
 }
 
-/** Filtro tipo píldora («Todos 3», «Solicitudes 2»). */
+/** Filtro tipo píldora . */
 @Composable
 fun FiltroPill(texto: String, activo: Boolean, onClick: () -> Unit = {}, modifier: Modifier = Modifier) {
     Box(

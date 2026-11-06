@@ -1,6 +1,6 @@
 package com.example.access_tracker.navigation
 
-/** Pantallas de la app (la Asistente usa las mismas que la Responsable). */
+/** Lista de pantallas de la app como variables para usarse en navegacion */
 object Rutas {
     // Comunes
     const val Indice = "indice"

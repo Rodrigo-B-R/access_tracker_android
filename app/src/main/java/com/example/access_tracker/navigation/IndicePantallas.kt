@@ -1,6 +1,6 @@
 package com.example.access_tracker.navigation
 
-/** Listado de todas las pantallas por perfil, tal como están en el Figma. Solo para la vista de demostración. */
+/** Listado de todas las pantallas por perfil, para la vista de demostración. */
 data class EntradaIndice(val titulo: String, val ruta: String)
 
 data class SeccionIndice(val nombre: String, val entradas: List<EntradaIndice>)

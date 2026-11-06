@@ -21,7 +21,7 @@ private val ArgumentosPerfil = listOf(
 /** Ruta de la pantalla Exportar, compartida por Responsable y Dirección. */
 fun rutaExportar(perfil: Perfil) = "${Rutas.Exportar}?$ArgPerfil=${perfil.name}"
 
-/** Ruta del cambio de contraseña desde «Mi cuenta». */
+/** Ruta del cambio de contraseña desde Mi cuenta */
 fun rutaCambioPassword(perfil: Perfil) = "${Rutas.CambioPassword}?$ArgPerfil=${perfil.name}"
 
 private fun perfilDe(nombre: String?) = Perfil.entries.firstOrNull { it.name == nombre } ?: Perfil.Empleada
