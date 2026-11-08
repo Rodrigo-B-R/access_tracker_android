@@ -34,7 +34,7 @@ El login **no valida la contraseña** ni consulta ningún servicio: cualquier co
 
 | Perfil | La clave debe contener | Ejemplo de clave | Contraseña |
 |---|---|---|---|
-| Responsable / Asistente | `sofia`, `asist` o `resp` | `sofia.martinez` | cualquiera |
+| Responsable | `sofia`, `asist` o `resp` | `sofia.martinez` | cualquiera |
 | Dirección | `dir` | `direccion` | cualquiera |
 | Empleada/o | cualquier otra | `ana.torres` (valor por defecto) | cualquiera (por defecto `1234567890`) |
 
@@ -52,7 +52,7 @@ Abre un índice agrupado por sección que lleva directo a cada pantalla:
 
 - **Comunes:** inicio de sesión, cambio de contraseña, permisos, sesión expirada, aviso sin conexión, exportar.
 - **Empleada/o:** checar (fuera / dentro / sin internet), mis asistencias, mi horario, avisos (bandeja y detalle).
-- **Responsable y Asistente:** inicio, asistencia del día, horarios y turnos, personal, registro por turno, ausencias/incidencias, alta y baja de personal, avisos, menú, salas y mínimos, bitácora.
+- **Responsable:** inicio, asistencia del día, horarios y turnos, personal, registro por turno, ausencias/incidencias, alta y baja de personal, avisos, menú, salas y mínimos, bitácora.
 - **Dirección:** resumen, estadísticas, bitácora por estancia.
 
 El índice se define en `app/src/main/java/com/example/access_tracker/navigation/IndicePantallas.kt` y las rutas en `navigation/ScreenNames.kt` y `navigation/AppNavHost.kt`.
