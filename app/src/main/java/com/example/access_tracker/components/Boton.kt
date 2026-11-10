@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -39,14 +40,16 @@ fun Boton(
     modifier: Modifier = Modifier,
     estilo: EstiloBoton = EstiloBoton.Primario,
     icono: Ico? = null,
+    habilitado: Boolean = true,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .height(60.dp)
+            .alpha(if (habilitado) 1f else 0.5f)
             .clip(RoundedCornerShape(30.dp))
             .background(estilo.fondo)
-            .clickable(onClick = onClick)
+            .clickable(enabled = habilitado, onClick = onClick)
             .padding(horizontal = 24.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,

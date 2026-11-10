@@ -1,6 +1,15 @@
 package com.example.access_tracker.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.access_tracker.data.ServiceLocator
+import com.example.access_tracker.screens.comunes.AuthViewModel
+import com.example.access_tracker.screens.comunes.perfilDeRol
+import kotlinx.coroutines.launch
 import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -18,13 +27,13 @@ import com.example.access_tracker.screens.comunes.SesionExpiradaScreen
 import com.example.access_tracker.screens.direccion.DirBitacoraScreen
 import com.example.access_tracker.screens.direccion.DirEstadisticasScreen
 import com.example.access_tracker.screens.direccion.DirResumenScreen
-import com.example.access_tracker.screens.empleada.AsistenciasScreen
+import com.example.access_tracker.screens.empleada.AsistenciasRoute
 import com.example.access_tracker.screens.empleada.AvisoDetalleScreen
 import com.example.access_tracker.screens.empleada.AvisosBandejaScreen
 import com.example.access_tracker.screens.empleada.ChecarDentroScreen
-import com.example.access_tracker.screens.empleada.ChecarFueraScreen
+import com.example.access_tracker.screens.empleada.ChecarRoute
 import com.example.access_tracker.screens.empleada.ChecarSinInternetScreen
-import com.example.access_tracker.screens.empleada.HorarioScreen
+import com.example.access_tracker.screens.empleada.HorarioRoute
 import com.example.access_tracker.screens.responsable.AltaPersonalScreen
 import com.example.access_tracker.screens.responsable.DarDeBajaScreen
 import com.example.access_tracker.screens.responsable.PerfilPersonaScreen
@@ -46,20 +55,39 @@ import com.example.access_tracker.screens.responsable.ResPersonalScreen
 fun AppNavHost() {
     val nav = rememberNavController()
 
-    NavHost(navController = nav, startDestination = ScreenNames.Login.route) {
+    // Si hay una sesion guardada y vigente, se entra directo; si no, login.
+    val inicio = remember {
+        val s = ServiceLocator.sesion.leer()
+        val perfil = s?.takeIf { it.vigente() }?.let { perfilDeRol(it.role) }
+        if (perfil != null) Pestanas.inicio(perfil) else ScreenNames.Login.route
+    }
+
+    // Cualquier llamada autenticada que reciba 401 (token vencido o revocado) cae aqui.
+    LaunchedEffect(Unit) {
+        ServiceLocator.api.sesionExpirada.collect {
+            nav.navigate(ScreenNames.SesionExpirada.route) {
+                popUpTo(nav.graph.id) { inclusive = true }
+            }
+        }
+    }
+
+    NavHost(navController = nav, startDestination = inicio) {
         // Comunes
         composable(ScreenNames.Login.route) {
+            val vm: AuthViewModel = viewModel()
+            val estado by vm.estado.collectAsState()
+            LaunchedEffect(estado.perfil) {
+                estado.perfil?.let {
+                    vm.consumirPerfil()
+                    // Sin cambio de contrasena obligatorio: de login directo a permisos.
+                    nav.navigate(ScreenNames.Permisos.createRoute(it))
+                }
+            }
             LoginScreen(
-                onIniciarSesion = { clave ->
-                    val c = clave.lowercase()
-                    val perfil = when {
-                        "sofia" in c || "asist" in c || "resp" in c -> Perfil.Responsable
-                        "dir" in c -> Perfil.Direccion
-                        else -> Perfil.Empleada
-                    }
-                    nav.navigate(ScreenNames.CambioPassword.createRoute(perfil))
-                },
-                onVerIndice = { nav.navigate(ScreenNames.Indice.route) }
+                onIniciarSesion = { clave, password -> vm.iniciarSesion(clave, password) },
+                onVerIndice = { nav.navigate(ScreenNames.Indice.route) },
+                cargando = estado.cargando,
+                error = estado.error,
             )
         }
         composable(
@@ -99,9 +127,8 @@ fun AppNavHost() {
 
         // Empleada
         composable(ScreenNames.EmpChecar.route) {
-            ChecarFueraScreen(
+            ChecarRoute(
                 onAvisos = { nav.navigate(ScreenNames.EmpAvisos.route) },
-                onRegistrarEntrada = { nav.navigate(ScreenNames.EmpChecarDentro.route) },
                 onCambiarPassword = { nav.navigate(ScreenNames.CambioPassword.createRoute(Perfil.Empleada)) },
                 onCerrarSesion = { cerrarSesion(nav) },
                 barra = { Barra(nav, Perfil.Empleada, ScreenNames.EmpChecar) }
@@ -126,10 +153,10 @@ fun AppNavHost() {
             )
         }
         composable(ScreenNames.EmpAsistencias.route) {
-            AsistenciasScreen(barra = { Barra(nav, Perfil.Empleada, ScreenNames.EmpAsistencias) })
+            AsistenciasRoute(barra = { Barra(nav, Perfil.Empleada, ScreenNames.EmpAsistencias) })
         }
         composable(ScreenNames.EmpHorario.route) {
-            HorarioScreen(barra = { Barra(nav, Perfil.Empleada, ScreenNames.EmpHorario) })
+            HorarioRoute(barra = { Barra(nav, Perfil.Empleada, ScreenNames.EmpHorario) })
         }
         composable(ScreenNames.EmpAvisos.route) {
             AvisosBandejaScreen(
@@ -286,6 +313,8 @@ fun entrarAPerfil(nav: NavController, perfil: Perfil) {
 }
 
 fun cerrarSesion(nav: NavController) {
+    // Revoca el token en el servidor (y lo borra del telefono) sin esperar la respuesta.
+    ServiceLocator.appScope.launch { ServiceLocator.api.logout() }
     nav.navigate(ScreenNames.Login.route) {
         popUpTo(nav.graph.id) { inclusive = true }
     }

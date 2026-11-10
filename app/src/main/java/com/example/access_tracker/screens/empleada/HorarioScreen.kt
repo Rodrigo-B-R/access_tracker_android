@@ -36,25 +36,43 @@ import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 
-private enum class EstadoDia { Normal, Hoy, Descanso }
+enum class EstadoDia { Normal, Hoy, Descanso }
 
+/** Un dia de la semana tal como se pinta. */
+data class DiaVista(
+    val letra: String,
+    val numero: String,
+    val titulo: String,
+    val horas: String,
+    val sala: String?,
+    val estado: EstadoDia,
+)
+
+/** Version de demostracion (indice de pantallas): datos fijos. */
 @Composable
 fun HorarioScreen(barra: @Composable () -> Unit = {}) {
+    HorarioContenido(
+        semana = "Semana del 5 al 9 de octubre",
+        dias = listOf(
+            DiaVista("L", "5", "Lunes 5", "7:00 – 15:00", "Sala Maternal A", EstadoDia.Normal),
+            DiaVista("M", "6", "Martes 6", "7:00 – 15:00", "Sala Maternal A", EstadoDia.Normal),
+            DiaVista("M", "7", "Miércoles 7", "7:00 – 15:00", "Sala Maternal A", EstadoDia.Hoy),
+            DiaVista("J", "8", "Jueves 8", "Descanso", null, EstadoDia.Descanso),
+            DiaVista("V", "9", "Viernes 9", "9:00 – 17:00", "Sala Lactantes", EstadoDia.Normal),
+        ),
+        barra = barra,
+    )
+}
+
+@Composable
+fun HorarioContenido(semana: String, dias: List<DiaVista>, barra: @Composable () -> Unit = {}) {
     PantallaBase(barra = barra, separacion = 16.dp) {
         TituloPantalla("Mi horario")
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            DiaSemana("L", "5", EstadoDia.Normal, Modifier.weight(1f))
-            DiaSemana("M", "6", EstadoDia.Normal, Modifier.weight(1f))
-            DiaSemana("M", "7", EstadoDia.Hoy, Modifier.weight(1f))
-            DiaSemana("J", "8", EstadoDia.Descanso, Modifier.weight(1f))
-            DiaSemana("V", "9", EstadoDia.Normal, Modifier.weight(1f))
+            dias.forEach { d -> DiaSemana(d.letra, d.numero, d.estado, Modifier.weight(1f)) }
         }
-        Text("Semana del 5 al 9 de octubre", style = Texto.BodyM, color = TintaSuave)
-        Turno("Lunes 5", "7:00 – 15:00", "Sala Maternal A")
-        Turno("Martes 6", "7:00 – 15:00", "Sala Maternal A")
-        Turno("Miércoles 7", "7:00 – 15:00", "Sala Maternal A", EstadoDia.Hoy)
-        Turno("Jueves 8", "Descanso", null, EstadoDia.Descanso)
-        Turno("Viernes 9", "9:00 – 17:00", "Sala Lactantes")
+        Text(semana, style = Texto.BodyM, color = TintaSuave)
+        dias.forEach { d -> Turno(d.titulo, d.horas, d.sala, d.estado) }
     }
 }
 

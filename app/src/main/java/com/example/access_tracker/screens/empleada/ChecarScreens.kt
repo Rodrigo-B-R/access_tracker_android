@@ -47,21 +47,29 @@ import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde100
 import com.example.access_tracker.ui.theme.Verde600
 
+/** Turno de hoy tal como se muestra en pantalla. */
+data class DatosTurno(val sala: String, val entra: String, val sale: String)
+
 @Composable
 fun ChecarFueraScreen(
     onAvisos: () -> Unit,
     onRegistrarEntrada: () -> Unit,
     onCambiarPassword: () -> Unit = {},
     onCerrarSesion: () -> Unit = {},
-    barra: @Composable () -> Unit = {}
+    barra: @Composable () -> Unit = {},
+    fecha: String = "Miércoles 7 de octubre",
+    nombre: String = "María",
+    turno: DatosTurno? = DatosTurno("Maternal A", "7:00", "15:00"),
+    mensaje: String? = null,
+    enviando: Boolean = false,
 ) {
     PantallaBase(barra = barra) {
         BarraSuperiorLogo(avisos = 2, onAvisos = onAvisos, cuenta = { MenuCuenta(onCambiarPassword, onCerrarSesion) })
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text("Miércoles 7 de octubre", style = Texto.BodyL, color = TintaSuave)
-            Text("Hola, María", style = Texto.DisplayL, color = TintaBase)
+            Text(fecha, style = Texto.BodyL, color = TintaSuave)
+            Text("Hola, $nombre", style = Texto.DisplayL, color = TintaBase)
         }
-        TurnoDeHoy()
+        TurnoDeHoy(turno)
         Column(
             Modifier.fillMaxWidth().padding(top = 14.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -71,11 +79,16 @@ fun ChecarFueraScreen(
                 Box(Modifier.size(16.dp).border(2.5.dp, TintaBase, CircleShape))
                 Text("Estás fuera", style = Texto.TitleM, color = TintaBase)
             }
-            Text("Última checada: ayer 15:02 (salida)", style = Texto.BodyM, color = TintaSuave)
+            if (mensaje != null) {
+                Text(mensaje, style = Texto.BodyM, color = Coral500, textAlign = TextAlign.Center)
+            }
         }
-        BotonChecada("Registrar\nentrada", Ico.Login, Coral500, Coral100, onRegistrarEntrada)
+        BotonChecada(
+            if (enviando) "Registrando…" else "Registrar\nentrada",
+            Ico.Login, Coral500, Coral100, onRegistrarEntrada, habilitado = !enviando,
+        )
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)) {
-            PildoraEstado("En la zona · válida", Ico.Pin, Verde100, Verde600)
+            PildoraEstado("Se valida tu ubicación", Ico.Pin, Verde100, Verde600)
             PildoraEstado("Sincronizado", Ico.Cloud, FondoArena, TintaSuave)
         }
     }
@@ -87,7 +100,16 @@ fun ChecarDentroScreen(
     onRegistrarSalida: () -> Unit,
     onCambiarPassword: () -> Unit = {},
     onCerrarSesion: () -> Unit = {},
-    barra: @Composable () -> Unit = {}
+    barra: @Composable () -> Unit = {},
+    horaEntrada: String = "7:02",
+    sala: String = "Maternal A",
+    horaInicioTurno: String = "7:00",
+    horaFinTurno: String = "15:00",
+    horasTranscurridas: Int = 2,
+    horasTotales: Int = 8,
+    enZona: Boolean = true,
+    mensaje: String? = null,
+    enviando: Boolean = false,
 ) {
     PantallaBase(barra = barra, fondo = Petroleo700) {
         BarraSuperiorLogo(
@@ -105,31 +127,40 @@ fun ChecarDentroScreen(
             Text("Estás dentro", style = Texto.TitleM, color = FondoCrema)
         }
         Column(Modifier.fillMaxWidth()) {
-            Text("7:02", style = Texto.DisplayXL, color = FondoCrema)
-            Text("Entrada registrada en la estancia · Maternal A", style = Texto.BodyL, color = Petroleo100)
+            Text(horaEntrada, style = Texto.DisplayXL, color = FondoCrema)
+            Text("Entrada registrada en la estancia · $sala", style = Texto.BodyL, color = Petroleo100)
         }
         Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                repeat(8) { i ->
+                repeat(horasTotales) { i ->
                     Box(
                         Modifier
                             .weight(1f)
                             .height(14.dp)
                             .clip(RoundedCornerShape(7.dp))
-                            .background(if (i < 2) Mostaza500 else Petroleo500)
+                            .background(if (i < horasTranscurridas) Mostaza500 else Petroleo500)
                     )
                 }
             }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("7:00", style = Texto.LabelM, color = Petroleo100)
-                Text("2 de 8 h", style = Texto.LabelM, color = FondoCrema)
-                Text("15:00", style = Texto.LabelM, color = Petroleo100)
+                Text(horaInicioTurno, style = Texto.LabelM, color = Petroleo100)
+                Text("$horasTranscurridas de $horasTotales h", style = Texto.LabelM, color = FondoCrema)
+                Text(horaFinTurno, style = Texto.LabelM, color = Petroleo100)
             }
         }
-        BotonChecada("Registrar\nsalida", Ico.Logout, Mostaza500, Petroleo500, onRegistrarSalida)
+        if (mensaje != null) {
+            Text(mensaje, style = Texto.BodyM, color = Mostaza500, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+        }
+        BotonChecada(
+            if (enviando) "Registrando…" else "Registrar\nsalida",
+            Ico.Logout, Mostaza500, Petroleo500, onRegistrarSalida, habilitado = !enviando,
+        )
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally)) {
-            PildoraEstado("En la zona · válida", Ico.Pin, Petroleo500, FondoCrema)
-            PildoraEstado("Enviado a las 7:02", Ico.Cloud, Petroleo500, FondoCrema)
+            PildoraEstado(
+                if (enZona) "En la zona · válida" else "Fuera de zona",
+                Ico.Pin, Petroleo500, FondoCrema,
+            )
+            PildoraEstado("Enviado a las $horaEntrada", Ico.Cloud, Petroleo500, FondoCrema)
         }
     }
 }
@@ -174,18 +205,22 @@ fun ChecarSinInternetScreen(
 }
 
 @Composable
-private fun TurnoDeHoy() {
+private fun TurnoDeHoy(turno: DatosTurno? = DatosTurno("Maternal A", "7:00", "15:00")) {
+    if (turno == null) {
+        Text("Hoy no tienes turno asignado", style = Texto.TitleS, color = TintaSuave)
+        return
+    }
     Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         TarjetaDato(
             "Sala",
-            "Maternal A",
+            turno.sala,
             Modifier.weight(1.3f),
             fondo = Mostaza500,
             tinta = TintaBase,
             estiloValor = Texto.TitleS
         )
-        TarjetaDato("Entras", "7:00", Modifier.weight(1f))
-        TarjetaDato("Sales", "15:00", Modifier.weight(1f))
+        TarjetaDato("Entras", turno.entra, Modifier.weight(1f))
+        TarjetaDato("Sales", turno.sale, Modifier.weight(1f))
     }
 }
 

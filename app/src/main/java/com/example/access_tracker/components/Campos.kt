@@ -10,6 +10,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -54,6 +59,15 @@ fun CampoTexto(
     icono: Ico? = null,
     esPassword: Boolean = false,
     lineas: Int = 1,
+    tipoTeclado: KeyboardType = KeyboardType.Text,
+    /** Tope de caracteres (lo que acepta la API); lo que exceda se ignora al escribir. */
+    maxCaracteres: Int? = null,
+    /** Pinta el borde en rojo. */
+    conError: Boolean = false,
+    imeAction: ImeAction = ImeAction.Default,
+    onImeAction: (() -> Unit)? = null,
+    /** Para claves, correos, etc.: apaga autocorreccion y mayuscula automatica. */
+    sinAutocorreccion: Boolean = false,
 ) {
     var verPassword by remember { mutableStateOf(false) }
 
@@ -61,7 +75,18 @@ fun CampoTexto(
         Text(etiqueta, style = Texto.LabelM, color = TintaSuave)
         OutlinedTextField(
             value = valor,
-            onValueChange = onCambio,
+            onValueChange = { nuevo ->
+                if (maxCaracteres == null || nuevo.length <= maxCaracteres) onCambio(nuevo)
+            },
+            isError = conError,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = if (esPassword) KeyboardType.Password else tipoTeclado,
+                imeAction = imeAction,
+                // Claves, correos y contrasenas: sin autocorreccion ni mayuscula automatica.
+                autoCorrectEnabled = !(sinAutocorreccion || esPassword),
+                capitalization = KeyboardCapitalization.None,
+            ),
+            keyboardActions = KeyboardActions(onAny = { onImeAction?.invoke() }),
             modifier = Modifier.fillMaxWidth(),
             textStyle = Texto.BodyL,
             singleLine = lineas == 1,

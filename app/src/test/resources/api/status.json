@@ -1,0 +1,1 @@
+{"inside":false,"openRecord":null,"todayShifts":[{"id":1,"weekday":"monday","scheduleId":1,"shiftId":1,"roomId":2,"shift":{"id":1,"name":"matutino","startTime":"07:00","endTime":"15:00"},"room":{"id":2,"name":"Maternal A","minStaff":3,"daycareId":1}}],"location":{"id":1,"name":"Estancia Cumbres","latitude":25.7447,"longitude":-100.4036,"radiusMeters":150}}

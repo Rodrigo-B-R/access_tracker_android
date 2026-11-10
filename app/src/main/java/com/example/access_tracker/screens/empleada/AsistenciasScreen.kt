@@ -39,21 +39,59 @@ import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde100
 
+/** Una fila de la lista de asistencias. */
+data class AsistenciaVista(
+    val dia: String,
+    val numero: String,
+    val estado: String,
+    val tono: TonoChip,
+    val detalle: String,
+    val actual: Boolean = false,
+)
+
+/** Version de demostracion (indice de pantallas): datos fijos. */
 @Composable
 fun AsistenciasScreen(barra: @Composable () -> Unit = {}) {
     var periodo by remember { mutableIntStateOf(0) }
+    AsistenciasContenido(
+        periodo = periodo,
+        onPeriodo = { periodo = it },
+        trabajados = 4, retardos = 1, faltas = 0,
+        dias = listOf(
+            AsistenciaVista("MIÉ", "7", "Por sincronizar", TonoChip.Neutro, "Entrada 7:02 · Salida en curso", actual = true),
+            AsistenciaVista("MAR", "6", "Retardo 12 min", TonoChip.Alerta, "Entrada 7:12 · Salida 15:01"),
+            AsistenciaVista("LUN", "5", "A tiempo", TonoChip.Exito, "Entrada 6:58 · Salida 15:03"),
+            AsistenciaVista("VIE", "2", "A tiempo", TonoChip.Exito, "Entrada 7:00 · Salida 15:00"),
+        ),
+        barra = barra,
+    )
+}
+
+@Composable
+fun AsistenciasContenido(
+    periodo: Int,
+    onPeriodo: (Int) -> Unit,
+    trabajados: Int,
+    retardos: Int,
+    faltas: Int,
+    dias: List<AsistenciaVista>,
+    barra: @Composable () -> Unit = {},
+    cargando: Boolean = false,
+) {
     PantallaBase(barra = barra, separacion = 16.dp) {
         TituloPantalla("Mis asistencias")
-        Segmentado(listOf("Esta semana", "Semana pasada", "Mes"), periodo, { periodo = it })
+        Segmentado(listOf("Esta semana", "Semana pasada", "Mes"), periodo, onPeriodo)
         Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            TarjetaCifra("4", "días trabajados", Petroleo100, Modifier.weight(1f))
-            TarjetaCifra("1", "retardo", Mostaza100, Modifier.weight(1f))
-            TarjetaCifra("0", "faltas", Verde100, Modifier.weight(1f))
+            TarjetaCifra(trabajados.toString(), if (trabajados == 1) "día trabajado" else "días trabajados", Petroleo100, Modifier.weight(1f))
+            TarjetaCifra(retardos.toString(), if (retardos == 1) "retardo" else "retardos", Mostaza100, Modifier.weight(1f))
+            TarjetaCifra(faltas.toString(), if (faltas == 1) "falta" else "faltas", Verde100, Modifier.weight(1f))
         }
-        DiaAsistencia("MIÉ", "7", "Por sincronizar", TonoChip.Neutro, "Entrada 7:02 · Salida en curso", actual = true)
-        DiaAsistencia("MAR", "6", "Retardo 12 min", TonoChip.Alerta, "Entrada 7:12 · Salida 15:01")
-        DiaAsistencia("LUN", "5", "A tiempo", TonoChip.Exito, "Entrada 6:58 · Salida 15:03")
-        DiaAsistencia("VIE", "2", "A tiempo", TonoChip.Exito, "Entrada 7:00 · Salida 15:00")
+        if (cargando) {
+            Text("Cargando…", style = Texto.BodyM, color = TintaSuave)
+        } else if (dias.isEmpty()) {
+            Text("No hay días con registro en este periodo.", style = Texto.BodyM, color = TintaSuave)
+        }
+        dias.forEach { d -> DiaAsistencia(d.dia, d.numero, d.estado, d.tono, d.detalle, d.actual) }
     }
 }
 

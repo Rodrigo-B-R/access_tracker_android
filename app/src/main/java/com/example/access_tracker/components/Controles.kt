@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -184,8 +185,9 @@ fun BotonChecada(
     colorHalo: Color,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    habilitado: Boolean = true,
 ) {
-    Box(modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+    Box(modifier.fillMaxWidth().alpha(if (habilitado) 1f else 0.5f), contentAlignment = Alignment.Center) {
         Box(Modifier.size(256.dp).clip(CircleShape).background(colorHalo), contentAlignment = Alignment.Center) {
             Box(
                 Modifier
@@ -193,7 +195,7 @@ fun BotonChecada(
                     .shadow(16.dp, CircleShape, ambientColor = colorBoton, spotColor = colorBoton)
                     .clip(CircleShape)
                     .background(colorBoton)
-                    .clickable(onClick = onClick),
+                    .clickable(enabled = habilitado, onClick = onClick),
                 contentAlignment = Alignment.Center,
             ) {
                 Column(

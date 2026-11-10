@@ -1,0 +1,11 @@
+{
+ "token": "TOKEN-DE-EJEMPLO",
+ "tokenType": "bearer",
+ "expiresIn": 3600,
+ "role": "employee",
+ "user": {
+  "id": 3,
+  "name": "Ana Torres",
+  "daycareId": 1
+ }
+}

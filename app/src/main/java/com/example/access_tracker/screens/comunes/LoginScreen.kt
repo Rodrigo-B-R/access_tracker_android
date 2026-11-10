@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,11 +46,13 @@ import com.example.access_tracker.ui.theme.Texto
 
 @Composable
 fun LoginScreen(
-    onIniciarSesion: (clave: String) -> Unit,
+    onIniciarSesion: (clave: String, password: String) -> Unit,
     onVerIndice: () -> Unit,
+    cargando: Boolean = false,
+    error: String? = null,
 ) {
-    var clave by remember { mutableStateOf("ana.torres") }
-    var password by remember { mutableStateOf("1234567890") }
+    var clave by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -96,9 +99,26 @@ fun LoginScreen(
                 .padding(start = 24.dp, end = 24.dp, top = 32.dp, bottom = 32.dp),
             verticalArrangement = Arrangement.spacedBy(18.dp),
         ) {
-            CampoTexto("Clave", clave, { clave = it }, icono = Ico.Idcard)
-            CampoTexto("Contraseña", password, { password = it }, icono = Ico.Lock, esPassword = true)
-            Boton("Iniciar sesión", onClick = { onIniciarSesion(clave) })
+            // Topes = limites de la API (LoginIn: username 255, password 256).
+            CampoTexto(
+                "Clave", clave, { clave = it }, icono = Ico.Idcard,
+                maxCaracteres = 255, sinAutocorreccion = true, conError = error != null,
+                imeAction = ImeAction.Next,
+            )
+            CampoTexto(
+                "Contraseña", password, { password = it }, icono = Ico.Lock, esPassword = true,
+                maxCaracteres = 256, conError = error != null,
+                imeAction = ImeAction.Done,
+                onImeAction = { if (!cargando) onIniciarSesion(clave, password) },
+            )
+            if (error != null) {
+                Text(error, style = Texto.BodyM, color = Coral500, modifier = Modifier.fillMaxWidth())
+            }
+            Boton(
+                if (cargando) "Entrando…" else "Iniciar sesión",
+                onClick = { onIniciarSesion(clave, password) },
+                habilitado = !cargando,
+            )
             Text(
                 text = "¿Olvidaste tu contraseña? Pídela a tu Responsable.",
                 style = Texto.BodyM,
@@ -147,5 +167,5 @@ private fun MotivoPlantilla(modifier: Modifier = Modifier) {
 @Preview(showBackground = true, heightDp = 915, widthDp = 412)
 @Composable
 private fun LoginPreview() {
-    Access_trackerTheme { LoginScreen({}, {}) }
+    Access_trackerTheme { LoginScreen({ _, _ -> }, {}) }
 }
