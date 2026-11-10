@@ -62,9 +62,10 @@ fun ChecarFueraScreen(
     turno: DatosTurno? = DatosTurno("Maternal A", "7:00", "15:00"),
     mensaje: String? = null,
     enviando: Boolean = false,
+    avisosSinLeer: Int = 2,
 ) {
     PantallaBase(barra = barra) {
-        BarraSuperiorLogo(avisos = 2, onAvisos = onAvisos, cuenta = { MenuCuenta(onCambiarPassword, onCerrarSesion) })
+        BarraSuperiorLogo(avisos = avisosSinLeer, onAvisos = onAvisos, cuenta = { MenuCuenta(onCambiarPassword, onCerrarSesion) })
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(fecha, style = Texto.BodyL, color = TintaSuave)
             Text("Hola, $nombre", style = Texto.DisplayL, color = TintaBase)
@@ -110,10 +111,11 @@ fun ChecarDentroScreen(
     enZona: Boolean = true,
     mensaje: String? = null,
     enviando: Boolean = false,
+    avisosSinLeer: Int = 2,
 ) {
     PantallaBase(barra = barra, fondo = Petroleo700) {
         BarraSuperiorLogo(
-            avisos = 2,
+            avisos = avisosSinLeer,
             onAvisos = onAvisos,
             oscuro = true,
             cuenta = { MenuCuenta(onCambiarPassword, onCerrarSesion, oscuro = true) }

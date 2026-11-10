@@ -23,7 +23,10 @@ sealed class ScreenNames(val route: String) {
     data object EmpAsistencias : ScreenNames("emp_asistencias")
     data object EmpHorario : ScreenNames("emp_horario")
     data object EmpAvisos : ScreenNames("emp_avisos")
-    data object EmpAvisoDetalle : ScreenNames("emp_aviso_detalle")
+    data object EmpAvisoDetalle : ScreenNames("emp_aviso_detalle") // demo del indice
+    data object EmpAviso : ScreenNames("emp_aviso/{id}") {
+        fun createRoute(id: Long) = "emp_aviso/$id"
+    }
 
     // Responsable y Asistente
     data object ResInicio : ScreenNames("res_inicio")

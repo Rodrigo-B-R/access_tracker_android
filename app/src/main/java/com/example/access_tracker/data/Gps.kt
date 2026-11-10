@@ -15,17 +15,23 @@ import kotlin.coroutines.resume
 
 /** Lectura de GPS con LocationManager (sin Google Play Services). */
 object Gps {
+    private fun concedido(context: Context, permiso: String) =
+        ContextCompat.checkSelfPermission(context, permiso) == PackageManager.PERMISSION_GRANTED
+
+    /** Android 12+: el usuario puede dar solo ubicacion aproximada; con eso basta para leer la posicion. */
     fun tienePermiso(context: Context) =
-        ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
-            PackageManager.PERMISSION_GRANTED
+        concedido(context, Manifest.permission.ACCESS_FINE_LOCATION) ||
+            concedido(context, Manifest.permission.ACCESS_COARSE_LOCATION)
 
     /** Posicion actual o null si no hay permiso, el GPS esta apagado o no responde en [timeoutMs]. */
     @SuppressLint("MissingPermission")
     suspend fun actual(context: Context, timeoutMs: Long = 12_000): Location? {
         if (!tienePermiso(context)) return null
         val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        // El proveedor GPS exige permiso preciso; con solo aproximada se usa el de red.
+        val precisa = concedido(context, Manifest.permission.ACCESS_FINE_LOCATION)
         val proveedor = when {
-            lm.isProviderEnabled(LocationManager.GPS_PROVIDER) -> LocationManager.GPS_PROVIDER
+            precisa && lm.isProviderEnabled(LocationManager.GPS_PROVIDER) -> LocationManager.GPS_PROVIDER
             lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER) -> LocationManager.NETWORK_PROVIDER
             else -> return null
         }

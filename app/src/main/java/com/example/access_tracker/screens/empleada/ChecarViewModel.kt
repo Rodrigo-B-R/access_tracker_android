@@ -7,6 +7,7 @@ import com.example.access_tracker.data.ApiError
 import com.example.access_tracker.data.ApiResult
 import com.example.access_tracker.data.Gps
 import com.example.access_tracker.data.ServiceLocator
+import com.example.access_tracker.model.Aviso
 import com.example.access_tracker.model.Checada
 import com.example.access_tracker.model.EntradaRequest
 import com.example.access_tracker.model.EstadoChecada
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.builtins.ListSerializer
 import java.util.UUID
 
 data class ChecarEstado(
@@ -27,6 +29,8 @@ data class ChecarEstado(
     val mensaje: String? = null,
     /** Error al cargar el estado (pantalla de reintento). */
     val errorCarga: String? = null,
+    /** Avisos sin leer, para el globito de la barra superior. */
+    val avisosSinLeer: Int = 0,
 )
 
 class ChecarViewModel(app: Application) : AndroidViewModel(app) {
@@ -48,6 +52,11 @@ class ChecarViewModel(app: Application) : AndroidViewModel(app) {
                 is ApiResult.Error -> _estado.update {
                     it.copy(cargando = false, errorCarga = textoError(r.error))
                 }
+            }
+            // El contador es secundario: si falla, se deja el que haya.
+            val avisos = api.get("/notices/inbox", ListSerializer(Aviso.serializer()))
+            if (avisos is ApiResult.Ok) {
+                _estado.update { it.copy(avisosSinLeer = avisos.value.count { a -> !a.read }) }
             }
         }
     }

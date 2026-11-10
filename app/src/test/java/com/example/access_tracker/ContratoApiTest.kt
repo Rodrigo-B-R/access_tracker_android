@@ -60,6 +60,27 @@ class ContratoApiTest {
     }
 
     @Test
+    fun bandejaDeAvisos() {
+        val avisos = json.decodeFromString(
+            kotlinx.serialization.builtins.ListSerializer(com.example.access_tracker.model.Aviso.serializer()),
+            muestra("inbox.json"),
+        )
+        assertEquals(1, avisos.size)
+        assertEquals(false, avisos.first().read)
+        assertEquals(false, avisos.first().urgente)
+        assertEquals("Marisol García", avisos.first().author.name)
+    }
+
+    @Test
+    fun acuseDeLectura() {
+        val a = json.decodeFromString(
+            com.example.access_tracker.model.AcuseLectura.serializer(),
+            """{"noticeId": 1, "read": true, "readAt": "2026-11-04T13:05:00.000Z"}""",
+        )
+        assertEquals(true, a.read)
+    }
+
+    @Test
     fun roles() {
         assertEquals(Perfil.Responsable, perfilDeRol("manager"))
         assertEquals(Perfil.Direccion, perfilDeRol("director"))

@@ -25,11 +25,12 @@ import com.example.access_tracker.ui.theme.Texto
 import androidx.compose.ui.graphics.Color
 
 @Composable
-fun PermisosScreen(onContinuar: () -> Unit) {
+/** [onPermitir] pide los permisos del sistema y luego continua; [onContinuar] sigue sin pedirlos. */
+fun PermisosScreen(onContinuar: () -> Unit, onPermitir: () -> Unit = onContinuar) {
     PantallaBase(
         separacion = 16.dp,
         pie = {
-            Boton("Permitir y continuar", onClick = onContinuar)
+            Boton("Permitir y continuar", onClick = onPermitir)
             Boton("Ahora no", onClick = onContinuar, estilo = EstiloBoton.Secundario)
         },
     ) {

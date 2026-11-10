@@ -1,6 +1,13 @@
 package com.example.access_tracker.navigation
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,8 +36,9 @@ import com.example.access_tracker.screens.direccion.DirEstadisticasScreen
 import com.example.access_tracker.screens.direccion.DirResumenScreen
 import com.example.access_tracker.screens.empleada.AsistenciasRoute
 import com.example.access_tracker.screens.empleada.AvisoDetalleScreen
-import com.example.access_tracker.screens.empleada.AvisosBandejaScreen
 import com.example.access_tracker.screens.empleada.ChecarDentroScreen
+import com.example.access_tracker.screens.empleada.AvisoRoute
+import com.example.access_tracker.screens.empleada.AvisosRoute
 import com.example.access_tracker.screens.empleada.ChecarRoute
 import com.example.access_tracker.screens.empleada.ChecarSinInternetScreen
 import com.example.access_tracker.screens.empleada.HorarioRoute
@@ -102,7 +110,26 @@ fun AppNavHost() {
             arguments = listOf(navArgument("perfil") { type = NavType.StringType })
         ) { backStackEntry ->
             val perfil = Perfil.valueOf(backStackEntry.arguments?.getString("perfil") ?: "Empleada")
-            PermisosScreen(onContinuar = { entrarAPerfil(nav, perfil) })
+            val contexto = LocalContext.current
+            // Pide ubicacion (precisa y aproximada) y, en Android 13+, notificaciones.
+            // Se continua se acepte o no: sin ubicacion, las checadas quedan "fuera de zona".
+            val pedirPermisos = rememberLauncherForActivityResult(
+                ActivityResultContracts.RequestMultiplePermissions()
+            ) { entrarAPerfil(nav, perfil) }
+            PermisosScreen(
+                onContinuar = { entrarAPerfil(nav, perfil) },
+                onPermitir = {
+                    val permisos = buildList {
+                        add(Manifest.permission.ACCESS_FINE_LOCATION)
+                        add(Manifest.permission.ACCESS_COARSE_LOCATION)
+                        if (Build.VERSION.SDK_INT >= 33) add(Manifest.permission.POST_NOTIFICATIONS)
+                    }.filter {
+                        ContextCompat.checkSelfPermission(contexto, it) != PackageManager.PERMISSION_GRANTED
+                    }
+                    if (permisos.isEmpty()) entrarAPerfil(nav, perfil)
+                    else pedirPermisos.launch(permisos.toTypedArray())
+                },
+            )
         }
         composable(
             route = ScreenNames.Exportar.route,
@@ -159,9 +186,18 @@ fun AppNavHost() {
             HorarioRoute(barra = { Barra(nav, Perfil.Empleada, ScreenNames.EmpHorario) })
         }
         composable(ScreenNames.EmpAvisos.route) {
-            AvisosBandejaScreen(
+            AvisosRoute(
                 onAtras = { nav.popBackStack() },
-                onAbrirUrgente = { nav.navigate(ScreenNames.EmpAvisoDetalle.route) }
+                onAbrir = { id -> nav.navigate(ScreenNames.EmpAviso.createRoute(id)) }
+            )
+        }
+        composable(
+            route = ScreenNames.EmpAviso.route,
+            arguments = listOf(navArgument("id") { type = NavType.LongType })
+        ) { backStackEntry ->
+            AvisoRoute(
+                id = backStackEntry.arguments?.getLong("id") ?: 0L,
+                onAtras = { nav.popBackStack() },
             )
         }
         composable(ScreenNames.EmpAvisoDetalle.route) {

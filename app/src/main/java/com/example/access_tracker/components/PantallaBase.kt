@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -32,6 +33,8 @@ fun PantallaBase(
     contenido: @Composable ColumnScope.() -> Unit,
 ) {
     Scaffold(
+        // Con edge-to-edge, adjustResize no basta: sin esto el teclado tapa los campos.
+        modifier = Modifier.imePadding(),
         containerColor = fondo,
         bottomBar = {
             if (barra != null) {

@@ -43,12 +43,14 @@ fun ChecarRoute(
     LaunchedEffect(Unit) { vm.cargar() }
 
     // Acepte o rechace el permiso, se registra la entrada: sin ubicacion queda "fuera de zona".
-    val pedirUbicacion = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+    val pedirUbicacion = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
         vm.registrarEntrada()
     }
     val onEntrada = {
         if (Gps.tienePermiso(contexto)) vm.registrarEntrada()
-        else pedirUbicacion.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        else pedirUbicacion.launch(
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+        )
     }
 
     val datos = st.datos
@@ -91,6 +93,7 @@ fun ChecarRoute(
             enZona = abierta.withinZone,
             mensaje = st.mensaje,
             enviando = st.enviando,
+            avisosSinLeer = st.avisosSinLeer,
         )
     } else {
         val hoy = datos.todayShifts.firstOrNull()
@@ -107,6 +110,7 @@ fun ChecarRoute(
             },
             mensaje = st.mensaje,
             enviando = st.enviando,
+            avisosSinLeer = st.avisosSinLeer,
         )
     }
 }
