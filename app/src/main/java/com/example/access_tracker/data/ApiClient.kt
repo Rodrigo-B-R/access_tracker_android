@@ -24,6 +24,9 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
+/** Mensaje con el que la API rechaza (401) una contrasena actual equivocada; ver app/routers/session.py. */
+const val MSG_PASSWORD_ACTUAL_INCORRECTA = "The current password is not correct"
+
 /** Resultado de una llamada a la API. */
 sealed interface ApiResult<out T> {
     data class Ok<T>(val value: T) : ApiResult<T>
@@ -85,6 +88,16 @@ class ApiClient(
             serializer,
         )
 
+    /** Serializa [cuerpo] y hace PUT autenticado. */
+    suspend fun <B, T> put(path: String, cuerpo: B, bodySer: KSerializer<B>, serializer: KSerializer<T>): ApiResult<T> =
+        decodificar(
+            ejecutar(
+                Request.Builder().url("$baseUrl$path")
+                    .put(json.encodeToString(bodySer, cuerpo).toRequestBody(jsonMedia)).build()
+            ),
+            serializer,
+        )
+
     /** Serializa [cuerpo] y hace POST. */
     suspend fun <B, T> post(path: String, cuerpo: B, bodySer: KSerializer<B>, serializer: KSerializer<T>) =
         post(path, json.encodeToString(bodySer, cuerpo), serializer)
@@ -129,11 +142,17 @@ class ApiClient(
                     when {
                         resp.isSuccessful -> ApiResult.Ok(texto)
                         resp.code == 401 -> {
-                            if (autenticada) {
-                                sesion.borrar()
-                                _sesionExpirada.tryEmit(Unit)
+                            val mensaje = mensajeDe(texto)
+                            if (mensaje == MSG_PASSWORD_ACTUAL_INCORRECTA) {
+                                // 401 de negocio (PUT /profile/password), no de sesion: no se cierra la sesion.
+                                ApiResult.Error(ApiError.Servidor(401, mensaje))
+                            } else {
+                                if (autenticada) {
+                                    sesion.borrar()
+                                    _sesionExpirada.tryEmit(Unit)
+                                }
+                                ApiResult.Error(ApiError.NoAutorizado)
                             }
-                            ApiResult.Error(ApiError.NoAutorizado)
                         }
                         resp.code == 429 -> ApiResult.Error(
                             ApiError.Limitado(resp.header("Retry-After")?.toLongOrNull())

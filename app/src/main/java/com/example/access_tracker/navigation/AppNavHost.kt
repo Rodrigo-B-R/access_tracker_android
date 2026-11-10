@@ -26,6 +26,7 @@ import androidx.navigation.navArgument
 import com.example.access_tracker.components.BarraNavegacion
 import com.example.access_tracker.screens.comunes.AvisoSinConexionScreen
 import com.example.access_tracker.screens.comunes.CambioPasswordScreen
+import com.example.access_tracker.screens.comunes.CambioPasswordViewModel
 import com.example.access_tracker.screens.comunes.ExportarScreen
 import com.example.access_tracker.screens.comunes.IndiceScreen
 import com.example.access_tracker.screens.comunes.LoginScreen
@@ -101,9 +102,22 @@ fun AppNavHost() {
         composable(
             route = ScreenNames.CambioPassword.route,
             arguments = listOf(navArgument("perfil") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val perfil = Perfil.valueOf(backStackEntry.arguments?.getString("perfil") ?: "Empleada")
-            CambioPasswordScreen(onGuardar = { nav.navigate(ScreenNames.Permisos.createRoute(perfil)) })
+        ) {
+            val vm: CambioPasswordViewModel = viewModel()
+            val estado by vm.estado.collectAsState()
+            // Cambio voluntario desde el menu de cuenta: al guardar o cancelar se vuelve a la pantalla anterior.
+            LaunchedEffect(estado.listo) {
+                if (estado.listo) {
+                    vm.consumirListo()
+                    nav.popBackStack()
+                }
+            }
+            CambioPasswordScreen(
+                onGuardar = { actual, nueva -> vm.guardar(actual, nueva) },
+                onCancelar = { nav.popBackStack() },
+                enviando = estado.enviando,
+                error = estado.error,
+            )
         }
         composable(
             route = ScreenNames.Permisos.route,

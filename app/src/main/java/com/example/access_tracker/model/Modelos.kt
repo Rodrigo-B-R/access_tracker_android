@@ -121,3 +121,11 @@ data class MiAsistencia(
     val summary: ResumenAsistencia,
     val days: List<DiaAsistenciaDto>,
 )
+
+// ── Perfil ──────────────────────────────────────────────────────────
+
+@Serializable
+data class CambioPasswordRequest(val currentPassword: String, val newPassword: String)
+
+@Serializable
+data class MensajeApi(val message: String = "")

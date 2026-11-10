@@ -81,6 +81,24 @@ class ContratoApiTest {
     }
 
     @Test
+    fun reglasDePassword() {
+        val r = com.example.access_tracker.data.ReglasPassword
+        assertEquals(true, r.valida("Nueva2026", "Cristal2026", "Nueva2026"))
+        assertEquals(false, r.valida("corta1A", "Cristal2026", "corta1A"))          // < 8
+        assertEquals(false, r.valida("sinmayus123", "Cristal2026", "sinmayus123"))  // sin mayuscula
+        assertEquals(false, r.valida("SinNumeroAqui", "Cristal2026", "SinNumeroAqui"))
+        assertEquals(false, r.valida("Cristal2026", "Cristal2026", "Cristal2026"))  // igual a la actual
+        assertEquals(false, r.valida("Nueva2026", "Cristal2026", "Otra2026"))       // no coincide
+        assertEquals(false, r.valida("Nueva2026", "", "Nueva2026"))                 // falta la actual
+        assertEquals(false, r.valida("Aa1" + "x".repeat(70), "Cristal2026", "Aa1" + "x".repeat(70))) // > 72 bytes
+    }
+
+    @Test
+    fun mensajeDePasswordActualCoincideConLaApi() {
+        assertEquals("The current password is not correct", com.example.access_tracker.data.MSG_PASSWORD_ACTUAL_INCORRECTA)
+    }
+
+    @Test
     fun roles() {
         assertEquals(Perfil.Responsable, perfilDeRol("manager"))
         assertEquals(Perfil.Direccion, perfilDeRol("director"))
