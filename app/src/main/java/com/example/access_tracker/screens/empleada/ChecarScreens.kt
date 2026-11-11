@@ -63,14 +63,18 @@ fun ChecarFueraScreen(
     mensaje: String? = null,
     enviando: Boolean = false,
     avisosSinLeer: Int = 2,
+    sinTurnoTexto: String = "Hoy no tienes turno asignado",
+    /** Si no es null, se muestra el banner de "sin conexion" con este texto. */
+    bannerSinConexion: String? = null,
 ) {
     PantallaBase(barra = barra) {
         BarraSuperiorLogo(avisos = avisosSinLeer, onAvisos = onAvisos, cuenta = { MenuCuenta(onCambiarPassword, onCerrarSesion) })
+        if (bannerSinConexion != null) BannerConexion(EstadoBanner.SinConexion, bannerSinConexion)
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(fecha, style = Texto.BodyL, color = TintaSuave)
             Text("Hola, $nombre", style = Texto.DisplayL, color = TintaBase)
         }
-        TurnoDeHoy(turno)
+        TurnoDeHoy(turno, sinTurnoTexto)
         Column(
             Modifier.fillMaxWidth().padding(top = 14.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -173,15 +177,21 @@ fun ChecarSinInternetScreen(
     onRegistrarSalida: () -> Unit,
     onCambiarPassword: () -> Unit = {},
     onCerrarSesion: () -> Unit = {},
-    barra: @Composable () -> Unit = {}
+    barra: @Composable () -> Unit = {},
+    horaEntrada: String = "7:01",
+    turno: DatosTurno? = DatosTurno("Maternal A", "7:00", "15:00"),
+    sinTurnoTexto: String = "Hoy no tienes turno asignado",
+    textoZona: String = "Fuera de zona",
+    enviando: Boolean = false,
+    avisosSinLeer: Int = 2,
 ) {
     PantallaBase(barra = barra, separacion = 16.dp) {
-        BarraSuperiorLogo(avisos = 2, onAvisos = onAvisos, cuenta = { MenuCuenta(onCambiarPassword, onCerrarSesion) })
+        BarraSuperiorLogo(avisos = avisosSinLeer, onAvisos = onAvisos, cuenta = { MenuCuenta(onCambiarPassword, onCerrarSesion) })
         BannerConexion(
             EstadoBanner.SinConexion,
             "Sin conexión: tus registros se guardan en el dispositivo y se envían al reconectar."
         )
-        TurnoDeHoy()
+        TurnoDeHoy(turno, sinTurnoTexto)
         Column(
             Modifier.fillMaxWidth().padding(top = 6.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -192,7 +202,7 @@ fun ChecarSinInternetScreen(
                 Text("Entrada guardada", style = Texto.TitleM, color = TintaBase)
             }
             Text(
-                "Registrada hoy a las 7:01 en este dispositivo",
+                "Registrada hoy a las $horaEntrada en este dispositivo",
                 style = Texto.BodyM,
                 color = TintaSuave,
                 textAlign = TextAlign.Center
@@ -207,9 +217,12 @@ fun ChecarSinInternetScreen(
 }
 
 @Composable
-private fun TurnoDeHoy(turno: DatosTurno? = DatosTurno("Maternal A", "7:00", "15:00")) {
+private fun TurnoDeHoy(
+    turno: DatosTurno? = DatosTurno("Maternal A", "7:00", "15:00"),
+    sinTurnoTexto: String = "Hoy no tienes turno asignado",
+) {
     if (turno == null) {
-        Text("Hoy no tienes turno asignado", style = Texto.TitleS, color = TintaSuave)
+        Text(sinTurnoTexto, style = Texto.TitleS, color = TintaSuave)
         return
     }
     Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {

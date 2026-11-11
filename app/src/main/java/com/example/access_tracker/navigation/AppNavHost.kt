@@ -32,9 +32,9 @@ import com.example.access_tracker.screens.comunes.IndiceScreen
 import com.example.access_tracker.screens.comunes.LoginScreen
 import com.example.access_tracker.screens.comunes.PermisosScreen
 import com.example.access_tracker.screens.comunes.SesionExpiradaScreen
-import com.example.access_tracker.screens.direccion.DirBitacoraScreen
-import com.example.access_tracker.screens.direccion.DirEstadisticasScreen
-import com.example.access_tracker.screens.direccion.DirResumenScreen
+import com.example.access_tracker.screens.direccion.DirBitacoraRoute
+import com.example.access_tracker.screens.direccion.DirEstadisticasRoute
+import com.example.access_tracker.screens.direccion.DirResumenRoute
 import com.example.access_tracker.screens.empleada.AsistenciasRoute
 import com.example.access_tracker.screens.empleada.AvisoDetalleScreen
 import com.example.access_tracker.screens.empleada.ChecarDentroScreen
@@ -43,22 +43,22 @@ import com.example.access_tracker.screens.empleada.AvisosRoute
 import com.example.access_tracker.screens.empleada.ChecarRoute
 import com.example.access_tracker.screens.empleada.ChecarSinInternetScreen
 import com.example.access_tracker.screens.empleada.HorarioRoute
-import com.example.access_tracker.screens.responsable.AltaPersonalScreen
-import com.example.access_tracker.screens.responsable.DarDeBajaScreen
-import com.example.access_tracker.screens.responsable.PerfilPersonaScreen
-import com.example.access_tracker.screens.responsable.RegistrarAusenciaScreen
-import com.example.access_tracker.screens.responsable.RegistroTurnoScreen
-import com.example.access_tracker.screens.responsable.ResAjustesSalasScreen
-import com.example.access_tracker.screens.responsable.ResAsistenciaScreen
-import com.example.access_tracker.screens.responsable.ResAvisosScreen
-import com.example.access_tracker.screens.responsable.ResBitacoraScreen
-import com.example.access_tracker.screens.responsable.ResEstadoLecturaScreen
-import com.example.access_tracker.screens.responsable.ResHorarioPersonaScreen
-import com.example.access_tracker.screens.responsable.ResHorariosScreen
-import com.example.access_tracker.screens.responsable.ResInicioScreen
+import com.example.access_tracker.screens.responsable.AltaPersonalRoute
+import com.example.access_tracker.screens.responsable.DarDeBajaRoute
+import com.example.access_tracker.screens.responsable.PerfilPersonaRoute
+import com.example.access_tracker.screens.responsable.RegistrarAusenciaRoute
+import com.example.access_tracker.screens.responsable.RegistroTurnoRoute
+import com.example.access_tracker.screens.responsable.ResAjustesSalasRoute
+import com.example.access_tracker.screens.responsable.ResAsistenciaRoute
+import com.example.access_tracker.screens.responsable.ResAvisosRoute
+import com.example.access_tracker.screens.responsable.ResBitacoraRoute
+import com.example.access_tracker.screens.responsable.ResEstadoLecturaRoute
+import com.example.access_tracker.screens.responsable.ResHorarioPersonaRoute
+import com.example.access_tracker.screens.responsable.ResHorariosRoute
+import com.example.access_tracker.screens.responsable.ResInicioRoute
 import com.example.access_tracker.screens.responsable.ResMenuScreen
-import com.example.access_tracker.screens.responsable.ResNuevoAvisoScreen
-import com.example.access_tracker.screens.responsable.ResPersonalScreen
+import com.example.access_tracker.screens.responsable.ResNuevoAvisoRoute
+import com.example.access_tracker.screens.responsable.ResPersonalRoute
 
 @Composable
 fun AppNavHost() {
@@ -220,7 +220,7 @@ fun AppNavHost() {
 
         // Responsable
         composable(ScreenNames.ResInicio.route) {
-            ResInicioScreen(
+            ResInicioRoute(
                 onAvisos = { nav.navigate(ScreenNames.ResAvisos.route) },
                 onMenu = { nav.navigate(ScreenNames.ResMenu.route) },
                 onAtender = { irAPestana(nav, Perfil.Responsable, ScreenNames.ResAsistencia.route) },
@@ -229,72 +229,93 @@ fun AppNavHost() {
             )
         }
         composable(ScreenNames.ResAsistencia.route) {
-            ResAsistenciaScreen(
+            ResAsistenciaRoute(
                 onAvisos = { nav.navigate(ScreenNames.ResAvisos.route) },
                 onTurnoCompleto = { nav.navigate(ScreenNames.ResRegistroTurno.route) },
-                onAusencia = { persona ->
-                    nav.navigate(ScreenNames.ResAusencia.createRoute(persona ?: "Paola Reyes"))
-                },
+                onAusencia = { id -> nav.navigate(ScreenNames.ResAusencia.createRoute(id)) },
                 barra = { Barra(nav, Perfil.Responsable, ScreenNames.ResAsistencia) }
             )
         }
         composable(ScreenNames.ResHorarios.route) {
-            ResHorariosScreen(
+            ResHorariosRoute(
                 onAvisos = { nav.navigate(ScreenNames.ResAvisos.route) },
-                onPersona = { nav.navigate(ScreenNames.ResHorarioPersona.route) },
+                onPersona = { nav.navigate(ScreenNames.ResHorarioPersona.createRoute(it)) },
                 barra = { Barra(nav, Perfil.Responsable, ScreenNames.ResHorarios) }
             )
         }
-        composable(ScreenNames.ResHorarioPersona.route) {
-            ResHorarioPersonaScreen(onAtras = { nav.popBackStack() }, onGuardar = { nav.popBackStack() })
+        composable(
+            route = ScreenNames.ResHorarioPersona.route,
+            arguments = listOf(navArgument("id") { type = NavType.LongType })
+        ) { entry ->
+            ResHorarioPersonaRoute(id = entry.arguments?.getLong("id") ?: 0L, onAtras = { nav.popBackStack() })
         }
         composable(ScreenNames.ResPersonal.route) {
-            ResPersonalScreen(
+            ResPersonalRoute(
                 onAvisos = { nav.navigate(ScreenNames.ResAvisos.route) },
-                onPersona = { nav.navigate(ScreenNames.ResPerfilPersona.route) },
+                onPersona = { nav.navigate(ScreenNames.ResPerfilPersona.createRoute(it)) },
                 onAlta = { nav.navigate(ScreenNames.ResAltaPersonal.route) },
                 barra = { Barra(nav, Perfil.Responsable, ScreenNames.ResPersonal) }
             )
         }
         composable(ScreenNames.ResRegistroTurno.route) {
-            RegistroTurnoScreen(onCerrar = { nav.popBackStack() }, onRegistrar = { nav.popBackStack() })
+            RegistroTurnoRoute(onCerrar = { nav.popBackStack() })
         }
         composable(
             route = ScreenNames.ResAusencia.route,
-            arguments = listOf(navArgument("persona") { type = NavType.StringType })
-        ) { backStackEntry ->
-            RegistrarAusenciaScreen(
-                onCerrar = { nav.popBackStack() },
-                onGuardar = { nav.popBackStack() },
-                persona = backStackEntry.arguments?.getString("persona") ?: "Paola Reyes"
-            )
+            arguments = listOf(navArgument("id") { type = NavType.LongType })
+        ) { entry ->
+            val id = entry.arguments?.getLong("id") ?: 0L
+            RegistrarAusenciaRoute(userId = id.takeIf { it > 0 }, onCerrar = { nav.popBackStack() })
         }
         composable(ScreenNames.ResAltaPersonal.route) {
-            AltaPersonalScreen(onCerrar = { nav.popBackStack() }, onGuardar = { nav.popBackStack() })
+            AltaPersonalRoute(id = null, onCerrar = { nav.popBackStack() })
         }
-        composable(ScreenNames.ResPerfilPersona.route) {
-            PerfilPersonaScreen(
+        composable(
+            route = ScreenNames.ResEditarPersonal.route,
+            arguments = listOf(navArgument("id") { type = NavType.LongType })
+        ) { entry ->
+            AltaPersonalRoute(id = entry.arguments?.getLong("id"), onCerrar = { nav.popBackStack() })
+        }
+        composable(
+            route = ScreenNames.ResPerfilPersona.route,
+            arguments = listOf(navArgument("id") { type = NavType.LongType })
+        ) { entry ->
+            val id = entry.arguments?.getLong("id") ?: 0L
+            PerfilPersonaRoute(
+                id = id,
                 onAtras = { nav.popBackStack() },
-                onEditar = { nav.navigate(ScreenNames.ResAltaPersonal.route) },
-                onBaja = { nav.navigate(ScreenNames.ResDarBaja.route) },
-                onHorario = { nav.navigate(ScreenNames.ResHorarioPersona.route) }
+                onEditar = { nav.navigate(ScreenNames.ResEditarPersonal.createRoute(id)) },
+                onBaja = { nav.navigate(ScreenNames.ResDarBaja.createRoute(id)) },
+                onHorario = { nav.navigate(ScreenNames.ResHorarioPersona.createRoute(id)) }
             )
         }
-        composable(ScreenNames.ResDarBaja.route) {
-            DarDeBajaScreen(onCerrar = { nav.popBackStack() }, onConfirmar = { nav.popBackStack() })
+        composable(
+            route = ScreenNames.ResDarBaja.route,
+            arguments = listOf(navArgument("id") { type = NavType.LongType })
+        ) { entry ->
+            DarDeBajaRoute(
+                id = entry.arguments?.getLong("id") ?: 0L,
+                onCerrar = { nav.popBackStack() },
+                // Tras la baja o el traslado se vuelve a la lista de personal.
+                onTerminado = { nav.popBackStack(ScreenNames.ResPersonal.route, inclusive = false) }
+            )
         }
         composable(ScreenNames.ResAvisos.route) {
-            ResAvisosScreen(
+            ResAvisosRoute(
                 onAtras = { nav.popBackStack() },
                 onNuevo = { nav.navigate(ScreenNames.ResNuevoAviso.route) },
-                onEstadoLectura = { nav.navigate(ScreenNames.ResEstadoLectura.route) }
+                onEstadoLectura = { nav.navigate(ScreenNames.ResEstadoLectura.createRoute(it)) },
+                onAbrirRecibido = { nav.navigate(ScreenNames.EmpAviso.createRoute(it)) }
             )
         }
         composable(ScreenNames.ResNuevoAviso.route) {
-            ResNuevoAvisoScreen(onCerrar = { nav.popBackStack() }, onEnviar = { nav.popBackStack() })
+            ResNuevoAvisoRoute(onCerrar = { nav.popBackStack() })
         }
-        composable(ScreenNames.ResEstadoLectura.route) {
-            ResEstadoLecturaScreen(onAtras = { nav.popBackStack() }, onRecordatorio = { nav.popBackStack() })
+        composable(
+            route = ScreenNames.ResEstadoLectura.route,
+            arguments = listOf(navArgument("id") { type = NavType.LongType })
+        ) { entry ->
+            ResEstadoLecturaRoute(id = entry.arguments?.getLong("id") ?: 0L, onAtras = { nav.popBackStack() })
         }
         composable(ScreenNames.ResMenu.route) {
             ResMenuScreen(
@@ -308,22 +329,22 @@ fun AppNavHost() {
             )
         }
         composable(ScreenNames.ResAjustesSalas.route) {
-            ResAjustesSalasScreen(onAtras = { nav.popBackStack() }, onGuardar = { nav.popBackStack() })
+            ResAjustesSalasRoute(onAtras = { nav.popBackStack() })
         }
         composable(ScreenNames.ResBitacora.route) {
-            ResBitacoraScreen(onAtras = { nav.popBackStack() })
+            ResBitacoraRoute(onAtras = { nav.popBackStack() })
         }
 
         // Dirección
         composable(ScreenNames.DirResumen.route) {
-            DirResumenScreen(
+            DirResumenRoute(
                 onCambiarPassword = { nav.navigate(ScreenNames.CambioPassword.createRoute(Perfil.Direccion)) },
                 onCerrarSesion = { cerrarSesion(nav) },
                 barra = { Barra(nav, Perfil.Direccion, ScreenNames.DirResumen) }
             )
         }
         composable(ScreenNames.DirEstadisticas.route) {
-            DirEstadisticasScreen(
+            DirEstadisticasRoute(
                 onExportar = { nav.navigate(ScreenNames.Exportar.createRoute(Perfil.Direccion)) },
                 onCambiarPassword = { nav.navigate(ScreenNames.CambioPassword.createRoute(Perfil.Direccion)) },
                 onCerrarSesion = { cerrarSesion(nav) },
@@ -331,7 +352,7 @@ fun AppNavHost() {
             )
         }
         composable(ScreenNames.DirBitacora.route) {
-            DirBitacoraScreen(
+            DirBitacoraRoute(
                 onCambiarPassword = { nav.navigate(ScreenNames.CambioPassword.createRoute(Perfil.Direccion)) },
                 onCerrarSesion = { cerrarSesion(nav) },
                 barra = { Barra(nav, Perfil.Direccion, ScreenNames.DirBitacora) }

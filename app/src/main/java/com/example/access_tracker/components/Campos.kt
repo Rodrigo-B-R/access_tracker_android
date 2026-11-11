@@ -125,6 +125,7 @@ fun CampoOpciones(
     opciones: List<String>,
     modifier: Modifier = Modifier,
     inicio: @Composable () -> Unit = {},
+    onElegido: (Int) -> Unit = {},
 ) {
     var abierto by remember { mutableStateOf(false) }
     var elegido by remember { mutableStateOf(valorInicial) }
@@ -140,6 +141,7 @@ fun CampoOpciones(
                         onClick = {
                             elegido = opcion
                             abierto = false
+                            onElegido(opciones.indexOf(opcion))
                         }
                     )
                 }
@@ -149,7 +151,12 @@ fun CampoOpciones(
 }
 
 @Composable
-fun CampoFecha(etiqueta: String, valorInicial: String, formato: String = "EEEE d 'de' MMMM") {
+fun CampoFecha(
+    etiqueta: String,
+    valorInicial: String,
+    formato: String = "EEEE d 'de' MMMM",
+    onFecha: (java.time.LocalDate) -> Unit = {},
+) {
     var fecha by remember { mutableStateOf(valorInicial) }
     var abierto by remember { mutableStateOf(false) }
 
@@ -158,13 +165,18 @@ fun CampoFecha(etiqueta: String, valorInicial: String, formato: String = "EEEE d
         CajaCampo(texto = fecha, icono = Ico.Calendar, onClick = { abierto = true })
     }
     if (abierto) {
-        DialogoFecha(formato = formato, onCerrar = { abierto = false }, onElegida = { fecha = it })
+        DialogoFecha(formato = formato, onCerrar = { abierto = false }, onElegida = { fecha = it }, onFecha = onFecha)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DialogoFecha(formato: String, onCerrar: () -> Unit, onElegida: (String) -> Unit) {
+fun DialogoFecha(
+    formato: String,
+    onCerrar: () -> Unit,
+    onElegida: (String) -> Unit,
+    onFecha: (java.time.LocalDate) -> Unit = {},
+) {
     val estado = rememberDatePickerState()
     DatePickerDialog(
         onDismissRequest = onCerrar,
@@ -176,6 +188,7 @@ fun DialogoFecha(formato: String, onCerrar: () -> Unit, onElegida: (String) -> U
                         val formatoFecha = SimpleDateFormat(formato, Locale("es", "MX"))
                         formatoFecha.timeZone = TimeZone.getTimeZone("UTC")
                         onElegida(formatoFecha.format(Date(milis)).replaceFirstChar { it.uppercase() })
+                        onFecha(java.time.Instant.ofEpochMilli(milis).atZone(java.time.ZoneOffset.UTC).toLocalDate())
                     }
                     onCerrar()
                 }
@@ -193,7 +206,7 @@ fun DialogoFecha(formato: String, onCerrar: () -> Unit, onElegida: (String) -> U
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CampoHora(etiqueta: String, valorInicial: String) {
+fun CampoHora(etiqueta: String, valorInicial: String, onHora: (hora: Int, minuto: Int) -> Unit = { _, _ -> }) {
     var hora by remember { mutableStateOf(valorInicial) }
     var abierto by remember { mutableStateOf(false) }
     val estado = rememberTimePickerState(initialHour = 7, initialMinute = 0, is24Hour = false)
@@ -211,6 +224,7 @@ fun CampoHora(etiqueta: String, valorInicial: String) {
                         val hora12 = if (estado.hour % 12 == 0) 12 else estado.hour % 12
                         val ampm = if (estado.hour < 12) "a. m." else "p. m."
                         hora = "$hora12:${estado.minute.toString().padStart(2, '0')} $ampm"
+                        onHora(estado.hour, estado.minute)
                         abierto = false
                     }
                 ) {

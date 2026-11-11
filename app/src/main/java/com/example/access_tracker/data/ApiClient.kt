@@ -81,6 +81,10 @@ class ApiClient(
     suspend fun <T> get(path: String, serializer: KSerializer<T>): ApiResult<T> =
         decodificar(ejecutar(Request.Builder().url("$baseUrl$path").get().build()), serializer)
 
+    /** GET autenticado que devuelve el cuerpo tal cual (p. ej. un CSV). */
+    suspend fun getTexto(path: String): ApiResult<String> =
+        ejecutar(Request.Builder().url("$baseUrl$path").get().build())
+
     /** POST autenticado con cuerpo JSON ya serializado. */
     suspend fun <T> post(path: String, cuerpoJson: String, serializer: KSerializer<T>): ApiResult<T> =
         decodificar(
@@ -177,12 +181,22 @@ object ServiceLocator {
         private set
     lateinit var api: ApiClient
         private set
+    lateinit var cola: ColaChecadas
+        private set
+    lateinit var cache: CacheEstado
+        private set
+    lateinit var sincronizador: Sincronizador
+        private set
 
     /** Para trabajo que debe terminar aunque la pantalla se cierre (p. ej. avisar el logout). */
     val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     fun init(context: Context) {
-        sesion = SessionStore(context.applicationContext)
+        val app = context.applicationContext
+        sesion = SessionStore(app)
         api = ApiClient(BuildConfig.API_BASE_URL.trimEnd('/'), sesion)
+        cola = ColaChecadas(PrefsAlmacen(app, "cola_checadas"))
+        cache = CacheEstado(PrefsAlmacen(app, "cache_estado"))
+        sincronizador = Sincronizador(api, cola, sesion) { SincronizarChecadasWorker.programar(app) }
     }
 }

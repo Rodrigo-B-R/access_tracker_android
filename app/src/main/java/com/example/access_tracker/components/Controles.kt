@@ -74,7 +74,13 @@ fun Segmentado(opciones: List<String>, seleccion: Int, onSeleccion: (Int) -> Uni
 }
 
 @Composable
-fun FiltroDesplegable(inicial: String, opciones: List<String>, radio: Dp = 26.dp, modifier: Modifier = Modifier) {
+fun FiltroDesplegable(
+    inicial: String,
+    opciones: List<String>,
+    radio: Dp = 26.dp,
+    modifier: Modifier = Modifier,
+    onElegido: (Int) -> Unit = {},
+) {
     var abierto by remember { mutableStateOf(false) }
     var elegido by remember { mutableStateOf(inicial) }
     Box(modifier) {
@@ -94,7 +100,7 @@ fun FiltroDesplegable(inicial: String, opciones: List<String>, radio: Dp = 26.dp
             opciones.forEach { opcion ->
                 DropdownMenuItem(
                     text = { Text(opcion, style = Texto.BodyL, color = TintaBase) },
-                    onClick = { elegido = opcion; abierto = false },
+                    onClick = { elegido = opcion; abierto = false; onElegido(opciones.indexOf(opcion)) },
                 )
             }
         }

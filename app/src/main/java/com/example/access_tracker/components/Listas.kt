@@ -133,7 +133,12 @@ fun BotonFlotanteIcono(icono: Ico, color: Color, onClick: () -> Unit, modifier: 
 }
 
 @Composable
-fun BarraBusqueda(texto: String, modifier: Modifier = Modifier) {
+fun BarraBusqueda(
+    texto: String,
+    modifier: Modifier = Modifier,
+    valor: String = "",
+    onCambio: ((String) -> Unit)? = null,
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -144,7 +149,20 @@ fun BarraBusqueda(texto: String, modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icono(Ico.Search, tint = TintaSuave, tamano = 20.dp)
-        Text(texto, style = Texto.BodyL, color = TintaSuave)
+        if (onCambio == null) {
+            Text(texto, style = Texto.BodyL, color = TintaSuave)
+        } else {
+            Box(Modifier.weight(1f)) {
+                if (valor.isEmpty()) Text(texto, style = Texto.BodyL, color = TintaSuave)
+                androidx.compose.foundation.text.BasicTextField(
+                    value = valor,
+                    onValueChange = { if (it.length <= 100) onCambio(it) },
+                    singleLine = true,
+                    textStyle = Texto.BodyL.copy(color = TintaBase),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        }
     }
 }
 

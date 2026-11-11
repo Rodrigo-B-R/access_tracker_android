@@ -48,19 +48,47 @@ import com.example.access_tracker.ui.theme.Verde100
 import com.example.access_tracker.ui.theme.Verde600
 import androidx.compose.ui.graphics.Color
 
+/** Estado de una estancia en el resumen: nombre, texto y si esta completa. */
+data class EstanciaVista(val nombre: String, val estado: String, val completa: Boolean)
+
 @Composable
 fun DirResumenScreen(
     onCambiarPassword: () -> Unit = {},
     onCerrarSesion: () -> Unit = {},
     barra: @Composable () -> Unit = {}
 ) {
-    var fecha by remember { mutableStateOf("Mié 7 oct") }
+    DirResumenContenido(
+        fecha = "Mié 7 oct", completas = 3, faltantes = 2,
+        estancias = listOf(
+            EstanciaVista("Apodaca", "Falta 1 en Maternal A", false),
+            EstanciaVista("Escobedo", "Faltan 2 en Lactantes", false),
+            EstanciaVista("Cumbres", "Completa", true),
+            EstanciaVista("San Nicolás", "Completa", true),
+            EstanciaVista("Guadalupe", "Completa", true),
+        ),
+        onFechaElegida = {}, onCambiarPassword = onCambiarPassword, onCerrarSesion = onCerrarSesion,
+        barra = barra,
+    )
+}
+
+@Composable
+fun DirResumenContenido(
+    fecha: String,
+    completas: Int,
+    faltantes: Int,
+    estancias: List<EstanciaVista>,
+    onFechaElegida: (isoFecha: String) -> Unit,
+    onCambiarPassword: () -> Unit = {},
+    onCerrarSesion: () -> Unit = {},
+    barra: @Composable () -> Unit = {},
+    mensaje: String? = null,
+) {
     var elegirFecha by remember { mutableStateOf(false) }
     if (elegirFecha) {
         DialogoFecha(
-            formato = "EEE d MMM",
+            formato = "yyyy-MM-dd",
             onCerrar = { elegirFecha = false },
-            onElegida = { fecha = it.replace(".", "") }
+            onElegida = onFechaElegida
         )
     }
     PantallaBase(
@@ -100,33 +128,22 @@ fun DirResumenScreen(
                     Text(fecha, style = Texto.LabelL, color = FondoCrema, maxLines = 1, softWrap = false)
                 }
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Cifra("3", "estancias\ncompletas", FondoBlanco, Modifier.weight(1f))
-                    Cifra("2", "con\nfaltante", Coral500, Modifier.weight(1f))
+                    Cifra("$completas", "estancias\ncompletas", FondoBlanco, Modifier.weight(1f))
+                    Cifra("$faltantes", "con\nfaltante", Coral500, Modifier.weight(1f))
                 }
             }
         },
     ) {
+        if (mensaje != null) Text(mensaje, style = Texto.BodyM, color = TintaSuave)
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Row(
-                Modifier.fillMaxWidth().height(IntrinsicSize.Max),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                EstanciaEstado("Apodaca", "Falta 1 en Maternal A", completa = false, Modifier.weight(1f))
-                EstanciaEstado("Escobedo", "Faltan 2 en Lactantes", completa = false, Modifier.weight(1f))
-            }
-            Row(
-                Modifier.fillMaxWidth().height(IntrinsicSize.Max),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                EstanciaEstado("Cumbres", "Completa", completa = true, Modifier.weight(1f))
-                EstanciaEstado("San Nicolás", "Completa", completa = true, Modifier.weight(1f))
-            }
-            Row(
-                Modifier.fillMaxWidth().height(IntrinsicSize.Max),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                EstanciaEstado("Guadalupe", "Completa", completa = true, Modifier.weight(1f))
-                Box(Modifier.weight(1f))
+            estancias.chunked(2).forEach { par ->
+                Row(
+                    Modifier.fillMaxWidth().height(IntrinsicSize.Max),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    par.forEach { EstanciaEstado(it.nombre, it.estado, it.completa, Modifier.weight(1f)) }
+                    if (par.size == 1) Box(Modifier.weight(1f))
+                }
             }
         }
     }

@@ -53,6 +53,9 @@ import com.example.access_tracker.ui.theme.TintaSuave
 import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.Verde100
 
+/** Altas y bajas de una estancia para la grafica de barras. */
+data class BarrasEstancia(val nombre: String, val altas: Int, val bajas: Int)
+
 @Composable
 fun DirEstadisticasScreen(
     onExportar: () -> Unit,
@@ -60,7 +63,36 @@ fun DirEstadisticasScreen(
     onCerrarSesion: () -> Unit = {},
     barra: @Composable () -> Unit = {}
 ) {
-    var periodo by remember { mutableIntStateOf(0) }
+    DirEstadisticasContenido(
+        periodo = 0, onPeriodo = {},
+        estancias = listOf("Todas", "San Nicolás", "Centro", "Las Flores", "Norte"), onEstancia = {},
+        altas = "6", bajas = "4", insuficiente = "9 días", absentismo = "4.2 %",
+        barras = listOf(
+            BarrasEstancia("Cumbres", 2, 1), BarrasEstancia("S. Nicolás", 1, 0),
+            BarrasEstancia("Apodaca", 1, 2), BarrasEstancia("Guadalupe", 2, 0), BarrasEstancia("Escobedo", 0, 1),
+        ),
+        onExportar = onExportar, onCambiarPassword = onCambiarPassword, onCerrarSesion = onCerrarSesion,
+        barra = barra,
+    )
+}
+
+@Composable
+fun DirEstadisticasContenido(
+    periodo: Int,
+    onPeriodo: (Int) -> Unit,
+    estancias: List<String>,
+    onEstancia: (Int) -> Unit,
+    altas: String,
+    bajas: String,
+    insuficiente: String,
+    absentismo: String,
+    barras: List<BarrasEstancia>,
+    onExportar: () -> Unit,
+    onCambiarPassword: () -> Unit = {},
+    onCerrarSesion: () -> Unit = {},
+    barra: @Composable () -> Unit = {},
+    mensaje: String? = null,
+) {
     PantallaBase(barra = barra, separacion = 14.dp) {
         Row(
             Modifier.fillMaxWidth(),
@@ -79,17 +111,18 @@ fun DirEstadisticasScreen(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Segmentado(listOf("Mes", "Trim.", "Año"), periodo, { periodo = it }, Modifier.weight(1f))
-            FiltroDesplegable("Todas", listOf("Todas", "San Nicolás", "Centro", "Las Flores", "Norte"), radio = 24.dp)
+            Segmentado(listOf("Mes", "Trim.", "Año"), periodo, onPeriodo, Modifier.weight(1f))
+            FiltroDesplegable(estancias.first(), estancias, radio = 24.dp, onElegido = onEstancia)
         }
+        if (mensaje != null) Text(mensaje, style = Texto.BodyM, color = TintaSuave)
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                Kpi(Ico.Userplus, "Altas", "6", Verde100, Modifier.weight(1f))
-                Kpi(Ico.Userminus, "Bajas", "4", Coral100, Modifier.weight(1f))
+                Kpi(Ico.Userplus, "Altas", altas, Verde100, Modifier.weight(1f))
+                Kpi(Ico.Userminus, "Bajas", bajas, Coral100, Modifier.weight(1f))
             }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                Kpi(Ico.Alert, "Personal insuficiente", "9 días", Rojo100, Modifier.weight(1f))
-                Kpi(Ico.Chart, "Absentismo", "4.2 %", Petroleo100, Modifier.weight(1f))
+                Kpi(Ico.Alert, "Personal insuficiente", insuficiente, Rojo100, Modifier.weight(1f))
+                Kpi(Ico.Chart, "Absentismo", absentismo, Petroleo100, Modifier.weight(1f))
             }
         }
         Tarjeta(radio = 24.dp, relleno = 18.dp) {
@@ -105,16 +138,22 @@ fun DirEstadisticasScreen(
                         Leyenda(Coral500, "Bajas")
                     }
                 }
+                val maximo = (barras.maxOfOrNull { maxOf(it.altas, it.bajas) } ?: 0).coerceAtLeast(1)
                 Row(
                     Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.Bottom
                 ) {
-                    GrupoBarras("Cumbres", 68.dp, 34.dp, Modifier.weight(1f))
-                    GrupoBarras("S. Nicolás", 34.dp, 4.dp, Modifier.weight(1f), bajasVacio = true)
-                    GrupoBarras("Apodaca", 34.dp, 68.dp, Modifier.weight(1f))
-                    GrupoBarras("Guadalupe", 68.dp, 4.dp, Modifier.weight(1f), bajasVacio = true)
-                    GrupoBarras("Escobedo", 4.dp, 34.dp, Modifier.weight(1f), altasVacio = true)
+                    barras.forEach { b ->
+                        GrupoBarras(
+                            b.nombre,
+                            (4 + 64 * b.altas / maximo).dp,
+                            (4 + 64 * b.bajas / maximo).dp,
+                            Modifier.weight(1f),
+                            altasVacio = b.altas == 0,
+                            bajasVacio = b.bajas == 0,
+                        )
+                    }
                 }
             }
         }
@@ -197,14 +236,47 @@ private fun GrupoBarras(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+/** Un renglon de la bitacora ya traducido para pintar. */
+data class EventoVista(
+    val icono: Ico, val fondo: Color, val tipo: String, val tono: TonoChip,
+    val titulo: String, val detalle: String, val estancia: String? = null,
+)
+
 @Composable
 fun DirBitacoraScreen(
     onCambiarPassword: () -> Unit = {},
     onCerrarSesion: () -> Unit = {},
     barra: @Composable () -> Unit = {}
 ) {
-    var filtro by remember { mutableIntStateOf(0) }
+    DirBitacoraContenido(
+        filtros = listOf("Todas", "Cumbres", "San Nicolás", "Apodaca", "Guadalupe", "Escobedo"),
+        filtro = 0, onFiltro = {},
+        eventos = listOf(
+            EventoVista(Ico.Fingerprint, Petroleo100, "Checada", TonoChip.Info, "Entrada registrada",
+                "Registrado por Ana Torres · 7 oct 7:00", "Cumbres"),
+            EventoVista(Ico.Alert, Coral100, "Ausencia", TonoChip.Coral, "Paola Reyes · Enfermedad",
+                "Registrado por Responsable · 7 oct 8:02", "Cumbres"),
+            EventoVista(Ico.Swap, Mostaza100, "Baja", TonoChip.Alerta, "Traslado a Estancia San Nicolás",
+                "Registrado por Responsable · 6 oct 12:15", "Apodaca"),
+            EventoVista(Ico.Fingerprint, Petroleo100, "Checada", TonoChip.Info, "Salida registrada",
+                "Registrado por Rosa Medina · 6 oct 15:01", "Escobedo"),
+        ),
+        onCambiarPassword = onCambiarPassword, onCerrarSesion = onCerrarSesion, barra = barra,
+    )
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun DirBitacoraContenido(
+    filtros: List<String>,
+    filtro: Int,
+    onFiltro: (Int) -> Unit,
+    eventos: List<EventoVista>,
+    onCambiarPassword: () -> Unit = {},
+    onCerrarSesion: () -> Unit = {},
+    barra: @Composable () -> Unit = {},
+    mensaje: String? = null,
+) {
     PantallaBase(barra = barra, separacion = 14.dp) {
         Row(
             Modifier.fillMaxWidth(),
@@ -220,27 +292,18 @@ fun DirBitacoraScreen(
             MenuCuenta(onCambiarPassword, onCerrarSesion)
         }
         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            listOf("Todas", "Cumbres", "San Nicolás", "Apodaca", "Guadalupe", "Escobedo").forEachIndexed { i, t ->
-                FiltroPill(t, activo = filtro == i, onClick = { filtro = i })
+            filtros.forEachIndexed { i, t ->
+                FiltroPill(t, activo = filtro == i, onClick = { onFiltro(i) })
             }
         }
+        if (mensaje != null) Text(mensaje, style = Texto.BodyM, color = TintaSuave)
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            EventoBitacora(
-                Ico.Fingerprint, Petroleo100, "Checada", TonoChip.Info, "Entrada registrada",
-                "Registrado por Ana Torres · 7 oct 7:00", estancia = "Cumbres", estiloTitulo = Texto.LabelL,
-            )
-            EventoBitacora(
-                Ico.Alert, Coral100, "Ausencia", TonoChip.Coral, "Paola Reyes · Enfermedad",
-                "Registrado por Responsable · 7 oct 8:02", estancia = "Cumbres", estiloTitulo = Texto.LabelL,
-            )
-            EventoBitacora(
-                Ico.Swap, Mostaza100, "Baja", TonoChip.Alerta, "Traslado a Estancia San Nicolás",
-                "Registrado por Responsable · 6 oct 12:15", estancia = "Apodaca", estiloTitulo = Texto.LabelL,
-            )
-            EventoBitacora(
-                Ico.Fingerprint, Petroleo100, "Checada", TonoChip.Info, "Salida registrada",
-                "Registrado por Rosa Medina · 6 oct 15:01", estancia = "Escobedo", estiloTitulo = Texto.LabelL,
-            )
+            eventos.forEach {
+                EventoBitacora(
+                    it.icono, it.fondo, it.tipo, it.tono, it.titulo, it.detalle,
+                    estancia = it.estancia, estiloTitulo = Texto.LabelL,
+                )
+            }
         }
     }
 }

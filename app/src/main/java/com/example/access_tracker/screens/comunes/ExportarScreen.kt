@@ -1,5 +1,9 @@
 package com.example.access_tracker.screens.comunes
 
+import android.content.ContentValues
+import android.content.Context
+import android.os.Environment
+import android.provider.MediaStore
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,86 +13,122 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.access_tracker.components.Boton
-import com.example.access_tracker.components.CampoFecha
 import com.example.access_tracker.components.CampoOpciones
-import com.example.access_tracker.components.Casilla
-import com.example.access_tracker.components.Divisor
 import com.example.access_tracker.components.EncabezadoPantalla
 import com.example.access_tracker.components.EstiloBoton
-import com.example.access_tracker.components.GrupoFilas
 import com.example.access_tracker.components.Ico
 import com.example.access_tracker.components.IconoCuadro
 import com.example.access_tracker.components.Icono
+import com.example.access_tracker.components.Nota
 import com.example.access_tracker.components.PantallaBase
 import com.example.access_tracker.components.Segmentado
-import com.example.access_tracker.ui.theme.Access_trackerTheme
+import com.example.access_tracker.data.ApiResult
+import com.example.access_tracker.data.Fechas
+import com.example.access_tracker.data.ServiceLocator
+import com.example.access_tracker.data.texto
+import com.example.access_tracker.model.Estancia
+import com.example.access_tracker.screens.responsable.textoAccion
 import com.example.access_tracker.ui.theme.FondoArena
 import com.example.access_tracker.ui.theme.FondoBlanco
+import com.example.access_tracker.ui.theme.Rojo100
+import com.example.access_tracker.ui.theme.Texto
 import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
-import com.example.access_tracker.ui.theme.Texto
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.builtins.ListSerializer
+
+/** Guarda el CSV en la carpeta Descargas (no pide permisos desde Android 10). */
+private suspend fun guardarEnDescargas(context: Context, nombre: String, texto: String): Boolean =
+    withContext(Dispatchers.IO) {
+        val valores = ContentValues().apply {
+            put(MediaStore.Downloads.DISPLAY_NAME, nombre)
+            put(MediaStore.Downloads.MIME_TYPE, "text/csv")
+            put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+        }
+        val uri = context.contentResolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, valores) ?: return@withContext false
+        context.contentResolver.openOutputStream(uri)?.use { it.write(texto.toByteArray(Charsets.UTF_8)); true } ?: false
+    }
 
 @Composable
 fun ExportarScreen(onAtras: () -> Unit, onDescargar: () -> Unit, direccion: Boolean = false) {
+    val contexto = LocalContext.current
+    val alcance = rememberCoroutineScope()
     var periodo by remember { mutableIntStateOf(1) }
-    val incluir = remember { mutableStateListOf(true, true, true, false) }
-    val opciones = listOf(
-        "Asistencias" to "Entradas y salidas, con autor y hora de captura",
-        "Incidencias" to "Retardos y correcciones",
-        "Ausencias" to "Faltas por categoría",
-        "Altas, bajas y absentismo" to "Rotación del periodo",
-    )
+    var estancias by remember { mutableStateOf<List<Estancia>>(emptyList()) }
+    var estancia by remember { mutableIntStateOf(0) }      // 0 = todas
+    var trabajando by remember { mutableStateOf(false) }
+    var mensaje by remember { mutableStateOf<String?>(null) }
+    var exito by remember { mutableStateOf(false) }
+
+    LaunchedEffect(direccion) {
+        if (direccion) {
+            val r = ServiceLocator.api.get("/daycares", ListSerializer(Estancia.serializer()))
+            if (r is ApiResult.Ok) estancias = r.value
+        }
+    }
+
     PantallaBase(
         separacion = 18.dp,
-        pie = { Boton("Descargar CSV", onDescargar, estilo = EstiloBoton.Oscuro) },
+        pie = {
+            Boton(
+                if (trabajando) "Descargando…" else "Descargar CSV",
+                {
+                    trabajando = true
+                    mensaje = null
+                    alcance.launch {
+                        val hoy = Fechas.hoy()
+                        val desde = when (periodo) {
+                            0 -> hoy.minusDays(6)
+                            1 -> hoy.withDayOfMonth(1)
+                            else -> hoy.minusDays(89)
+                        }
+                        val daycare = if (direccion && estancia > 0) estancias.getOrNull(estancia - 1)?.id else null
+                        val extra = daycare?.let { "&daycareId=$it" }.orEmpty()
+                        when (val r = ServiceLocator.api.getTexto("/export/attendance?startDate=$desde&endDate=$hoy$extra")) {
+                            is ApiResult.Ok -> {
+                                val ok = guardarEnDescargas(contexto, "asistencias_${desde}_$hoy.csv", r.value)
+                                exito = ok
+                                mensaje = if (ok) "Listo: guardado en Descargas como asistencias_${desde}_$hoy.csv"
+                                else "No se pudo guardar el archivo."
+                            }
+                            is ApiResult.Error -> { exito = false; mensaje = r.error.textoAccion() }
+                        }
+                        trabajando = false
+                    }
+                },
+                estilo = EstiloBoton.Oscuro,
+                habilitado = !trabajando,
+            )
+        },
     ) {
-        EncabezadoPantalla("Exportar", onAtras = onAtras, eyebrow = if (direccion) "Dirección" else "Estancia Cumbres")
+        EncabezadoPantalla("Exportar", onAtras = onAtras, eyebrow = if (direccion) "Dirección" else "Mi estancia")
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Periodo", style = Texto.LabelM, color = TintaSuave)
-            Segmentado(listOf("Semana", "Mes", "Personalizado"), periodo, { periodo = it })
+            Segmentado(listOf("7 días", "Este mes", "90 días"), periodo, { periodo = it })
         }
-        CampoFecha("Mes", "Septiembre 2026", formato = "MMMM yyyy")
-        if (direccion) {
+        if (direccion && estancias.isNotEmpty()) {
             CampoOpciones(
-                "Estancia", "Todas las estancias", listOf(
-                    "Todas las estancias",
-                    "Estancia Cumbres",
-                    "Estancia San Nicolás",
-                    "Estancia Apodaca",
-                    "Estancia Guadalupe",
-                    "Estancia Escobedo"
-                ),
+                "Estancia", "Todas las estancias", listOf("Todas las estancias") + estancias.map { it.name },
                 inicio = { Icono(Ico.Building, tint = TintaSuave, tamano = 20.dp) },
+                onElegido = { estancia = it },
             )
         }
-        Text("Qué incluir", style = Texto.LabelM, color = TintaSuave)
-        GrupoFilas {
-            opciones.forEachIndexed { i, (titulo, detalle) ->
-                Row(
-                    Modifier.fillMaxWidth().padding(vertical = 14.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Text(titulo, style = Texto.LabelL, color = TintaBase)
-                        Text(detalle, style = Texto.BodyS, color = TintaSuave)
-                    }
-                    Casilla(incluir[i], onClick = { incluir[i] = !incluir[i] })
-                }
-                if (i < opciones.lastIndex) Divisor()
-            }
-        }
+        mensaje?.let { Nota(it, icono = if (exito) Ico.Check else Ico.Alert, fondo = if (exito) FondoArena else Rojo100, tint = TintaBase) }
         Row(
             Modifier
                 .fillMaxWidth()
@@ -101,20 +141,8 @@ fun ExportarScreen(onAtras: () -> Unit, onDescargar: () -> Unit, direccion: Bool
             IconoCuadro(Ico.File, fondo = FondoBlanco, lado = 40.dp, radio = 14.dp, tamanoIcono = 24.dp)
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text("Formato CSV", style = Texto.LabelL, color = TintaBase)
-                Text("Se comparte con el menú de Android", style = Texto.BodyS, color = TintaSuave)
+                Text("Una fila por persona y día, con entrada, salida y estado. Se guarda en Descargas.", style = Texto.BodyS, color = TintaSuave)
             }
         }
     }
-}
-
-@Preview(showBackground = true, heightDp = 915, widthDp = 412)
-@Composable
-private fun ExportarPreview() {
-    Access_trackerTheme { ExportarScreen({}, {}) }
-}
-
-@Preview(showBackground = true, heightDp = 915, widthDp = 412)
-@Composable
-private fun ExportarDireccionPreview() {
-    Access_trackerTheme { ExportarScreen({}, {}, direccion = true) }
 }

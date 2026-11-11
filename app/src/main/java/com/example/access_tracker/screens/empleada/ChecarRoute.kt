@@ -21,6 +21,7 @@ import com.example.access_tracker.components.EstiloBoton
 import com.example.access_tracker.components.PantallaBase
 import com.example.access_tracker.data.Fechas
 import com.example.access_tracker.data.Gps
+import com.example.access_tracker.data.Pendiente
 import com.example.access_tracker.data.ServiceLocator
 import com.example.access_tracker.ui.theme.TintaBase
 import com.example.access_tracker.ui.theme.TintaSuave
@@ -73,31 +74,59 @@ fun ChecarRoute(
     }
 
     val abierta = datos.openRecord
-    if (datos.inside && abierta != null) {
-        val inicio = Instant.parse(abierta.clockInAt)
-        val horasTurno = (abierta.shift.endTime.take(2).toInt() - abierta.shift.startTime.take(2).toInt())
-            .coerceAtLeast(1)
-        val transcurridas = Duration.between(inicio, Instant.now()).toHours().toInt().coerceIn(0, horasTurno)
-        ChecarDentroScreen(
+    // Lo ultimo que la persona hizo sin internet manda sobre lo que dice la copia del servidor.
+    val ultima = st.pendientes.lastOrNull()
+    val turnoHoy = if (st.datosDeOtroDia) null else datos.todayShifts.firstOrNull()?.let {
+        DatosTurno(it.room.name, Fechas.horaCorta(it.shift.startTime), Fechas.horaCorta(it.shift.endTime))
+    }
+    val sinTurnoTexto = if (st.datosDeOtroDia) {
+        "Sin conexión: tu turno se mostrará al reconectar"
+    } else {
+        "Hoy no tienes turno asignado"
+    }
+
+    when {
+        // Entrada guardada en el telefono, todavia sin enviar: se puede registrar la salida igual.
+        ultima?.tipo == Pendiente.TIPO_ENTRADA -> ChecarSinInternetScreen(
             onAvisos = onAvisos,
             onRegistrarSalida = { vm.registrarSalida() },
             onCambiarPassword = onCambiarPassword,
             onCerrarSesion = onCerrarSesion,
             barra = barra,
-            horaEntrada = Fechas.horaLocal(abierta.clockInAt),
-            sala = abierta.room.name,
-            horaInicioTurno = Fechas.horaCorta(abierta.shift.startTime),
-            horaFinTurno = Fechas.horaCorta(abierta.shift.endTime),
-            horasTranscurridas = transcurridas,
-            horasTotales = horasTurno,
-            enZona = abierta.withinZone,
-            mensaje = st.mensaje,
+            horaEntrada = Fechas.horaLocal(ultima.ocurridoEn),
+            turno = turnoHoy,
+            sinTurnoTexto = sinTurnoTexto,
+            textoZona = "Zona: se valida al enviar",
             enviando = st.enviando,
             avisosSinLeer = st.avisosSinLeer,
         )
-    } else {
-        val hoy = datos.todayShifts.firstOrNull()
-        ChecarFueraScreen(
+        ultima == null && datos.inside && abierta != null -> {
+            val inicio = Instant.parse(abierta.clockInAt)
+            val horasTurno = (abierta.shift.endTime.take(2).toInt() - abierta.shift.startTime.take(2).toInt())
+                .coerceAtLeast(1)
+            val transcurridas = Duration.between(inicio, Instant.now()).toHours().toInt().coerceIn(0, horasTurno)
+            ChecarDentroScreen(
+                onAvisos = onAvisos,
+                onRegistrarSalida = { vm.registrarSalida() },
+                onCambiarPassword = onCambiarPassword,
+                onCerrarSesion = onCerrarSesion,
+                barra = barra,
+                horaEntrada = Fechas.horaLocal(abierta.clockInAt),
+                sala = abierta.room.name,
+                horaInicioTurno = Fechas.horaCorta(abierta.shift.startTime),
+                horaFinTurno = Fechas.horaCorta(abierta.shift.endTime),
+                horasTranscurridas = transcurridas,
+                horasTotales = horasTurno,
+                enZona = abierta.withinZone,
+                mensaje = listOfNotNull(
+                    st.mensaje,
+                    if (st.sinConexion) "Sin conexión: tu salida se guardará en el dispositivo." else null,
+                ).joinToString("\n").ifBlank { null },
+                enviando = st.enviando,
+                avisosSinLeer = st.avisosSinLeer,
+            )
+        }
+        else -> ChecarFueraScreen(
             onAvisos = onAvisos,
             onRegistrarEntrada = onEntrada,
             onCambiarPassword = onCambiarPassword,
@@ -105,12 +134,18 @@ fun ChecarRoute(
             barra = barra,
             fecha = Fechas.fechaLarga(),
             nombre = ServiceLocator.sesion.leer()?.name?.substringBefore(' ') ?: "",
-            turno = hoy?.let {
-                DatosTurno(it.room.name, Fechas.horaCorta(it.shift.startTime), Fechas.horaCorta(it.shift.endTime))
-            },
-            mensaje = st.mensaje,
+            turno = turnoHoy,
+            mensaje = listOfNotNull(
+                // La ultima checada guardada sin enviar fue una salida.
+                ultima?.let { "Salida guardada a las ${Fechas.horaLocal(it.ocurridoEn)}. Se enviará al reconectar." },
+                st.mensaje,
+            ).joinToString("\n").ifBlank { null },
             enviando = st.enviando,
             avisosSinLeer = st.avisosSinLeer,
+            sinTurnoTexto = sinTurnoTexto,
+            bannerSinConexion = if (st.sinConexion) {
+                "Sin conexión: tus registros se guardan en el dispositivo y se envían al reconectar."
+            } else null,
         )
     }
 }

@@ -33,17 +33,29 @@ sealed class ScreenNames(val route: String) {
     data object ResAsistencia : ScreenNames("res_asistencia")
     data object ResHorarios : ScreenNames("res_horarios")
     data object ResPersonal : ScreenNames("res_personal")
-    data object ResHorarioPersona : ScreenNames("res_horario_persona")
+    data object ResHorarioPersona : ScreenNames("res_horario_persona/{id}") {
+        fun createRoute(id: Long) = "res_horario_persona/$id"
+    }
     data object ResRegistroTurno : ScreenNames("res_registro_turno")
-    data object ResAusencia : ScreenNames("res_ausencia/{persona}") {
-        fun createRoute(persona: String) = "res_ausencia/$persona"
+    /** id = 0 significa "sin persona elegida". */
+    data object ResAusencia : ScreenNames("res_ausencia/{id}") {
+        fun createRoute(id: Long?) = "res_ausencia/${id ?: 0}"
     }
     data object ResAltaPersonal : ScreenNames("res_alta_personal")
-    data object ResPerfilPersona : ScreenNames("res_perfil_persona")
-    data object ResDarBaja : ScreenNames("res_dar_baja")
+    data object ResPerfilPersona : ScreenNames("res_perfil_persona/{id}") {
+        fun createRoute(id: Long) = "res_perfil_persona/$id"
+    }
+    data object ResEditarPersonal : ScreenNames("res_editar_personal/{id}") {
+        fun createRoute(id: Long) = "res_editar_personal/$id"
+    }
+    data object ResDarBaja : ScreenNames("res_dar_baja/{id}") {
+        fun createRoute(id: Long) = "res_dar_baja/$id"
+    }
     data object ResAvisos : ScreenNames("res_avisos")
     data object ResNuevoAviso : ScreenNames("res_nuevo_aviso")
-    data object ResEstadoLectura : ScreenNames("res_estado_lectura")
+    data object ResEstadoLectura : ScreenNames("res_estado_lectura/{id}") {
+        fun createRoute(id: Long) = "res_estado_lectura/$id"
+    }
     data object ResMenu : ScreenNames("res_menu")
     data object ResAjustesSalas : ScreenNames("res_ajustes_salas")
     data object ResBitacora : ScreenNames("res_bitacora")

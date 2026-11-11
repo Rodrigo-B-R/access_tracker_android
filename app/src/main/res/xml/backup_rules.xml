@@ -2,4 +2,6 @@
 <!-- La sesion (token) nunca se respalda en la nube ni se copia a otro telefono. -->
 <full-backup-content>
     <exclude domain="sharedpref" path="session.xml" />
+    <exclude domain="sharedpref" path="cola_checadas.xml" />
+    <exclude domain="sharedpref" path="cache_estado.xml" />
 </full-backup-content>

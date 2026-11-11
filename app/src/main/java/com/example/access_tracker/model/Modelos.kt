@@ -86,10 +86,12 @@ data class EntradaRequest(
     val latitude: Double? = null,
     val longitude: Double? = null,
     val withinZone: Boolean? = null,
+    /** Solo para entradas hechas sin internet: la hora real en que se toco el boton (ISO-8601 UTC). */
+    val occurredAt: String? = null,
 )
 
 @Serializable
-class SalidaRequest
+data class SalidaRequest(val occurredAt: String? = null)
 
 @Serializable
 data class RespuestaChecada(val record: Checada, val repeated: Boolean = false)
