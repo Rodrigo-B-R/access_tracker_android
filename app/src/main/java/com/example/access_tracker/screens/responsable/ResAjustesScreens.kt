@@ -75,6 +75,8 @@ fun ResMenuScreen(
     onCerrarSesion: () -> Unit,
     barra: @Composable () -> Unit = {},
 ) {
+    var verPerfil by remember { mutableStateOf(false) }
+    if (verPerfil) com.example.access_tracker.screens.comunes.MiPerfilDialogo { verPerfil = false }
     Box(Modifier.fillMaxSize()) {
         // Fondo neutro: el menu es una capa sobre el inicio, sin volver a pedir datos.
         PantallaBase(barra = barra) {}
@@ -94,6 +96,7 @@ fun ResMenuScreen(
             OpcionMenu(Ico.History, Petroleo100, "Bitácora", "Altas, bajas y traslados", onBitacora)
             OpcionMenu(Ico.Users, Mostaza100, "Salas y mínimos", "Personal mínimo por sala", onSalas)
             OpcionMenu(Ico.Download, Coral100, "Exportar", "CSV de asistencias", onExportar)
+            OpcionMenu(Ico.Idcard, Petroleo100, "Mi perfil", "Tus datos y estancia") { verPerfil = true }
             OpcionMenu(Ico.Lock, Petroleo100, "Mi cuenta", "Cambiar contraseña", onCuenta)
             OpcionMenu(Ico.Logout, Rojo100, "Cerrar sesión", "Salir de la cuenta", onCerrarSesion)
         }

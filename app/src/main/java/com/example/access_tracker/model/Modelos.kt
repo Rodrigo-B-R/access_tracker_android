@@ -131,3 +131,17 @@ data class CambioPasswordRequest(val currentPassword: String, val newPassword: S
 
 @Serializable
 data class MensajeApi(val message: String = "")
+
+// ── Perfil propio (GET /profile) ────────────────────────────────────
+
+@Serializable
+data class MiPerfil(
+    val id: Long,
+    val name: String,
+    val username: String = "",
+    val email: String = "",
+    val phone: String = "",
+    val role: Rol? = null,
+    val position: Puesto? = null,
+    val daycare: Estancia? = null,
+)

@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.access_tracker.screens.comunes.MiPerfilDialogo
 import com.example.access_tracker.ui.theme.FondoArena
 import com.example.access_tracker.ui.theme.FondoBlanco
 import com.example.access_tracker.ui.theme.FondoCrema
@@ -27,6 +28,8 @@ fun MenuCuenta(
     oscuro: Boolean = false,
 ) {
     var abierto by remember { mutableStateOf(false) }
+    var verPerfil by remember { mutableStateOf(false) }
+    if (verPerfil) MiPerfilDialogo { verPerfil = false }
     Box(modifier) {
         BotonCircular(
             Ico.More, { abierto = true },
@@ -35,6 +38,11 @@ fun MenuCuenta(
             lado = 44.dp,
         )
         DropdownMenu(expanded = abierto, onDismissRequest = { abierto = false }, containerColor = FondoBlanco) {
+            DropdownMenuItem(
+                text = { Text("Mi perfil", style = Texto.BodyL, color = TintaBase) },
+                leadingIcon = { Icono(Ico.Idcard, tint = TintaBase, tamano = 20.dp) },
+                onClick = { abierto = false; verPerfil = true },
+            )
             DropdownMenuItem(
                 text = { Text("Cambiar contraseña", style = Texto.BodyL, color = TintaBase) },
                 leadingIcon = { Icono(Ico.Lock, tint = TintaBase, tamano = 20.dp) },
