@@ -24,7 +24,7 @@ class IntegracionApiTest {
     private val base = System.getenv("API_URL") ?: "http://localhost:8000"
     private val json = Json { ignoreUnknownKeys = true; explicitNulls = false }
     private val http = OkHttpClient()
-    private fun pass(u: String) = if (u == "ana.torres") "Cristal2027" else "Cristal2026"
+    private fun pass(u: String) = "Cristal2026"
 
     private fun login(usuario: String): LoginResponse {
         assumeTrue("Define API_IT=1 para correr", System.getenv("API_IT") == "1")

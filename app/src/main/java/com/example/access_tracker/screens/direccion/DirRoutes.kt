@@ -184,8 +184,8 @@ fun DirEstadisticasRoute(
 
 // ── Bitacora ────────────────────────────────────────────────────────
 
-private val TABLAS = listOf(null, "registro_entradas", "asistencia", "correccion_registro")
-private val FILTROS = listOf("Todo", "Checadas", "Asistencia", "Correcciones")
+private val TABLAS = listOf(null, "registro_entradas", "asistencia")
+private val FILTROS = listOf("Todo", "Checadas", "Asistencia")
 
 class DirBitacoraViewModel : ViewModel() {
     var filtro = 0
@@ -219,12 +219,13 @@ internal fun EventoAuditoria.aVista(): EventoVista {
     val (icono, fondo, tipo, tono) = when (table) {
         "registro_entradas" -> Cuatro(Ico.Fingerprint, Petroleo100, "Checada", TonoChip.Info)
         "asistencia" -> Cuatro(Ico.Alert, Coral100, "Asistencia", TonoChip.Coral)
-        else -> Cuatro(Ico.Swap, Mostaza100, "Corrección", TonoChip.Alerta)
+        // Tablas que ya no existen (p. ej. correcciones, antes de quitarlas): se siguen mostrando.
+        else -> Cuatro(Ico.Swap, Mostaza100, "Otro", TonoChip.Alerta)
     }
     val titulo = when (table) {
         "registro_entradas" -> if (nuevo) "Registro creado" else "Registro modificado"
         "asistencia" -> if (nuevo) "Asistencia registrada" else "Asistencia corregida"
-        else -> if (nuevo) "Corrección solicitada" else "Corrección resuelta"
+        else -> if (nuevo) "Cambio registrado" else "Cambio modificado"
     }
     val cuando = runCatching {
         DateTimeFormatter.ofPattern("d MMM H:mm", ES)

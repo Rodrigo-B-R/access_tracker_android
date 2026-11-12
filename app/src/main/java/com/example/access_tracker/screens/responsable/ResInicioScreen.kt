@@ -61,11 +61,11 @@ class ResInicioViewModel : ViewModel() {
     }
 }
 
-/** "Missing 1 in Maternal A (matutino)" -> "Falta 1 en Maternal A". */
+/** "Missing 1 in Maternal A (matutino)" -> "Falta 1 en Maternal A · matutino". */
 internal fun alertaEnEspanol(alerta: String): String {
     val m = Regex("""Missing (\d+) in (.+?) \((.+)\)""").matchEntire(alerta) ?: return alerta
     val n = m.groupValues[1].toInt()
-    return (if (n == 1) "Falta 1 en " else "Faltan $n en ") + m.groupValues[2]
+    return (if (n == 1) "Falta 1 en " else "Faltan $n en ") + m.groupValues[2] + " · " + m.groupValues[3]
 }
 
 @Composable
@@ -196,7 +196,7 @@ fun ResInicioContenido(
                 }
             }
         }
-        c.alerts.firstOrNull()?.let { alerta ->
+        c.alerts.forEach { alerta ->
             Tarjeta(modifier = Modifier.clickable { onAtender() }, radio = 24.dp) {
                 Row(
                     Modifier.fillMaxWidth(),
