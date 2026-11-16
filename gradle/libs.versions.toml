@@ -40,7 +40,6 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 androidx-work-runtime = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
-androidx-room3-common = { group = "androidx.room3", name = "room3-common", version.ref = "room3Common" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
