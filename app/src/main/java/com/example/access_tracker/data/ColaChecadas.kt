@@ -1,12 +1,22 @@
 package com.example.access_tracker.data
 
 import android.content.Context
+import com.example.access_tracker.data.local.ChecadaDao
+import com.example.access_tracker.data.local.ChecadaLocal
+import com.example.access_tracker.data.local.EstadoEnvio
 import com.example.access_tracker.model.EstadoChecada
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
+import java.util.concurrent.TimeUnit
 
-/** Almacen de texto clave-valor (en la app, SharedPreferences; en los tests, un mapa en memoria). */
+/**
+ * Almacen de texto clave-valor (en la app, SharedPreferences; en los tests, un mapa en memoria).
+ * Lo usa CacheEstado; la cola de checadas ya vive en Room.
+ */
 interface Almacen {
     fun leer(clave: String): String?
     fun escribir(clave: String, valor: String?)
@@ -40,57 +50,104 @@ data class Pendiente(
     }
 }
 
-/** Una checada pendiente que la API rechazo de forma definitiva (no se reintenta). */
+/** Una checada que la API rechazo de forma definitiva (no se reintenta), lista para avisar. */
 @Serializable
 data class Rechazo(val tipo: String, val ocurridoEn: String, val motivo: String, val usuarioId: Long)
 
 /**
- * Cola persistente de checadas hechas sin internet. El orden importa (entrada antes que salida), por eso
- * es una lista en orden de llegada. Cada elemento lleva el usuario que lo hizo: nunca se envia con la
- * sesion de otra persona.
+ * Cola persistente de checadas, guardada en Room (tabla cola_checadas). Cada checada pasa por
+ * PENDIENTE -> ENVIADA o RECHAZADA; solo las PENDIENTE se envian, asi nunca se manda dos veces.
+ * El orden importa (entrada antes que salida): se respeta el orden de llegada. Cada fila lleva el
+ * usuario que la hizo: nunca se envia con la sesion de otra persona.
+ *
+ * Las ENVIADA (y las RECHAZADA cuyo aviso ya se vio) se borran solas despues de [DIAS_RETENCION] dias:
+ * el historial real vive en el servidor y cada checada lleva la ubicacion de la persona.
  */
-class ColaChecadas(private val almacen: Almacen) {
-    private val json = Json { ignoreUnknownKeys = true }
-    private val listaPendientes = ListSerializer(Pendiente.serializer())
-    private val listaRechazos = ListSerializer(Rechazo.serializer())
+class ColaChecadas(
+    private val dao: ChecadaDao,
+    /** Donde guardaba la cola la version anterior (SharedPreferences). Se pasa una vez a Room y se vacia. */
+    private val almacenViejo: Almacen? = null,
+    private val reloj: () -> Long = System::currentTimeMillis,
+) {
+    private val candadoMigracion = Mutex()
 
-    @Synchronized
-    private fun todos(): List<Pendiente> = leer(CLAVE_PENDIENTES, listaPendientes)
+    @Volatile
+    private var migrada = almacenViejo == null
 
-    @Synchronized
-    fun pendientes(usuarioId: Long): List<Pendiente> = todos().filter { it.usuarioId == usuarioId }
-
-    @Synchronized
-    fun hayPendientes(): Boolean = todos().isNotEmpty()
-
-    @Synchronized
-    fun agregar(p: Pendiente) {
-        almacen.escribir(CLAVE_PENDIENTES, json.encodeToString(listaPendientes, todos() + p))
+    suspend fun pendientes(usuarioId: Long): List<Pendiente> {
+        migrar()
+        return dao.pendientes(usuarioId).map { it.aPendiente() }
     }
 
-    @Synchronized
-    fun quitar(uuid: String, tipo: String) {
-        // La clave es (uuid, tipo) por si alguna vez coinciden.
-        val resto = todos().filterNot { it.uuid == uuid && it.tipo == tipo }
-        almacen.escribir(CLAVE_PENDIENTES, json.encodeToString(listaPendientes, resto))
+    suspend fun hayPendientes(): Boolean {
+        migrar()
+        return dao.hayPendientes()
     }
 
-    @Synchronized
-    fun agregarRechazo(r: Rechazo) {
-        almacen.escribir(CLAVE_RECHAZOS, json.encodeToString(listaRechazos, leer(CLAVE_RECHAZOS, listaRechazos) + r))
+    /** Guarda una checada como PENDIENTE. Si ya existia el mismo (uuid, tipo) no se duplica. */
+    suspend fun agregar(p: Pendiente) {
+        migrar()
+        dao.insertar(p.aLocal())
     }
 
-    @Synchronized
-    fun rechazos(usuarioId: Long): List<Rechazo> =
-        leer(CLAVE_RECHAZOS, listaRechazos).filter { it.usuarioId == usuarioId }
-
-    @Synchronized
-    fun limpiarRechazos(usuarioId: Long) {
-        val resto = leer(CLAVE_RECHAZOS, listaRechazos).filterNot { it.usuarioId == usuarioId }
-        almacen.escribir(CLAVE_RECHAZOS, json.encodeToString(listaRechazos, resto))
+    suspend fun marcarEnviada(uuid: String, tipo: String) {
+        dao.marcarEnviada(uuid, tipo, reloj())
     }
 
-    private fun <T> leer(clave: String, serializer: kotlinx.serialization.KSerializer<List<T>>): List<T> {
+    suspend fun marcarRechazada(uuid: String, tipo: String, motivo: String) {
+        dao.marcarRechazada(uuid, tipo, motivo, reloj())
+    }
+
+    suspend fun sumarIntento(uuid: String, tipo: String) {
+        dao.sumarIntento(uuid, tipo)
+    }
+
+    /** Rechazos que todavia no se le muestran a [usuarioId]. */
+    suspend fun rechazos(usuarioId: Long): List<Rechazo> {
+        migrar()
+        return dao.rechazosSinAviso(usuarioId).map {
+            Rechazo(it.tipo, it.ocurridoEn, it.motivoRechazo.orEmpty(), it.usuarioId)
+        }
+    }
+
+    /** Marca los rechazos de [usuarioId] como ya mostrados (no se vuelven a avisar). */
+    suspend fun limpiarRechazos(usuarioId: Long) {
+        dao.marcarAvisosMostrados(usuarioId)
+    }
+
+    /** Borra las checadas ya terminadas con mas de [DIAS_RETENCION] dias. Las PENDIENTE no se tocan. */
+    suspend fun limpiarViejas(): Int =
+        dao.borrarTerminadasAntesDe(reloj() - TimeUnit.DAYS.toMillis(DIAS_RETENCION))
+
+    /**
+     * Pasa a Room lo que la version anterior dejo en SharedPreferences, una sola vez. Primero se inserta
+     * todo y despues se vacia el almacen viejo: si la app se cierra a la mitad, al reintentar el indice
+     * unico (uuid, tipo) evita duplicados.
+     */
+    private suspend fun migrar() {
+        if (migrada) return
+        candadoMigracion.withLock {
+            if (migrada) return
+            val viejo = almacenViejo ?: return
+            for (p in leerViejo(viejo, CLAVE_PENDIENTES, ListSerializer(Pendiente.serializer()))) {
+                dao.insertar(p.aLocal())
+            }
+            for (r in leerViejo(viejo, CLAVE_RECHAZOS, ListSerializer(Rechazo.serializer()))) {
+                dao.insertar(
+                    ChecadaLocal(
+                        uuid = "rechazo-${r.tipo}-${r.ocurridoEn}", tipo = r.tipo, usuarioId = r.usuarioId,
+                        ocurridoEn = r.ocurridoEn, estado = EstadoEnvio.RECHAZADA, motivoRechazo = r.motivo,
+                        procesadoEn = reloj(),
+                    )
+                )
+            }
+            viejo.escribir(CLAVE_PENDIENTES, null)
+            viejo.escribir(CLAVE_RECHAZOS, null)
+            migrada = true
+        }
+    }
+
+    private fun <T> leerViejo(almacen: Almacen, clave: String, serializer: KSerializer<List<T>>): List<T> {
         val texto = almacen.leer(clave) ?: return emptyList()
         return try {
             json.decodeFromString(serializer, texto)
@@ -99,9 +156,23 @@ class ColaChecadas(private val almacen: Almacen) {
         }
     }
 
-    private companion object {
-        const val CLAVE_PENDIENTES = "pendientes"
-        const val CLAVE_RECHAZOS = "rechazos"
+    private fun Pendiente.aLocal() = ChecadaLocal(
+        uuid = uuid, tipo = tipo, usuarioId = usuarioId, ocurridoEn = ocurridoEn,
+        latitud = latitud, longitud = longitud, enZona = enZona, creadoEn = reloj(),
+    )
+
+    private fun ChecadaLocal.aPendiente() = Pendiente(
+        uuid = uuid, tipo = tipo, usuarioId = usuarioId, ocurridoEn = ocurridoEn,
+        latitud = latitud, longitud = longitud, enZona = enZona,
+    )
+
+    companion object {
+        /** Dias que se conservan las checadas ya enviadas antes de borrarlas del telefono. */
+        const val DIAS_RETENCION = 7L
+
+        private val json = Json { ignoreUnknownKeys = true }
+        private const val CLAVE_PENDIENTES = "pendientes"
+        private const val CLAVE_RECHAZOS = "rechazos"
     }
 }
 

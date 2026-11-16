@@ -113,13 +113,14 @@ class ChecarViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    private fun refrescarPendientes(usuario: Long?, mostrarRechazos: Boolean = false) {
+    private suspend fun refrescarPendientes(usuario: Long?, mostrarRechazos: Boolean = false) {
         if (usuario == null) return
         val rechazos = if (mostrarRechazos) cola.rechazos(usuario) else emptyList()
         if (rechazos.isNotEmpty()) cola.limpiarRechazos(usuario)
+        val pendientes = cola.pendientes(usuario)
         _estado.update {
             it.copy(
-                pendientes = cola.pendientes(usuario),
+                pendientes = pendientes,
                 mensaje = if (rechazos.isNotEmpty()) textoRechazos(rechazos) else it.mensaje,
             )
         }
@@ -213,16 +214,17 @@ class ChecarViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    private fun hayColaOSinRed(usuario: Long) =
-        cola.pendientes(usuario).isNotEmpty() || _estado.value.sinConexion
+    private suspend fun hayColaOSinRed(usuario: Long) =
+        _estado.value.sinConexion || cola.pendientes(usuario).isNotEmpty()
 
     /** Guarda la checada en el telefono, pide el reintento automatico y prueba enviar ya por si hay red. */
-    private fun encolar(p: Pendiente, aviso: String?) {
+    private suspend fun encolar(p: Pendiente, aviso: String?) {
         uuidPendiente = null
         cola.agregar(p)
         sincronizador.programar()
+        val pendientes = cola.pendientes(p.usuarioId)
         _estado.update {
-            it.copy(enviando = false, mensaje = aviso, pendientes = cola.pendientes(p.usuarioId), sinConexion = true)
+            it.copy(enviando = false, mensaje = aviso, pendientes = pendientes, sinConexion = true)
         }
         // En segundo plano: si en realidad ya hay red, se envia y la pantalla se actualiza sola.
         viewModelScope.launch {

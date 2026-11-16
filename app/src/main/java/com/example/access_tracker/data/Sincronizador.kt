@@ -80,12 +80,10 @@ class Sincronizador(
         for (p in cola.pendientes(usuario)) {
             val respuesta = enviar(p)
             when (val d = decidir(p.tipo, respuesta)) {
-                Decision.Enviada -> cola.quitar(p.uuid, p.tipo)
-                is Decision.Descartar -> {
-                    cola.quitar(p.uuid, p.tipo)
-                    cola.agregarRechazo(Rechazo(p.tipo, p.ocurridoEn, d.motivo, usuario))
-                }
+                Decision.Enviada -> cola.marcarEnviada(p.uuid, p.tipo)
+                is Decision.Descartar -> cola.marcarRechazada(p.uuid, p.tipo, d.motivo)
                 Decision.Reintentar -> {
+                    cola.sumarIntento(p.uuid, p.tipo)
                     programarReintento()
                     // Si fue falta de red, lo que sigue tampoco saldra: se corta aqui (y se conserva el orden).
                     val sinRed = respuesta is ApiResult.Error && respuesta.error == ApiError.SinConexion
@@ -93,6 +91,8 @@ class Sincronizador(
                 }
             }
         }
+        // Todo salio: se aprovecha para borrar lo ya enviado hace mas de unos dias.
+        cola.limpiarViejas()
         ResultadoSync(quedanPendientes = false, sinConexion = false)
     }
 

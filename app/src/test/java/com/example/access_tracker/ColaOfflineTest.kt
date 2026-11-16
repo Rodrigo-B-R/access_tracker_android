@@ -9,12 +9,19 @@ import com.example.access_tracker.data.Decision
 import com.example.access_tracker.data.Pendiente
 import com.example.access_tracker.data.Rechazo
 import com.example.access_tracker.data.decidir
+import com.example.access_tracker.data.local.ChecadaDao
+import com.example.access_tracker.data.local.ChecadaLocal
+import com.example.access_tracker.data.local.EstadoEnvio
 import com.example.access_tracker.model.EstadoChecada
+import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.util.concurrent.TimeUnit
 
 /** Modo offline: la cola persistente y la decision de que hacer con cada respuesta de la API. */
 class ColaOfflineTest {
@@ -26,17 +33,72 @@ class ColaOfflineTest {
         }
     }
 
+    /** Imita en memoria lo que hace Room con las consultas de [ChecadaDao]. */
+    private class DaoEnMemoria : ChecadaDao {
+        val filas = mutableListOf<ChecadaLocal>()
+        private var siguienteId = 1L
+
+        private fun cambiar(cond: (ChecadaLocal) -> Boolean, f: (ChecadaLocal) -> ChecadaLocal) {
+            filas.replaceAll { if (cond(it)) f(it) else it }
+        }
+
+        override suspend fun insertar(checada: ChecadaLocal): Long {
+            if (filas.any { it.uuid == checada.uuid && it.tipo == checada.tipo }) return -1 // IGNORE
+            val fila = checada.copy(id = siguienteId++)
+            filas += fila
+            return fila.id
+        }
+
+        override suspend fun pendientes(usuarioId: Long) =
+            filas.filter { it.usuarioId == usuarioId && it.estado == EstadoEnvio.PENDIENTE }.sortedBy { it.id }
+
+        override suspend fun hayPendientes() = filas.any { it.estado == EstadoEnvio.PENDIENTE }
+
+        override suspend fun marcarEnviada(uuid: String, tipo: String, ahora: Long) = cambiar(
+            { it.uuid == uuid && it.tipo == tipo && it.estado == EstadoEnvio.PENDIENTE },
+            { it.copy(estado = EstadoEnvio.ENVIADA, procesadoEn = ahora) },
+        )
+
+        override suspend fun marcarRechazada(uuid: String, tipo: String, motivo: String, ahora: Long) = cambiar(
+            { it.uuid == uuid && it.tipo == tipo && it.estado == EstadoEnvio.PENDIENTE },
+            { it.copy(estado = EstadoEnvio.RECHAZADA, motivoRechazo = motivo, procesadoEn = ahora) },
+        )
+
+        override suspend fun sumarIntento(uuid: String, tipo: String) = cambiar(
+            { it.uuid == uuid && it.tipo == tipo }, { it.copy(intentos = it.intentos + 1) },
+        )
+
+        override suspend fun rechazosSinAviso(usuarioId: Long) = filas.filter {
+            it.usuarioId == usuarioId && it.estado == EstadoEnvio.RECHAZADA && !it.avisoMostrado
+        }.sortedBy { it.id }
+
+        override suspend fun marcarAvisosMostrados(usuarioId: Long) = cambiar(
+            { it.usuarioId == usuarioId && it.estado == EstadoEnvio.RECHAZADA }, { it.copy(avisoMostrado = true) },
+        )
+
+        override suspend fun borrarTerminadasAntesDe(antesDe: Long): Int {
+            val antes = filas.size
+            filas.removeAll {
+                (it.procesadoEn ?: Long.MAX_VALUE) < antesDe &&
+                    (it.estado == EstadoEnvio.ENVIADA || (it.estado == EstadoEnvio.RECHAZADA && it.avisoMostrado))
+            }
+            return antes - filas.size
+        }
+    }
+
     private fun entrada(uuid: String, usuario: Long = 3, hora: String = "2026-11-09T13:01:00.000Z") =
         Pendiente(uuid, Pendiente.TIPO_ENTRADA, usuario, hora, latitud = 25.7447, longitud = -100.4036)
 
     private fun salida(uuid: String, usuario: Long = 3, hora: String = "2026-11-09T21:02:00.000Z") =
         Pendiente(uuid, Pendiente.TIPO_SALIDA, usuario, hora)
 
+    private val dia = TimeUnit.DAYS.toMillis(1)
+
     // ── Cola ────────────────────────────────────────────────────────
 
     @Test
-    fun conservaElOrdenDeLlegada() {
-        val cola = ColaChecadas(AlmacenEnMemoria())
+    fun conservaElOrdenDeLlegada() = runBlocking {
+        val cola = ColaChecadas(DaoEnMemoria())
         cola.agregar(entrada("a"))
         cola.agregar(salida("b"))
         assertEquals(listOf("a", "b"), cola.pendientes(3).map { it.uuid })
@@ -44,19 +106,27 @@ class ColaOfflineTest {
     }
 
     @Test
-    fun sobreviveAReiniciarLaApp() {
-        val almacen = AlmacenEnMemoria()
-        ColaChecadas(almacen).agregar(entrada("a"))
-        // Otra instancia sobre el mismo almacen = la app abierta de nuevo.
-        val despues = ColaChecadas(almacen).pendientes(3)
+    fun sobreviveAReiniciarLaApp() = runBlocking {
+        val dao = DaoEnMemoria()
+        ColaChecadas(dao).agregar(entrada("a"))
+        // Otra instancia sobre la misma base = la app abierta de nuevo.
+        val despues = ColaChecadas(dao).pendientes(3)
         assertEquals(1, despues.size)
         assertEquals(25.7447, despues.first().latitud!!, 0.0)
         assertEquals("2026-11-09T13:01:00.000Z", despues.first().ocurridoEn)
     }
 
     @Test
-    fun cadaPersonaSoloVeSusChecadas() {
-        val cola = ColaChecadas(AlmacenEnMemoria())
+    fun noDuplicaLaMismaChecada() = runBlocking {
+        val cola = ColaChecadas(DaoEnMemoria())
+        cola.agregar(entrada("a"))
+        cola.agregar(entrada("a"))
+        assertEquals(1, cola.pendientes(3).size)
+    }
+
+    @Test
+    fun cadaPersonaSoloVeSusChecadas() = runBlocking {
+        val cola = ColaChecadas(DaoEnMemoria())
         cola.agregar(entrada("a", usuario = 3))
         cola.agregar(entrada("b", usuario = 9))
         assertEquals(listOf("a"), cola.pendientes(3).map { it.uuid })
@@ -65,31 +135,83 @@ class ColaOfflineTest {
     }
 
     @Test
-    fun quitarSoloQuitaLaIndicada() {
-        val cola = ColaChecadas(AlmacenEnMemoria())
+    fun enviadaYaNoEsPendientePeroSeConserva() = runBlocking {
+        val dao = DaoEnMemoria()
+        val cola = ColaChecadas(dao)
         cola.agregar(entrada("a"))
         cola.agregar(salida("b"))
-        cola.quitar("a", Pendiente.TIPO_ENTRADA)
+        cola.marcarEnviada("a", Pendiente.TIPO_ENTRADA)
         assertEquals(listOf("b"), cola.pendientes(3).map { it.uuid })
-        cola.quitar("b", Pendiente.TIPO_SALIDA)
-        assertTrue(!cola.hayPendientes())
+        cola.marcarEnviada("b", Pendiente.TIPO_SALIDA)
+        assertFalse(cola.hayPendientes())
+        // Siguen en la tabla como ENVIADA (no se vuelven a mandar).
+        assertEquals(listOf(EstadoEnvio.ENVIADA, EstadoEnvio.ENVIADA), dao.filas.map { it.estado })
     }
 
     @Test
-    fun datosCorruptosNoTumbanLaApp() {
-        val almacen = AlmacenEnMemoria().apply { datos["pendientes"] = "{esto no es json" }
-        assertEquals(emptyList<Pendiente>(), ColaChecadas(almacen).pendientes(3))
-    }
-
-    @Test
-    fun rechazosSePuedenLeerYLimpiarPorUsuario() {
-        val cola = ColaChecadas(AlmacenEnMemoria())
-        cola.agregarRechazo(Rechazo("entrada", "2026-11-09T13:01:00.000Z", "motivo", 3))
-        cola.agregarRechazo(Rechazo("salida", "2026-11-09T21:00:00.000Z", "motivo", 9))
-        assertEquals(1, cola.rechazos(3).size)
+    fun rechazadaSeAvisaUnaSolaVezPorUsuario() = runBlocking {
+        val cola = ColaChecadas(DaoEnMemoria())
+        cola.agregar(entrada("a", usuario = 3))
+        cola.agregar(salida("b", usuario = 9))
+        cola.marcarRechazada("a", Pendiente.TIPO_ENTRADA, "motivo")
+        cola.marcarRechazada("b", Pendiente.TIPO_SALIDA, "motivo")
+        assertEquals(listOf("motivo"), cola.rechazos(3).map { it.motivo })
+        assertFalse(cola.hayPendientes())
         cola.limpiarRechazos(3)
         assertEquals(0, cola.rechazos(3).size)
         assertEquals(1, cola.rechazos(9).size)
+    }
+
+    @Test
+    fun limpiezaBorraTerminadasViejasYNuncaPendientes() = runBlocking {
+        var ahora = 0L
+        val dao = DaoEnMemoria()
+        val cola = ColaChecadas(dao) { ahora }
+        cola.agregar(entrada("enviada"))
+        cola.agregar(entrada("rechazada-vista"))
+        cola.agregar(entrada("rechazada-sin-ver"))
+        cola.agregar(entrada("pendiente"))
+        cola.marcarEnviada("enviada", Pendiente.TIPO_ENTRADA)
+        cola.marcarRechazada("rechazada-vista", Pendiente.TIPO_ENTRADA, "m")
+        cola.marcarRechazada("rechazada-sin-ver", Pendiente.TIPO_ENTRADA, "m")
+        dao.marcarAvisosMostrados(3)
+        dao.filas.replaceAll { if (it.uuid == "rechazada-sin-ver") it.copy(avisoMostrado = false) else it }
+
+        ahora = 6 * dia
+        assertEquals(0, cola.limpiarViejas()) // todavia no pasan 7 dias
+
+        ahora = 8 * dia
+        assertEquals(2, cola.limpiarViejas())
+        assertEquals(listOf("rechazada-sin-ver", "pendiente"), dao.filas.map { it.uuid })
+    }
+
+    @Test
+    fun migraLaColaViejaDeSharedPreferences() = runBlocking {
+        val json = Json
+        val viejo = AlmacenEnMemoria().apply {
+            datos["pendientes"] = json.encodeToString(
+                ListSerializer(Pendiente.serializer()), listOf(entrada("a"), salida("b")),
+            )
+            datos["rechazos"] = json.encodeToString(
+                ListSerializer(Rechazo.serializer()),
+                listOf(Rechazo("entrada", "2026-11-08T13:00:00.000Z", "motivo", 3)),
+            )
+        }
+        val dao = DaoEnMemoria()
+        val cola = ColaChecadas(dao, viejo)
+        assertEquals(listOf("a", "b"), cola.pendientes(3).map { it.uuid })
+        assertEquals(1, cola.rechazos(3).size)
+        assertTrue(viejo.datos.isEmpty()) // el almacen viejo queda vacio
+
+        // Abrir la app otra vez no duplica nada.
+        ColaChecadas(dao, viejo).pendientes(3)
+        assertEquals(3, dao.filas.size)
+    }
+
+    @Test
+    fun datosViejosCorruptosNoTumbanLaApp() = runBlocking {
+        val viejo = AlmacenEnMemoria().apply { datos["pendientes"] = "{esto no es json" }
+        assertEquals(emptyList<Pendiente>(), ColaChecadas(DaoEnMemoria(), viejo).pendientes(3))
     }
 
     // ── Que hacer con cada respuesta de la API ──────────────────────
