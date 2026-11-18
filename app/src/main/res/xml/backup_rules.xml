@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- La sesion (token) nunca se respalda en la nube ni se copia a otro telefono. -->
+<!--
+  Nada de esto se respalda en la nube ni se copia a otro telefono:
+  la sesion (token), la copia del turno y la cola de checadas (lleva la ubicacion de la persona).
+-->
 <full-backup-content>
+    <!-- DataStore (sesion y copia del turno) -->
+    <exclude domain="file" path="datastore/sesion.preferences_pb" />
+    <exclude domain="file" path="datastore/cache_estado.preferences_pb" />
+    <!-- Room (cola de checadas) -->
+    <exclude domain="database" path="access_tracker.db" />
+    <exclude domain="database" path="access_tracker.db-wal" />
+    <exclude domain="database" path="access_tracker.db-shm" />
+    <!-- Version anterior (SharedPreferences), por si aun no se migraron -->
     <exclude domain="sharedpref" path="session.xml" />
     <exclude domain="sharedpref" path="cola_checadas.xml" />
     <exclude domain="sharedpref" path="cache_estado.xml" />

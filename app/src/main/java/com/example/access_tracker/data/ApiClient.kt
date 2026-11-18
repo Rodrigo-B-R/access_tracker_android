@@ -198,7 +198,7 @@ object ServiceLocator {
         api = ApiClient(BuildConfig.API_BASE_URL.trimEnd('/'), sesion)
         // La cola vive en Room; el almacen viejo (SharedPreferences) solo se lee una vez para migrar.
         cola = ColaChecadas(AppDatabase.getInstance(app).checadaDao(), PrefsAlmacen(app, "cola_checadas"))
-        cache = CacheEstado(PrefsAlmacen(app, "cache_estado"))
+        cache = CacheEstado(app)
         sincronizador = Sincronizador(api, cola, sesion) { SincronizarChecadasWorker.programar(app) }
     }
 }

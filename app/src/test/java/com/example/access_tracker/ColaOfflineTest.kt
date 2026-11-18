@@ -13,7 +13,14 @@ import com.example.access_tracker.data.local.ChecadaDao
 import com.example.access_tracker.data.local.ChecadaLocal
 import com.example.access_tracker.data.local.EstadoEnvio
 import com.example.access_tracker.model.EstadoChecada
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.runBlocking
+import org.junit.Rule
+import org.junit.rules.TemporaryFolder
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import org.junit.Assert.assertEquals
@@ -245,17 +252,26 @@ class ColaOfflineTest {
 
     // ── Copia del estado ────────────────────────────────────────────
 
+    @get:Rule
+    val carpeta = TemporaryFolder()
+
     @Test
-    fun copiaDelEstadoSoloLaVeSuDueno() {
+    fun copiaDelEstadoSoloLaVeSuDueno() = runBlocking {
         val json = Json { ignoreUnknownKeys = true }
         val estado = json.decodeFromString(
             EstadoChecada.serializer(),
             javaClass.classLoader!!.getResource("api/status.json")!!.readText(),
         )
-        val cache = CacheEstado(AlmacenEnMemoria())
+        // DataStore real sobre un archivo temporal (la app usa files/datastore/cache_estado.preferences_pb).
+        val alcance = CoroutineScope(Dispatchers.IO + SupervisorJob())
+        val store = PreferenceDataStoreFactory.create(scope = alcance) {
+            carpeta.newFile("cache_estado.preferences_pb").apply { delete() }
+        }
+        val cache = CacheEstado(store)
         cache.guardar(3, "2026-11-09", estado)
         assertEquals("2026-11-09", cache.leer(3)!!.fecha)
         assertEquals(150, cache.leer(3)!!.estado.location.radiusMeters)
         assertNull(cache.leer(9)) // otra persona en el mismo telefono: nada
+        alcance.cancel()
     }
 }

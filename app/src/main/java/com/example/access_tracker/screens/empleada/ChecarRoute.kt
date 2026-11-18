@@ -133,7 +133,7 @@ fun ChecarRoute(
             onCerrarSesion = onCerrarSesion,
             barra = barra,
             fecha = Fechas.fechaLarga(),
-            nombre = ServiceLocator.sesion.leer()?.name?.substringBefore(' ') ?: "",
+            nombre = st.nombre,
             turno = turnoHoy,
             mensaje = listOfNotNull(
                 // La ultima checada guardada sin enviar fue una salida.

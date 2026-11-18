@@ -4,7 +4,6 @@ import android.content.Context
 import com.example.access_tracker.data.local.ChecadaDao
 import com.example.access_tracker.data.local.ChecadaLocal
 import com.example.access_tracker.data.local.EstadoEnvio
-import com.example.access_tracker.model.EstadoChecada
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.serialization.KSerializer
@@ -15,7 +14,7 @@ import java.util.concurrent.TimeUnit
 
 /**
  * Almacen de texto clave-valor (en la app, SharedPreferences; en los tests, un mapa en memoria).
- * Lo usa CacheEstado; la cola de checadas ya vive en Room.
+ * Solo se usa para leer una vez la cola que dejo la version anterior y pasarla a Room.
  */
 interface Almacen {
     fun leer(clave: String): String?
@@ -173,31 +172,5 @@ class ColaChecadas(
         private val json = Json { ignoreUnknownKeys = true }
         private const val CLAVE_PENDIENTES = "pendientes"
         private const val CLAVE_RECHAZOS = "rechazos"
-    }
-}
-
-/** Ultimo estado de /time-records/status, para poder mostrar el turno y checar aunque no haya internet. */
-@Serializable
-data class EstadoGuardado(val usuarioId: Long, val fecha: String, val estado: EstadoChecada)
-
-class CacheEstado(private val almacen: Almacen) {
-    private val json = Json { ignoreUnknownKeys = true }
-
-    fun guardar(usuarioId: Long, fecha: String, estado: EstadoChecada) {
-        almacen.escribir(CLAVE, json.encodeToString(EstadoGuardado.serializer(), EstadoGuardado(usuarioId, fecha, estado)))
-    }
-
-    /** Solo devuelve lo guardado por [usuarioId] (nunca el estado de otra persona). */
-    fun leer(usuarioId: Long): EstadoGuardado? {
-        val texto = almacen.leer(CLAVE) ?: return null
-        return try {
-            json.decodeFromString(EstadoGuardado.serializer(), texto).takeIf { it.usuarioId == usuarioId }
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-    private companion object {
-        const val CLAVE = "estado"
     }
 }
