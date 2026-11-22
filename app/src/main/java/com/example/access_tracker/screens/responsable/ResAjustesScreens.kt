@@ -130,7 +130,7 @@ class SalasViewModel : ViewModel() {
     private val _accion = MutableStateFlow(Accion())
     val accion: StateFlow<Accion> = _accion.asStateFlow()
 
-    private var originales = emptyMap<Long, Int>()
+    private var originales = emptyMap<String, Int>()
 
     fun cargar() {
         viewModelScope.launch {
@@ -141,7 +141,7 @@ class SalasViewModel : ViewModel() {
     }
 
     /** Guarda los minimos que cambiaron. */
-    fun guardar(salas: Map<Long, Int>) {
+    fun guardar(salas: Map<String, Int>) {
         if (_accion.value.enviando) return
         _accion.value = Accion(enviando = true)
         viewModelScope.launch {
@@ -249,4 +249,4 @@ fun ResAjustesSalasRoute(onAtras: () -> Unit) {
 }
 
 private fun mutableStateMapOfMinimos(salas: List<Sala>) =
-    androidx.compose.runtime.mutableStateMapOf<Long, Int>().apply { salas.forEach { put(it.id, it.minStaff) } }
+    androidx.compose.runtime.mutableStateMapOf<String, Int>().apply { salas.forEach { put(it.id, it.minStaff) } }

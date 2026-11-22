@@ -9,9 +9,9 @@ data class LoginRequest(val username: String, val password: String)
 
 @Serializable
 data class UsuarioResumen(
-    val id: Long,
+    val id: String,
     val name: String,
-    val daycareId: Long? = null,
+    val daycareId: String? = null,
 )
 
 @Serializable
@@ -26,14 +26,14 @@ data class LoginResponse(
 // ── Catalogos y horario ─────────────────────────────────────────────
 
 @Serializable
-data class Turno(val id: Long, val name: String, val startTime: String, val endTime: String)
+data class Turno(val id: String, val name: String, val startTime: String, val endTime: String)
 
 @Serializable
-data class Sala(val id: Long, val name: String, val minStaff: Int = 0, val daycareId: Long = 0)
+data class Sala(val id: String, val name: String, val minStaff: Int = 0, val daycareId: String = "")
 
 @Serializable
 data class Ubicacion(
-    val id: Long,
+    val id: String,
     val name: String,
     val latitude: Double,
     val longitude: Double,
@@ -42,18 +42,18 @@ data class Ubicacion(
 
 @Serializable
 data class DiaHorario(
-    val id: Long,
+    val id: String,
     val weekday: String,          // "monday".."sunday"
-    val shiftId: Long,
-    val roomId: Long,
+    val shiftId: String,
+    val roomId: String,
     val shift: Turno,
     val room: Sala,
 )
 
 @Serializable
 data class Horario(
-    val id: Long,
-    val userId: Long,
+    val id: String,
+    val userId: String,
     val validFrom: String,
     val validUntil: String,
     val days: List<DiaHorario>,
@@ -63,7 +63,7 @@ data class Horario(
 
 @Serializable
 data class Checada(
-    val id: Long,
+    val id: String,
     val uuid: String,
     val clockInAt: String,        // ISO-8601 UTC
     val clockOutAt: String? = null,
@@ -136,7 +136,7 @@ data class MensajeApi(val message: String = "")
 
 @Serializable
 data class MiPerfil(
-    val id: Long,
+    val id: String,
     val name: String,
     val username: String = "",
     val email: String = "",

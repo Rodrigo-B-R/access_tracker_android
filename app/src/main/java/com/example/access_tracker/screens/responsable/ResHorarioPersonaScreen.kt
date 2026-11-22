@@ -60,7 +60,7 @@ class ResHorarioPersonaViewModel : ViewModel() {
     private val _accion = MutableStateFlow(Accion())
     val accion: StateFlow<Accion> = _accion.asStateFlow()
 
-    fun cargar(id: Long) {
+    fun cargar(id: String) {
         viewModelScope.launch {
             val h = ServiceLocator.api.get("/schedules/$id", HorarioDePersona.serializer())
             val s = ServiceLocator.api.get("/rooms", ListSerializer(Sala.serializer()))
@@ -76,7 +76,7 @@ class ResHorarioPersonaViewModel : ViewModel() {
         }
     }
 
-    fun guardar(id: Long, dias: List<DiaHorarioRequest>) {
+    fun guardar(id: String, dias: List<DiaHorarioRequest>) {
         if (_accion.value.enviando) return
         _accion.value = Accion(enviando = true)
         viewModelScope.launch {
@@ -91,7 +91,7 @@ class ResHorarioPersonaViewModel : ViewModel() {
 }
 
 @Composable
-fun ResHorarioPersonaRoute(id: Long, onAtras: () -> Unit) {
+fun ResHorarioPersonaRoute(id: String, onAtras: () -> Unit) {
     val vm: ResHorarioPersonaViewModel = viewModel()
     val estado by vm.estado.collectAsState()
     val accion by vm.accion.collectAsState()

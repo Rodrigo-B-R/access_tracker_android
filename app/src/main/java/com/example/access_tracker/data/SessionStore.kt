@@ -39,21 +39,27 @@ private val Context.sesionDataStore: DataStore<Preferences> by preferencesDataSt
 data class Session(
     val token: String,
     val role: String,
-    val userId: Long,
+    /** UUID del usuario (texto). */
+    val userId: String,
     val name: String,
-    val daycareId: Long?,
+    /** UUID de la estancia, o null si no tiene. */
+    val daycareId: String?,
     val expiresAtMillis: Long,
 ) {
     fun vigente(ahora: Long = System.currentTimeMillis()) = ahora < expiresAtMillis
 }
 
-/** Claves dentro del archivo. Son los mismos nombres que usaba SharedPreferences: no cambiarlos. */
+/**
+ * Claves dentro del archivo. No cambiar los nombres: los datos guardados con un nombre viejo se pierden.
+ * Los ids usan claves nuevas ("userUuid", "daycareUuid") porque antes eran numeros con las claves
+ * "userId"/"daycareId": leer como texto una clave guardada como numero hace tronar la app.
+ */
 private object ClavesSesion {
     val TOKEN = stringPreferencesKey("token")
     val ROLE = stringPreferencesKey("role")
-    val USER_ID = longPreferencesKey("userId")
+    val USER_ID = stringPreferencesKey("userUuid")
     val NAME = stringPreferencesKey("name")
-    val DAYCARE_ID = longPreferencesKey("daycareId") // -1 = sin estancia
+    val DAYCARE_ID = stringPreferencesKey("daycareUuid") // ausente = sin estancia
     val EXPIRES_AT = longPreferencesKey("expiresAt")
 }
 
@@ -109,12 +115,14 @@ class SessionStore(private val store: DataStore<Preferences>) {
         .map { p ->
             val token = p[ClavesSesion.TOKEN]?.let(CifradoToken::descifrar) ?: return@map null
             val role = p[ClavesSesion.ROLE] ?: return@map null
+            // Sesion de antes del cambio a UUID (sin "userUuid"): no sirve, se pide login.
+            val userId = p[ClavesSesion.USER_ID] ?: return@map null
             Session(
                 token = token,
                 role = role,
-                userId = p[ClavesSesion.USER_ID] ?: 0,
+                userId = userId,
                 name = p[ClavesSesion.NAME] ?: "",
-                daycareId = (p[ClavesSesion.DAYCARE_ID] ?: -1L).takeIf { it >= 0 },
+                daycareId = p[ClavesSesion.DAYCARE_ID],
                 expiresAtMillis = p[ClavesSesion.EXPIRES_AT] ?: 0,
             )
         }
@@ -125,11 +133,12 @@ class SessionStore(private val store: DataStore<Preferences>) {
     /** Guarda todo junto: o se guarda completo, o nada. */
     suspend fun guardar(r: LoginResponse) {
         store.edit { p ->
+            p.clear() // fuera claves viejas (p. ej. "userId" numerico de antes del cambio a UUID)
             p[ClavesSesion.TOKEN] = CifradoToken.cifrar(r.token)
             p[ClavesSesion.ROLE] = r.role
             p[ClavesSesion.USER_ID] = r.user.id
             p[ClavesSesion.NAME] = r.user.name
-            p[ClavesSesion.DAYCARE_ID] = r.user.daycareId ?: -1L
+            r.user.daycareId?.let { p[ClavesSesion.DAYCARE_ID] = it }
             p[ClavesSesion.EXPIRES_AT] = System.currentTimeMillis() + r.expiresIn * 1000
         }
     }

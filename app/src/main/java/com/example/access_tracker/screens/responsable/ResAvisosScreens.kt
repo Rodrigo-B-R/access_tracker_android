@@ -106,8 +106,8 @@ class ResAvisosViewModel : ViewModel() {
 fun ResAvisosRoute(
     onAtras: () -> Unit,
     onNuevo: () -> Unit,
-    onEstadoLectura: (Long) -> Unit,
-    onAbrirRecibido: (Long) -> Unit,
+    onEstadoLectura: (String) -> Unit,
+    onAbrirRecibido: (String) -> Unit,
 ) {
     val vm: ResAvisosViewModel = viewModel()
     val estado by vm.estado.collectAsState()
@@ -244,7 +244,7 @@ private fun NuevoAvisoContenido(
     var confirmar by remember { mutableStateOf(false) }
     var turno by remember { mutableIntStateOf(0) }
     var sala by remember { mutableIntStateOf(0) }
-    val personas = remember { mutableStateListOf<Long>() }
+    val personas = remember { mutableStateListOf<String>() }
 
     val destinoValido = when (DESTINOS[destino].first) {
         "shift" -> o.turnos.isNotEmpty()
@@ -334,7 +334,7 @@ class ResEstadoLecturaViewModel : ViewModel() {
     private val _estado = MutableStateFlow<Carga<AvisoDetalleGestion>>(Carga.Cargando)
     val estado: StateFlow<Carga<AvisoDetalleGestion>> = _estado.asStateFlow()
 
-    fun cargar(id: Long) {
+    fun cargar(id: String) {
         viewModelScope.launch {
             _estado.value = ServiceLocator.api.get("/notices/$id", AvisoDetalleGestion.serializer()).aCarga()
         }
@@ -342,7 +342,7 @@ class ResEstadoLecturaViewModel : ViewModel() {
 }
 
 @Composable
-fun ResEstadoLecturaRoute(id: Long, onAtras: () -> Unit) {
+fun ResEstadoLecturaRoute(id: String, onAtras: () -> Unit) {
     val vm: ResEstadoLecturaViewModel = viewModel()
     val estado by vm.estado.collectAsState()
     LaunchedEffect(id) { vm.cargar(id) }

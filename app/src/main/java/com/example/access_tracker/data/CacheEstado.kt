@@ -26,18 +26,18 @@ private val Context.cacheEstadoDataStore: DataStore<Preferences> by preferencesD
 
 /** Ultimo estado de /time-records/status, para poder mostrar el turno y checar aunque no haya internet. */
 @Serializable
-data class EstadoGuardado(val usuarioId: Long, val fecha: String, val estado: EstadoChecada)
+data class EstadoGuardado(val usuarioId: String, val fecha: String, val estado: EstadoChecada)
 
 class CacheEstado(private val store: DataStore<Preferences>) {
     constructor(context: Context) : this(context.applicationContext.cacheEstadoDataStore)
 
-    suspend fun guardar(usuarioId: Long, fecha: String, estado: EstadoChecada) {
+    suspend fun guardar(usuarioId: String, fecha: String, estado: EstadoChecada) {
         val texto = json.encodeToString(EstadoGuardado.serializer(), EstadoGuardado(usuarioId, fecha, estado))
         store.edit { it[CLAVE] = texto }
     }
 
     /** Solo devuelve lo guardado por [usuarioId] (nunca el estado de otra persona). */
-    suspend fun leer(usuarioId: Long): EstadoGuardado? {
+    suspend fun leer(usuarioId: String): EstadoGuardado? {
         val p = store.data.catch { e -> if (e is IOException) emit(emptyPreferences()) else throw e }.first()
         val texto = p[CLAVE] ?: return null
         return try {

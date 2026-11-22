@@ -68,7 +68,7 @@ class ResPersonalViewModel : ViewModel() {
 @Composable
 fun ResPersonalRoute(
     onAvisos: () -> Unit,
-    onPersona: (Long) -> Unit,
+    onPersona: (String) -> Unit,
     onAlta: () -> Unit,
     barra: @Composable () -> Unit = {},
 ) {
@@ -89,7 +89,7 @@ fun ResPersonalContenido(
     plantilla: Plantilla,
     avisosSinLeer: Int,
     onAvisos: () -> Unit,
-    onPersona: (Long) -> Unit,
+    onPersona: (String) -> Unit,
     onAlta: () -> Unit,
     barra: @Composable () -> Unit = {}
 ) {

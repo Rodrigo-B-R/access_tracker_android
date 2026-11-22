@@ -5,13 +5,13 @@ import kotlinx.serialization.Serializable
 // DTOs de gestion (responsable y direccion). Nombres exactos de app/schemas.py de la API.
 
 @Serializable
-data class Referencia(val id: Long, val name: String)
+data class Referencia(val id: String, val name: String)
 
 @Serializable
-data class Puesto(val id: Long, val name: String)
+data class Puesto(val id: String, val name: String)
 
 @Serializable
-data class MotivoAusencia(val id: Long, val description: String)
+data class MotivoAusencia(val id: String, val description: String)
 
 @Serializable
 data class Catalogos(
@@ -22,14 +22,14 @@ data class Catalogos(
 )
 
 @Serializable
-data class Rol(val id: Long = 0, val name: String)
+data class Rol(val id: String = "", val name: String)
 
 @Serializable
-data class EstanciaBasica(val id: Long, val name: String)
+data class EstanciaBasica(val id: String, val name: String)
 
 @Serializable
 data class Estancia(
-    val id: Long,
+    val id: String,
     val name: String,
     val location: Ubicacion? = null,
     val rooms: List<Sala> = emptyList(),
@@ -39,7 +39,7 @@ data class Estancia(
 
 @Serializable
 data class Persona(
-    val id: Long,
+    val id: String,
     val name: String,
     val username: String = "",
     val email: String = "",
@@ -55,16 +55,17 @@ data class Persona(
 
 @Serializable
 data class Movimiento(
-    val id: Long,
+    val id: String,
     val type: String,             // hire | termination | transfer
     val date: String,
     val notes: String? = null,
     val terminationReason: Puesto? = null,
+    val createdAt: String? = null,  // ISO-8601 UTC
 )
 
 @Serializable
 data class PersonaDetalle(
-    val id: Long,
+    val id: String,
     val name: String,
     val username: String = "",
     val email: String = "",
@@ -83,7 +84,7 @@ data class AltaPersonaRequest(
     val username: String,
     val email: String,
     val phone: String,
-    val positionId: Long,
+    val positionId: String,
     val password: String? = null,
 )
 
@@ -93,17 +94,17 @@ data class EdicionPersonaRequest(
     val username: String? = null,
     val email: String? = null,
     val phone: String? = null,
-    val positionId: Long? = null,
+    val positionId: String? = null,
 )
 
 @Serializable
-data class PersonaCreada(val id: Long, val name: String, val temporaryPassword: String)
+data class PersonaCreada(val id: String, val name: String, val temporaryPassword: String)
 
 @Serializable
-data class BajaRequest(val terminationReasonId: Long, val notes: String? = null)
+data class BajaRequest(val terminationReasonId: String, val notes: String? = null)
 
 @Serializable
-data class TrasladoRequest(val daycareId: Long, val notes: String? = null)
+data class TrasladoRequest(val daycareId: String, val notes: String? = null)
 
 @Serializable
 data class PasswordTemporal(val temporaryPassword: String)
@@ -111,13 +112,13 @@ data class PasswordTemporal(val temporaryPassword: String)
 // ── Horarios ────────────────────────────────────────────────────────
 
 @Serializable
-data class PersonaResumen(val id: Long, val name: String, val position: Puesto? = null)
+data class PersonaResumen(val id: String, val name: String, val position: Puesto? = null)
 
 @Serializable
 data class HorarioDePersona(val person: PersonaResumen, val schedule: Horario? = null)
 
 @Serializable
-data class DiaHorarioRequest(val day: String, val shiftId: Long, val roomId: Long)
+data class DiaHorarioRequest(val day: String, val shiftId: String, val roomId: String)
 
 @Serializable
 data class HorarioRequest(val validFrom: String? = null, val days: List<DiaHorarioRequest>)
@@ -126,15 +127,15 @@ data class HorarioRequest(val validFrom: String? = null, val days: List<DiaHorar
 
 @Serializable
 data class LoteRequest(
-    val userIds: List<Long>,
+    val userIds: List<String>,
     /** Hora local sin zona ("2026-11-11T07:00:00"); la API la lee en America/Monterrey. */
     val occurredAt: String? = null,
-    val roomId: Long? = null,
-    val shiftId: Long? = null,
+    val roomId: String? = null,
+    val shiftId: String? = null,
 )
 
 @Serializable
-data class OmitidaLote(val userId: Long, val reason: String)
+data class OmitidaLote(val userId: String, val reason: String)
 
 @Serializable
 data class RespuestaLote(
@@ -146,7 +147,7 @@ data class RespuestaLote(
 
 @Serializable
 data class TurnoDelDia(
-    val shiftId: Long,
+    val shiftId: String,
     val shift: String = "",
     val startTime: String = "",
     val endTime: String = "",
@@ -161,7 +162,7 @@ data class DiaAsistenciaGestion(
     val clockOut: String? = null,
     val status: String,
     val reason: String? = null,
-    val attendanceId: Long? = null,
+    val attendanceId: String? = null,
     val lateMinutes: Int = 0,
 )
 
@@ -174,20 +175,20 @@ data class AsistenciaPersona(
 
 @Serializable
 data class AsistenciaRequest(
-    val userId: Long,
+    val userId: String,
     val date: String,
     val status: String,           // present | late | absent | incident
-    val absenceReasonId: Long? = null,
+    val absenceReasonId: String? = null,
 )
 
 @Serializable
-data class AsistenciaRegistrada(val id: Long, val status: String)
+data class AsistenciaRegistrada(val id: String, val status: String)
 
 // ── Avisos (gestion) ────────────────────────────────────────────────
 
 @Serializable
 data class AvisoGestion(
-    val id: Long,
+    val id: String,
     val subject: String,
     val noticeType: String,
     val message: String,
@@ -195,14 +196,15 @@ data class AvisoGestion(
     val author: AutorAviso,
     val recipientCount: Int = 0,
     val confirmedCount: Int = 0,
+    val createdAt: String? = null,  // ISO-8601 UTC
 )
 
 @Serializable
-data class Lector(val id: Long, val name: String, val readAt: String? = null)
+data class Lector(val id: String, val name: String, val readAt: String? = null)
 
 @Serializable
 data class AvisoDetalleGestion(
-    val id: Long,
+    val id: String,
     val subject: String,
     val noticeType: String,
     val message: String,
@@ -211,6 +213,7 @@ data class AvisoDetalleGestion(
     val recipientCount: Int = 0,
     val confirmed: List<Lector> = emptyList(),
     val pending: List<Referencia> = emptyList(),
+    val createdAt: String? = null,  // ISO-8601 UTC
 )
 
 @Serializable
@@ -219,9 +222,9 @@ data class AvisoNuevo(
     val message: String,
     val noticeType: String,
     val target: String = "all",
-    val shiftId: Long? = null,
-    val roomId: Long? = null,
-    val userIds: List<Long>? = null,
+    val shiftId: String? = null,
+    val roomId: String? = null,
+    val userIds: List<String>? = null,
     val requiresConfirmation: Boolean = false,
 )
 
@@ -234,7 +237,7 @@ data class SalaRequest(val name: String? = null, val minStaff: Int? = null)
 
 @Serializable
 data class CoberturaTurno(
-    val shiftId: Long,
+    val shiftId: String,
     val shift: String = "",
     val scheduled: Int = 0,
     val present: Int = 0,
@@ -265,7 +268,7 @@ data class Cobertura(
 
 @Serializable
 data class ResumenEstancia(
-    val id: Long,
+    val id: String,
     val name: String,
     val complete: Boolean,
     val alerts: List<String> = emptyList(),
@@ -308,17 +311,17 @@ data class Estadisticas(
 
 @Serializable
 data class EventoAuditoria(
-    val id: Long,
+    val id: String,
     val action: String,
     val table: String,
-    val recordId: Long = 0,
+    val recordId: String = "",
     val createdAt: String,
     val user: Referencia? = null,
 )
 
 @Serializable
 data class MovimientoDetalle(
-    val id: Long,
+    val id: String,
     val type: String,             // hire | termination | transfer
     val date: String,
     val notes: String? = null,
@@ -327,4 +330,5 @@ data class MovimientoDetalle(
     val originDaycare: Referencia? = null,
     val destinationDaycare: Referencia? = null,
     val terminationReason: Puesto? = null,
+    val createdAt: String? = null,  // ISO-8601 UTC
 )

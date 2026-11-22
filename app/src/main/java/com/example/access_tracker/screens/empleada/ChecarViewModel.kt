@@ -63,7 +63,7 @@ class ChecarViewModel(app: Application) : AndroidViewModel(app) {
     /** Ahora en ISO-8601 UTC con milisegundos (los decimales extra de Instant podrian no gustarle a la API). */
     private fun ahoraIso(): String = Instant.now().truncatedTo(ChronoUnit.MILLIS).toString()
 
-    private suspend fun usuarioId(): Long? = ServiceLocator.sesion.leer()?.userId
+    private suspend fun usuarioId(): String? = ServiceLocator.sesion.leer()?.userId
 
     fun cargar() {
         _estado.update { it.copy(cargando = it.datos == null, errorCarga = null) }
@@ -100,7 +100,7 @@ class ChecarViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** Sin internet: se muestra el ultimo estado guardado para poder seguir checando. */
-    private suspend fun usarCopiaGuardada(usuario: Long?) {
+    private suspend fun usarCopiaGuardada(usuario: String?) {
         val copia = usuario?.let { cache.leer(it) }
         _estado.update {
             when {
@@ -117,7 +117,7 @@ class ChecarViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    private suspend fun refrescarPendientes(usuario: Long?, mostrarRechazos: Boolean = false) {
+    private suspend fun refrescarPendientes(usuario: String?, mostrarRechazos: Boolean = false) {
         if (usuario == null) return
         val rechazos = if (mostrarRechazos) cola.rechazos(usuario) else emptyList()
         if (rechazos.isNotEmpty()) cola.limpiarRechazos(usuario)
@@ -224,7 +224,7 @@ class ChecarViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    private suspend fun hayColaOSinRed(usuario: Long) =
+    private suspend fun hayColaOSinRed(usuario: String) =
         _estado.value.sinConexion || cola.pendientes(usuario).isNotEmpty()
 
     /** Guarda la checada en el telefono, pide el reintento automatico y prueba enviar ya por si hay red. */

@@ -56,7 +56,7 @@ class AvisosViewModel : ViewModel() {
 }
 
 @Composable
-fun AvisosRoute(onAtras: () -> Unit, onAbrir: (Long) -> Unit) {
+fun AvisosRoute(onAtras: () -> Unit, onAbrir: (String) -> Unit) {
     val vm: AvisosViewModel = viewModel()
     val estado by vm.estado.collectAsState()
     // Se recarga al volver del detalle para que se actualice "sin leer".
@@ -86,7 +86,7 @@ class AvisoDetalleViewModel : ViewModel() {
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
-    fun cargar(id: Long) {
+    fun cargar(id: String) {
         viewModelScope.launch {
             val r = ServiceLocator.api.get("/notices/inbox/$id", Aviso.serializer())
             _estado.value = r.aCarga()
@@ -95,7 +95,7 @@ class AvisoDetalleViewModel : ViewModel() {
         }
     }
 
-    fun confirmar(id: Long) {
+    fun confirmar(id: String) {
         if (_enviando.value) return
         _enviando.value = true
         _error.value = null
@@ -105,7 +105,7 @@ class AvisoDetalleViewModel : ViewModel() {
         }
     }
 
-    private suspend fun marcarLeido(id: Long, silencioso: Boolean) {
+    private suspend fun marcarLeido(id: String, silencioso: Boolean) {
         when (val r = ServiceLocator.api.post("/notices/$id/read", "{}", AcuseLectura.serializer())) {
             is ApiResult.Ok -> _estado.update { c ->
                 if (c is Carga.Listo) Carga.Listo(c.datos.copy(read = r.value.read, readAt = r.value.readAt)) else c
@@ -116,7 +116,7 @@ class AvisoDetalleViewModel : ViewModel() {
 }
 
 @Composable
-fun AvisoRoute(id: Long, onAtras: () -> Unit) {
+fun AvisoRoute(id: String, onAtras: () -> Unit) {
     val vm: AvisoDetalleViewModel = viewModel()
     val estado by vm.estado.collectAsState()
     val enviando by vm.enviando.collectAsState()

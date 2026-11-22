@@ -75,7 +75,7 @@ class ResHorariosViewModel : ViewModel() {
 }
 
 @Composable
-fun ResHorariosRoute(onAvisos: () -> Unit, onPersona: (Long) -> Unit, barra: @Composable () -> Unit = {}) {
+fun ResHorariosRoute(onAvisos: () -> Unit, onPersona: (String) -> Unit, barra: @Composable () -> Unit = {}) {
     val vm: ResHorariosViewModel = viewModel()
     val estado by vm.estado.collectAsState()
     val sinLeer = rememberAvisosSinLeer()
@@ -94,7 +94,7 @@ fun ResHorariosContenido(
     datos: HorariosDatos,
     avisosSinLeer: Int,
     onAvisos: () -> Unit,
-    onPersona: (Long) -> Unit,
+    onPersona: (String) -> Unit,
     barra: @Composable () -> Unit = {},
 ) {
     val hoy = Fechas.hoy().dayOfWeek.value - 1

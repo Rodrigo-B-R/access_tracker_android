@@ -83,7 +83,7 @@ private data class FilaDia(
     val persona: AsistenciaPersona,
     val estado: String,
     val sala: String?,
-    val turnoId: Long?,
+    val turnoId: String?,
     val entrada: String?,
 )
 
@@ -109,7 +109,7 @@ private fun etiquetaEstado(estado: String): Pair<String, TonoChip> = when (estad
 fun ResAsistenciaRoute(
     onAvisos: () -> Unit,
     onTurnoCompleto: () -> Unit,
-    onAusencia: (userId: Long?) -> Unit,
+    onAusencia: (userId: String?) -> Unit,
     barra: @Composable () -> Unit = {},
 ) {
     val vm: ResAsistenciaViewModel = viewModel()
@@ -131,7 +131,7 @@ fun ResAsistenciaContenido(
     avisosSinLeer: Int,
     onAvisos: () -> Unit,
     onTurnoCompleto: () -> Unit,
-    onAusencia: (userId: Long?) -> Unit,
+    onAusencia: (userId: String?) -> Unit,
     barra: @Composable () -> Unit = {},
 ) {
     var turno by remember { mutableIntStateOf(0) }

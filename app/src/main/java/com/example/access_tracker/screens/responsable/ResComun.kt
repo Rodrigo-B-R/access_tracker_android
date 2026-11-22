@@ -60,8 +60,11 @@ private val PALETA = listOf(
     Verde100 to Verde600,
 )
 
-/** (fondo, tinta) del avatar segun el id, para que cada persona conserve su color. */
-internal fun paleta(id: Long): Pair<Color, Color> = PALETA[(id % PALETA.size).toInt()]
+/**
+ * (fondo, tinta) del avatar segun el id, para que cada persona conserve su color.
+ * El id es un UUID (texto): se usa su hashCode, que siempre da lo mismo para el mismo id.
+ */
+internal fun paleta(id: String): Pair<Color, Color> = PALETA[Math.floorMod(id.hashCode(), PALETA.size)]
 
 /** Cuenta de avisos sin leer para la campana. Si falla, queda en 0. */
 @Composable
