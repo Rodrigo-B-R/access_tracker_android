@@ -2,6 +2,7 @@ package com.example.access_tracker.data
 
 import android.content.Context
 import com.example.access_tracker.BuildConfig
+import com.example.access_tracker.data.local.AppDatabase
 import com.example.access_tracker.model.LoginRequest
 import com.example.access_tracker.model.LoginResponse
 import kotlinx.coroutines.CoroutineScope
@@ -195,8 +196,9 @@ object ServiceLocator {
         val app = context.applicationContext
         sesion = SessionStore(app)
         api = ApiClient(BuildConfig.API_BASE_URL.trimEnd('/'), sesion)
-        cola = ColaChecadas(PrefsAlmacen(app, "cola_checadas"))
-        cache = CacheEstado(PrefsAlmacen(app, "cache_estado"))
+        // La cola vive en Room; el almacen viejo (SharedPreferences) solo se lee una vez para migrar.
+        cola = ColaChecadas(AppDatabase.getInstance(app).checadaDao(), PrefsAlmacen(app, "cola_checadas"))
+        cache = CacheEstado(app)
         sincronizador = Sincronizador(api, cola, sesion) { SincronizarChecadasWorker.programar(app) }
     }
 }

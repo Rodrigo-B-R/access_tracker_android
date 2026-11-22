@@ -41,6 +41,8 @@ data class ChecarEstado(
     val sinConexion: Boolean = false,
     /** La copia guardada es de otro dia: no se sabe cual es el turno de hoy. */
     val datosDeOtroDia: Boolean = false,
+    /** Primer nombre de la persona con sesion, para el saludo. */
+    val nombre: String = "",
 )
 
 class ChecarViewModel(app: Application) : AndroidViewModel(app) {
@@ -61,12 +63,14 @@ class ChecarViewModel(app: Application) : AndroidViewModel(app) {
     /** Ahora en ISO-8601 UTC con milisegundos (los decimales extra de Instant podrian no gustarle a la API). */
     private fun ahoraIso(): String = Instant.now().truncatedTo(ChronoUnit.MILLIS).toString()
 
-    private fun usuarioId(): Long? = ServiceLocator.sesion.leer()?.userId
+    private suspend fun usuarioId(): Long? = ServiceLocator.sesion.leer()?.userId
 
     fun cargar() {
         _estado.update { it.copy(cargando = it.datos == null, errorCarga = null) }
         viewModelScope.launch {
-            val usuario = usuarioId()
+            val sesion = ServiceLocator.sesion.leer()
+            val usuario = sesion?.userId
+            _estado.update { it.copy(nombre = sesion?.name?.substringBefore(' ').orEmpty()) }
             // Primero se manda lo que se guardo sin internet (si ya hay conexion, sale ahora).
             val sync = sincronizador.sincronizar()
             refrescarPendientes(usuario, mostrarRechazos = true)
@@ -96,7 +100,7 @@ class ChecarViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /** Sin internet: se muestra el ultimo estado guardado para poder seguir checando. */
-    private fun usarCopiaGuardada(usuario: Long?) {
+    private suspend fun usarCopiaGuardada(usuario: Long?) {
         val copia = usuario?.let { cache.leer(it) }
         _estado.update {
             when {
@@ -113,13 +117,14 @@ class ChecarViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    private fun refrescarPendientes(usuario: Long?, mostrarRechazos: Boolean = false) {
+    private suspend fun refrescarPendientes(usuario: Long?, mostrarRechazos: Boolean = false) {
         if (usuario == null) return
         val rechazos = if (mostrarRechazos) cola.rechazos(usuario) else emptyList()
         if (rechazos.isNotEmpty()) cola.limpiarRechazos(usuario)
+        val pendientes = cola.pendientes(usuario)
         _estado.update {
             it.copy(
-                pendientes = cola.pendientes(usuario),
+                pendientes = pendientes,
                 mensaje = if (rechazos.isNotEmpty()) textoRechazos(rechazos) else it.mensaje,
             )
         }
@@ -132,11 +137,14 @@ class ChecarViewModel(app: Application) : AndroidViewModel(app) {
         }
 
     fun registrarEntrada() {
-        val usuario = usuarioId() ?: return
         if (_estado.value.enviando) return
         val ocurridoEn = ahoraIso() // hora real del toque, aunque tarde en enviarse
         _estado.update { it.copy(enviando = true, mensaje = null) }
         viewModelScope.launch {
+            val usuario = usuarioId() ?: run {
+                _estado.update { it.copy(enviando = false) }
+                return@launch
+            }
             val uuid = uuidPendiente ?: UUID.randomUUID().toString().also { uuidPendiente = it }
             val ubicacion = Gps.actual(getApplication())
             // Sin ubicacion NO se manda withinZone=true: la API lo daria por valido. Se marca fuera de zona.
@@ -180,11 +188,14 @@ class ChecarViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun registrarSalida() {
-        val usuario = usuarioId() ?: return
         if (_estado.value.enviando) return
         val ocurridoEn = ahoraIso()
         _estado.update { it.copy(enviando = true, mensaje = null) }
         viewModelScope.launch {
+            val usuario = usuarioId() ?: run {
+                _estado.update { it.copy(enviando = false) }
+                return@launch
+            }
             val pendiente = Pendiente(
                 uuid = UUID.randomUUID().toString(), tipo = Pendiente.TIPO_SALIDA,
                 usuarioId = usuario, ocurridoEn = ocurridoEn,
@@ -213,16 +224,17 @@ class ChecarViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    private fun hayColaOSinRed(usuario: Long) =
-        cola.pendientes(usuario).isNotEmpty() || _estado.value.sinConexion
+    private suspend fun hayColaOSinRed(usuario: Long) =
+        _estado.value.sinConexion || cola.pendientes(usuario).isNotEmpty()
 
     /** Guarda la checada en el telefono, pide el reintento automatico y prueba enviar ya por si hay red. */
-    private fun encolar(p: Pendiente, aviso: String?) {
+    private suspend fun encolar(p: Pendiente, aviso: String?) {
         uuidPendiente = null
         cola.agregar(p)
         sincronizador.programar()
+        val pendientes = cola.pendientes(p.usuarioId)
         _estado.update {
-            it.copy(enviando = false, mensaje = aviso, pendientes = cola.pendientes(p.usuarioId), sinConexion = true)
+            it.copy(enviando = false, mensaje = aviso, pendientes = pendientes, sinConexion = true)
         }
         // En segundo plano: si en realidad ya hay red, se envia y la pantalla se actualiza sola.
         viewModelScope.launch {

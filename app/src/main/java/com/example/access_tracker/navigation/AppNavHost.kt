@@ -5,7 +5,13 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.produceState
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.compose.runtime.LaunchedEffect
@@ -65,10 +71,15 @@ fun AppNavHost() {
     val nav = rememberNavController()
 
     // Si hay una sesion guardada y vigente, se entra directo; si no, login.
-    val inicio = remember {
+    // DataStore lee en segundo plano: mientras tanto (milisegundos) solo se ve el fondo.
+    val destinoInicial by produceState<String?>(initialValue = null) {
         val s = ServiceLocator.sesion.leer()
         val perfil = s?.takeIf { it.vigente() }?.let { perfilDeRol(it.role) }
-        if (perfil != null) Pestanas.inicio(perfil) else ScreenNames.Login.route
+        value = if (perfil != null) Pestanas.inicio(perfil) else ScreenNames.Login.route
+    }
+    val inicio = destinoInicial ?: run {
+        Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background))
+        return
     }
 
     // Cualquier llamada autenticada que reciba 401 (token vencido o revocado) cae aqui.

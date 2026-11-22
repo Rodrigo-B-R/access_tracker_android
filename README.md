@@ -62,6 +62,8 @@ El índice se define en `app/src/main/java/com/example/access_tracker/navigation
 ```
 app/src/main/java/com/example/access_tracker/
 ├── components/    Componentes de UI reutilizables
+├── data/          API, sesión (DataStore), cola offline y sincronización
+│   └── local/         Room: tabla, DAO y base de datos
 ├── model/         Modelos de datos (de ejemplo)
 ├── navigation/    NavHost, rutas e índice de pantallas
 ├── screens/
@@ -71,3 +73,35 @@ app/src/main/java/com/example/access_tracker/
 │   └── direccion/     Resumen, estadísticas, bitácora
 └── ui/theme/      Colores, tipografía y tema
 ```
+
+## Almacenamiento local
+
+La app guarda datos en el teléfono con dos librerías de Jetpack:
+
+| Qué | Dónde | Archivo |
+|---|---|---|
+| Sesión (token JWT, rol, usuario, expiración) | **DataStore** | `data/SessionStore.kt` |
+| Última copia del estado del turno (para verlo sin internet) | **DataStore** | `data/CacheEstado.kt` |
+| Checadas hechas sin internet, pendientes de enviar | **Room** (`access_tracker.db`, tabla `cola_checadas`) | `data/ColaChecadas.kt`, `data/local/` |
+
+### Checadas sin conexión (Room)
+
+- Si una entrada o salida **no se puede enviar** (sin internet), se guarda en Room con estado `PENDIENTE` y la hora real del toque. Si se envía bien a la primera, no se guarda nada.
+- Cuando vuelve la conexión, `Sincronizador` las envía **en orden**, aunque la app esté cerrada (WorkManager), y cambia su estado:
+  - `ENVIADA`: llegó al servidor; no se vuelve a mandar.
+  - `RECHAZADA`: la API la rechazó (por ejemplo, sin turno); se avisa a la persona una sola vez.
+- Las `ENVIADA` (y las `RECHAZADA` ya avisadas) se **borran solas a los 7 días**. Las `PENDIENTE` nunca se borran.
+- Cada checada lleva el `usuarioId`: nunca se envía con la sesión de otra persona.
+
+### Migración desde SharedPreferences
+
+Las versiones anteriores usaban SharedPreferences. Al abrir la app por primera vez con esta versión, los datos se pasan solos (sesión y copia del turno a DataStore, cola a Room) y se borran los archivos viejos. Nadie pierde su sesión ni sus checadas pendientes.
+
+### Ver los datos guardados
+
+- **Room:** *View > Tool Windows > App Inspection > Database Inspector* → `access_tracker.db` → `cola_checadas`.
+- **DataStore:** *Device Explorer* → `/data/data/com.example.access_tracker/files/datastore/`.
+
+Para probar el modo sin conexión en el emulador, activa el **modo avión dentro del emulador** 
+
+Estos archivos están excluidos de los respaldos de Android (`res/xml/backup_rules.xml` y `data_extraction_rules.xml`), porque contienen el token y ubicaciones.
