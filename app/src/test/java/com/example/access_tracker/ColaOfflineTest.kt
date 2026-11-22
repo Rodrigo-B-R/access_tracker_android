@@ -32,6 +32,12 @@ import java.util.concurrent.TimeUnit
 
 /** Modo offline: la cola persistente y la decision de que hacer con cada respuesta de la API. */
 class ColaOfflineTest {
+    private companion object {
+        // Ids de usuario como los manda la API (UUID en texto). Dos personas distintas en el mismo telefono.
+        const val ANA = "00000000-0000-4000-8000-000000000003"
+        const val LUIS = "00000000-0000-4000-8000-000000000009"
+    }
+
     private class AlmacenEnMemoria : Almacen {
         val datos = mutableMapOf<String, String>()
         override fun leer(clave: String) = datos[clave]
@@ -56,7 +62,7 @@ class ColaOfflineTest {
             return fila.id
         }
 
-        override suspend fun pendientes(usuarioId: Long) =
+        override suspend fun pendientes(usuarioId: String) =
             filas.filter { it.usuarioId == usuarioId && it.estado == EstadoEnvio.PENDIENTE }.sortedBy { it.id }
 
         override suspend fun hayPendientes() = filas.any { it.estado == EstadoEnvio.PENDIENTE }
@@ -75,11 +81,11 @@ class ColaOfflineTest {
             { it.uuid == uuid && it.tipo == tipo }, { it.copy(intentos = it.intentos + 1) },
         )
 
-        override suspend fun rechazosSinAviso(usuarioId: Long) = filas.filter {
+        override suspend fun rechazosSinAviso(usuarioId: String) = filas.filter {
             it.usuarioId == usuarioId && it.estado == EstadoEnvio.RECHAZADA && !it.avisoMostrado
         }.sortedBy { it.id }
 
-        override suspend fun marcarAvisosMostrados(usuarioId: Long) = cambiar(
+        override suspend fun marcarAvisosMostrados(usuarioId: String) = cambiar(
             { it.usuarioId == usuarioId && it.estado == EstadoEnvio.RECHAZADA }, { it.copy(avisoMostrado = true) },
         )
 
@@ -93,10 +99,10 @@ class ColaOfflineTest {
         }
     }
 
-    private fun entrada(uuid: String, usuario: Long = 3, hora: String = "2026-11-09T13:01:00.000Z") =
+    private fun entrada(uuid: String, usuario: String = ANA, hora: String = "2026-11-09T13:01:00.000Z") =
         Pendiente(uuid, Pendiente.TIPO_ENTRADA, usuario, hora, latitud = 25.7447, longitud = -100.4036)
 
-    private fun salida(uuid: String, usuario: Long = 3, hora: String = "2026-11-09T21:02:00.000Z") =
+    private fun salida(uuid: String, usuario: String = ANA, hora: String = "2026-11-09T21:02:00.000Z") =
         Pendiente(uuid, Pendiente.TIPO_SALIDA, usuario, hora)
 
     private val dia = TimeUnit.DAYS.toMillis(1)
@@ -108,8 +114,8 @@ class ColaOfflineTest {
         val cola = ColaChecadas(DaoEnMemoria())
         cola.agregar(entrada("a"))
         cola.agregar(salida("b"))
-        assertEquals(listOf("a", "b"), cola.pendientes(3).map { it.uuid })
-        assertEquals(listOf(Pendiente.TIPO_ENTRADA, Pendiente.TIPO_SALIDA), cola.pendientes(3).map { it.tipo })
+        assertEquals(listOf("a", "b"), cola.pendientes(ANA).map { it.uuid })
+        assertEquals(listOf(Pendiente.TIPO_ENTRADA, Pendiente.TIPO_SALIDA), cola.pendientes(ANA).map { it.tipo })
     }
 
     @Test
@@ -117,7 +123,7 @@ class ColaOfflineTest {
         val dao = DaoEnMemoria()
         ColaChecadas(dao).agregar(entrada("a"))
         // Otra instancia sobre la misma base = la app abierta de nuevo.
-        val despues = ColaChecadas(dao).pendientes(3)
+        val despues = ColaChecadas(dao).pendientes(ANA)
         assertEquals(1, despues.size)
         assertEquals(25.7447, despues.first().latitud!!, 0.0)
         assertEquals("2026-11-09T13:01:00.000Z", despues.first().ocurridoEn)
@@ -128,16 +134,16 @@ class ColaOfflineTest {
         val cola = ColaChecadas(DaoEnMemoria())
         cola.agregar(entrada("a"))
         cola.agregar(entrada("a"))
-        assertEquals(1, cola.pendientes(3).size)
+        assertEquals(1, cola.pendientes(ANA).size)
     }
 
     @Test
     fun cadaPersonaSoloVeSusChecadas() = runBlocking {
         val cola = ColaChecadas(DaoEnMemoria())
-        cola.agregar(entrada("a", usuario = 3))
-        cola.agregar(entrada("b", usuario = 9))
-        assertEquals(listOf("a"), cola.pendientes(3).map { it.uuid })
-        assertEquals(listOf("b"), cola.pendientes(9).map { it.uuid })
+        cola.agregar(entrada("a", usuario = ANA))
+        cola.agregar(entrada("b", usuario = LUIS))
+        assertEquals(listOf("a"), cola.pendientes(ANA).map { it.uuid })
+        assertEquals(listOf("b"), cola.pendientes(LUIS).map { it.uuid })
         assertTrue(cola.hayPendientes())
     }
 
@@ -148,7 +154,7 @@ class ColaOfflineTest {
         cola.agregar(entrada("a"))
         cola.agregar(salida("b"))
         cola.marcarEnviada("a", Pendiente.TIPO_ENTRADA)
-        assertEquals(listOf("b"), cola.pendientes(3).map { it.uuid })
+        assertEquals(listOf("b"), cola.pendientes(ANA).map { it.uuid })
         cola.marcarEnviada("b", Pendiente.TIPO_SALIDA)
         assertFalse(cola.hayPendientes())
         // Siguen en la tabla como ENVIADA (no se vuelven a mandar).
@@ -158,15 +164,15 @@ class ColaOfflineTest {
     @Test
     fun rechazadaSeAvisaUnaSolaVezPorUsuario() = runBlocking {
         val cola = ColaChecadas(DaoEnMemoria())
-        cola.agregar(entrada("a", usuario = 3))
-        cola.agregar(salida("b", usuario = 9))
+        cola.agregar(entrada("a", usuario = ANA))
+        cola.agregar(salida("b", usuario = LUIS))
         cola.marcarRechazada("a", Pendiente.TIPO_ENTRADA, "motivo")
         cola.marcarRechazada("b", Pendiente.TIPO_SALIDA, "motivo")
-        assertEquals(listOf("motivo"), cola.rechazos(3).map { it.motivo })
+        assertEquals(listOf("motivo"), cola.rechazos(ANA).map { it.motivo })
         assertFalse(cola.hayPendientes())
-        cola.limpiarRechazos(3)
-        assertEquals(0, cola.rechazos(3).size)
-        assertEquals(1, cola.rechazos(9).size)
+        cola.limpiarRechazos(ANA)
+        assertEquals(0, cola.rechazos(ANA).size)
+        assertEquals(1, cola.rechazos(LUIS).size)
     }
 
     @Test
@@ -181,7 +187,7 @@ class ColaOfflineTest {
         cola.marcarEnviada("enviada", Pendiente.TIPO_ENTRADA)
         cola.marcarRechazada("rechazada-vista", Pendiente.TIPO_ENTRADA, "m")
         cola.marcarRechazada("rechazada-sin-ver", Pendiente.TIPO_ENTRADA, "m")
-        dao.marcarAvisosMostrados(3)
+        dao.marcarAvisosMostrados(ANA)
         dao.filas.replaceAll { if (it.uuid == "rechazada-sin-ver") it.copy(avisoMostrado = false) else it }
 
         ahora = 6 * dia
@@ -201,24 +207,24 @@ class ColaOfflineTest {
             )
             datos["rechazos"] = json.encodeToString(
                 ListSerializer(Rechazo.serializer()),
-                listOf(Rechazo("entrada", "2026-11-08T13:00:00.000Z", "motivo", 3)),
+                listOf(Rechazo("entrada", "2026-11-08T13:00:00.000Z", "motivo", ANA)),
             )
         }
         val dao = DaoEnMemoria()
         val cola = ColaChecadas(dao, viejo)
-        assertEquals(listOf("a", "b"), cola.pendientes(3).map { it.uuid })
-        assertEquals(1, cola.rechazos(3).size)
+        assertEquals(listOf("a", "b"), cola.pendientes(ANA).map { it.uuid })
+        assertEquals(1, cola.rechazos(ANA).size)
         assertTrue(viejo.datos.isEmpty()) // el almacen viejo queda vacio
 
         // Abrir la app otra vez no duplica nada.
-        ColaChecadas(dao, viejo).pendientes(3)
+        ColaChecadas(dao, viejo).pendientes(ANA)
         assertEquals(3, dao.filas.size)
     }
 
     @Test
     fun datosViejosCorruptosNoTumbanLaApp() = runBlocking {
         val viejo = AlmacenEnMemoria().apply { datos["pendientes"] = "{esto no es json" }
-        assertEquals(emptyList<Pendiente>(), ColaChecadas(DaoEnMemoria(), viejo).pendientes(3))
+        assertEquals(emptyList<Pendiente>(), ColaChecadas(DaoEnMemoria(), viejo).pendientes(ANA))
     }
 
     // ── Que hacer con cada respuesta de la API ──────────────────────
@@ -268,10 +274,10 @@ class ColaOfflineTest {
             carpeta.newFile("cache_estado.preferences_pb").apply { delete() }
         }
         val cache = CacheEstado(store)
-        cache.guardar(3, "2026-11-09", estado)
-        assertEquals("2026-11-09", cache.leer(3)!!.fecha)
-        assertEquals(150, cache.leer(3)!!.estado.location.radiusMeters)
-        assertNull(cache.leer(9)) // otra persona en el mismo telefono: nada
+        cache.guardar(ANA, "2026-11-09", estado)
+        assertEquals("2026-11-09", cache.leer(ANA)!!.fecha)
+        assertEquals(150, cache.leer(ANA)!!.estado.location.radiusMeters)
+        assertNull(cache.leer(LUIS)) // otra persona en el mismo telefono: nada
         alcance.cancel()
     }
 }

@@ -70,7 +70,7 @@ import java.time.LocalDate
 // ── Entrada de turno completo ───────────────────────────────────────
 
 /** Una persona programada hoy en un turno; [yaRegistrada] trae la hora si ya checo. */
-data class ProgramadaHoy(val persona: Persona, val sala: String, val turnoId: Long, val yaRegistrada: String?)
+data class ProgramadaHoy(val persona: Persona, val sala: String, val turnoId: String, val yaRegistrada: String?)
 
 data class DatosTurno(val catalogos: Catalogos, val programadas: List<ProgramadaHoy>)
 
@@ -106,7 +106,7 @@ class RegistroTurnoViewModel : ViewModel() {
         }
     }
 
-    fun registrar(ids: List<Long>, hora: Pair<Int, Int>?) {
+    fun registrar(ids: List<String>, hora: Pair<Int, Int>?) {
         if (_accion.value.enviando) return
         _accion.value = Accion(enviando = true)
         viewModelScope.launch {
@@ -143,7 +143,7 @@ private fun RegistroTurnoContenido(
     datos: DatosTurno,
     accion: Accion,
     onCerrar: () -> Unit,
-    onRegistrar: (List<Long>, Pair<Int, Int>?) -> Unit,
+    onRegistrar: (List<String>, Pair<Int, Int>?) -> Unit,
 ) {
     val turnos = datos.catalogos.shifts
     var turno by remember { mutableIntStateOf(0) }
@@ -152,7 +152,7 @@ private fun RegistroTurnoContenido(
     val delTurno = datos.programadas.filter { it.turnoId == turnoId }
     val pendientes = delTurno.filter { it.yaRegistrada == null }
     // Marcadas por id; se reinicia al cambiar de turno.
-    val marcados: SnapshotStateList<Long> = remember(turno) { mutableStateListOf<Long>().apply { addAll(pendientes.map { it.persona.id }) } }
+    val marcados: SnapshotStateList<String> = remember(turno) { mutableStateListOf<String>().apply { addAll(pendientes.map { it.persona.id }) } }
     val todos = pendientes.isNotEmpty() && marcados.size == pendientes.size
 
     PantallaBase(
@@ -241,7 +241,7 @@ class RegistrarAusenciaViewModel : ViewModel() {
         }
     }
 
-    fun guardar(userId: Long, fecha: LocalDate, incidencia: Boolean, motivoId: Long) {
+    fun guardar(userId: String, fecha: LocalDate, incidencia: Boolean, motivoId: String) {
         if (_accion.value.enviando) return
         _accion.value = Accion(enviando = true)
         viewModelScope.launch {
@@ -257,7 +257,7 @@ class RegistrarAusenciaViewModel : ViewModel() {
 }
 
 @Composable
-fun RegistrarAusenciaRoute(userId: Long?, onCerrar: () -> Unit) {
+fun RegistrarAusenciaRoute(userId: String?, onCerrar: () -> Unit) {
     val vm: RegistrarAusenciaViewModel = viewModel()
     val estado by vm.estado.collectAsState()
     val accion by vm.accion.collectAsState()
@@ -275,10 +275,10 @@ fun RegistrarAusenciaRoute(userId: Long?, onCerrar: () -> Unit) {
 @Composable
 private fun AusenciaContenido(
     datos: DatosAusencia,
-    userId: Long?,
+    userId: String?,
     accion: Accion,
     onCerrar: () -> Unit,
-    onGuardar: (Long, LocalDate, Boolean, Long) -> Unit,
+    onGuardar: (String, LocalDate, Boolean, String) -> Unit,
 ) {
     var persona by remember { mutableIntStateOf(datos.personal.indexOfFirst { it.id == userId }.coerceAtLeast(0)) }
     var fecha by remember { mutableStateOf(Fechas.hoy()) }

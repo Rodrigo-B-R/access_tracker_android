@@ -218,10 +218,10 @@ fun AppNavHost() {
         }
         composable(
             route = ScreenNames.EmpAviso.route,
-            arguments = listOf(navArgument("id") { type = NavType.LongType })
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
         ) { backStackEntry ->
             AvisoRoute(
-                id = backStackEntry.arguments?.getLong("id") ?: 0L,
+                id = backStackEntry.arguments?.getString("id").orEmpty(),
                 onAtras = { nav.popBackStack() },
             )
         }
@@ -256,9 +256,9 @@ fun AppNavHost() {
         }
         composable(
             route = ScreenNames.ResHorarioPersona.route,
-            arguments = listOf(navArgument("id") { type = NavType.LongType })
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
         ) { entry ->
-            ResHorarioPersonaRoute(id = entry.arguments?.getLong("id") ?: 0L, onAtras = { nav.popBackStack() })
+            ResHorarioPersonaRoute(id = entry.arguments?.getString("id").orEmpty(), onAtras = { nav.popBackStack() })
         }
         composable(ScreenNames.ResPersonal.route) {
             ResPersonalRoute(
@@ -273,25 +273,24 @@ fun AppNavHost() {
         }
         composable(
             route = ScreenNames.ResAusencia.route,
-            arguments = listOf(navArgument("id") { type = NavType.LongType })
+            arguments = listOf(navArgument("id") { type = NavType.StringType; nullable = true; defaultValue = null })
         ) { entry ->
-            val id = entry.arguments?.getLong("id") ?: 0L
-            RegistrarAusenciaRoute(userId = id.takeIf { it > 0 }, onCerrar = { nav.popBackStack() })
+            RegistrarAusenciaRoute(userId = entry.arguments?.getString("id"), onCerrar = { nav.popBackStack() })
         }
         composable(ScreenNames.ResAltaPersonal.route) {
             AltaPersonalRoute(id = null, onCerrar = { nav.popBackStack() })
         }
         composable(
             route = ScreenNames.ResEditarPersonal.route,
-            arguments = listOf(navArgument("id") { type = NavType.LongType })
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
         ) { entry ->
-            AltaPersonalRoute(id = entry.arguments?.getLong("id"), onCerrar = { nav.popBackStack() })
+            AltaPersonalRoute(id = entry.arguments?.getString("id"), onCerrar = { nav.popBackStack() })
         }
         composable(
             route = ScreenNames.ResPerfilPersona.route,
-            arguments = listOf(navArgument("id") { type = NavType.LongType })
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
         ) { entry ->
-            val id = entry.arguments?.getLong("id") ?: 0L
+            val id = entry.arguments?.getString("id").orEmpty()
             PerfilPersonaRoute(
                 id = id,
                 onAtras = { nav.popBackStack() },
@@ -302,10 +301,10 @@ fun AppNavHost() {
         }
         composable(
             route = ScreenNames.ResDarBaja.route,
-            arguments = listOf(navArgument("id") { type = NavType.LongType })
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
         ) { entry ->
             DarDeBajaRoute(
-                id = entry.arguments?.getLong("id") ?: 0L,
+                id = entry.arguments?.getString("id").orEmpty(),
                 onCerrar = { nav.popBackStack() },
                 // Tras la baja o el traslado se vuelve a la lista de personal.
                 onTerminado = { nav.popBackStack(ScreenNames.ResPersonal.route, inclusive = false) }
@@ -324,9 +323,9 @@ fun AppNavHost() {
         }
         composable(
             route = ScreenNames.ResEstadoLectura.route,
-            arguments = listOf(navArgument("id") { type = NavType.LongType })
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
         ) { entry ->
-            ResEstadoLecturaRoute(id = entry.arguments?.getLong("id") ?: 0L, onAtras = { nav.popBackStack() })
+            ResEstadoLecturaRoute(id = entry.arguments?.getString("id").orEmpty(), onAtras = { nav.popBackStack() })
         }
         composable(ScreenNames.ResMenu.route) {
             ResMenuScreen(

@@ -35,7 +35,7 @@ data class Pendiente(
     /** Identificador de la checada. En las entradas es el uuid que la API usa para no duplicar. */
     val uuid: String,
     val tipo: String, // TIPO_ENTRADA | TIPO_SALIDA
-    val usuarioId: Long,
+    val usuarioId: String,
     /** Hora real en que se toco el boton (ISO-8601 UTC). */
     val ocurridoEn: String,
     val latitud: Double? = null,
@@ -51,7 +51,7 @@ data class Pendiente(
 
 /** Una checada que la API rechazo de forma definitiva (no se reintenta), lista para avisar. */
 @Serializable
-data class Rechazo(val tipo: String, val ocurridoEn: String, val motivo: String, val usuarioId: Long)
+data class Rechazo(val tipo: String, val ocurridoEn: String, val motivo: String, val usuarioId: String)
 
 /**
  * Cola persistente de checadas, guardada en Room (tabla cola_checadas). Cada checada pasa por
@@ -73,7 +73,7 @@ class ColaChecadas(
     @Volatile
     private var migrada = almacenViejo == null
 
-    suspend fun pendientes(usuarioId: Long): List<Pendiente> {
+    suspend fun pendientes(usuarioId: String): List<Pendiente> {
         migrar()
         return dao.pendientes(usuarioId).map { it.aPendiente() }
     }
@@ -102,7 +102,7 @@ class ColaChecadas(
     }
 
     /** Rechazos que todavia no se le muestran a [usuarioId]. */
-    suspend fun rechazos(usuarioId: Long): List<Rechazo> {
+    suspend fun rechazos(usuarioId: String): List<Rechazo> {
         migrar()
         return dao.rechazosSinAviso(usuarioId).map {
             Rechazo(it.tipo, it.ocurridoEn, it.motivoRechazo.orEmpty(), it.usuarioId)
@@ -110,7 +110,7 @@ class ColaChecadas(
     }
 
     /** Marca los rechazos de [usuarioId] como ya mostrados (no se vuelven a avisar). */
-    suspend fun limpiarRechazos(usuarioId: Long) {
+    suspend fun limpiarRechazos(usuarioId: String) {
         dao.marcarAvisosMostrados(usuarioId)
     }
 

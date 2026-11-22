@@ -14,7 +14,7 @@ interface ChecadaDao {
 
     /** Las que faltan por enviar de esa persona, en orden de llegada. */
     @Query("SELECT * FROM cola_checadas WHERE usuarioId = :usuarioId AND estado = 'PENDIENTE' ORDER BY id")
-    suspend fun pendientes(usuarioId: Long): List<ChecadaLocal>
+    suspend fun pendientes(usuarioId: String): List<ChecadaLocal>
 
     @Query("SELECT EXISTS(SELECT 1 FROM cola_checadas WHERE estado = 'PENDIENTE')")
     suspend fun hayPendientes(): Boolean
@@ -39,13 +39,13 @@ interface ChecadaDao {
         "SELECT * FROM cola_checadas WHERE usuarioId = :usuarioId AND estado = 'RECHAZADA' " +
             "AND avisoMostrado = 0 ORDER BY id"
     )
-    suspend fun rechazosSinAviso(usuarioId: Long): List<ChecadaLocal>
+    suspend fun rechazosSinAviso(usuarioId: String): List<ChecadaLocal>
 
     @Query(
         "UPDATE cola_checadas SET avisoMostrado = 1 " +
             "WHERE usuarioId = :usuarioId AND estado = 'RECHAZADA'"
     )
-    suspend fun marcarAvisosMostrados(usuarioId: Long)
+    suspend fun marcarAvisosMostrados(usuarioId: String)
 
     /**
      * Borra las que ya terminaron (enviadas, o rechazadas cuyo aviso ya se vio) antes de [antesDe].

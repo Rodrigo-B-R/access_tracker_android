@@ -45,7 +45,7 @@ import com.example.access_tracker.ui.theme.Texto
 
 /** Un aviso tal como se pinta en la bandeja. */
 data class AvisoVista(
-    val id: Long,
+    val id: String,
     val etiqueta: String,
     val tono: TonoChip,
     val urgente: Boolean,
@@ -62,13 +62,13 @@ data class AvisoVista(
 fun AvisosBandejaScreen(onAtras: () -> Unit, onAbrirUrgente: () -> Unit) {
     AvisosBandejaContenido(
         avisos = listOf(
-            AvisoVista(1, "Urgente", TonoChip.Peligro, true, "Hace 10 min", "Cierre anticipado por lluvia",
+            AvisoVista("demo-1", "Urgente", TonoChip.Peligro, true, "Hace 10 min", "Cierre anticipado por lluvia",
                 "Se recoge a las niñas y niños a las 13:00. Avisa a las familias.", leido = false, requiereConfirmacion = true),
-            AvisoVista(2, "Cambio de horario", TonoChip.Alerta, false, "Ayer", "Nuevo horario de comida desde el lunes",
+            AvisoVista("demo-2", "Cambio de horario", TonoChip.Alerta, false, "Ayer", "Nuevo horario de comida desde el lunes",
                 "", leido = false, requiereConfirmacion = false),
-            AvisoVista(3, "Reunión", TonoChip.Info, false, "Lun 5 oct", "Reunión de personal el viernes a las 9:00",
+            AvisoVista("demo-3", "Reunión", TonoChip.Info, false, "Lun 5 oct", "Reunión de personal el viernes a las 9:00",
                 "", leido = true, requiereConfirmacion = false),
-            AvisoVista(4, "Recordatorio", TonoChip.Neutro, false, "Vie 2 oct", "Entregar las bitácoras al cierre del turno",
+            AvisoVista("demo-4", "Recordatorio", TonoChip.Neutro, false, "Vie 2 oct", "Entregar las bitácoras al cierre del turno",
                 "", leido = true, requiereConfirmacion = false),
         ),
         onAtras = onAtras,
@@ -80,7 +80,7 @@ fun AvisosBandejaScreen(onAtras: () -> Unit, onAbrirUrgente: () -> Unit) {
 fun AvisosBandejaContenido(
     avisos: List<AvisoVista>,
     onAtras: () -> Unit,
-    onAbrir: (Long) -> Unit,
+    onAbrir: (String) -> Unit,
     mensaje: String? = null,
 ) {
     // Los urgentes sin leer van destacados arriba; el resto, en "Anteriores".

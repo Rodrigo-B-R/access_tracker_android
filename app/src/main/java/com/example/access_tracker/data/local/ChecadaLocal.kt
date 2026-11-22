@@ -28,11 +28,17 @@ object EstadoEnvio {
     ],
 )
 data class ChecadaLocal(
+    /**
+     * Numero interno de esta tabla (solo existe en el telefono, nunca se manda a la API).
+     * Se queda como numero autogenerado a proposito: sirve para respetar el orden de llegada.
+     * Los ids que si vienen de la API (usuarioId) son UUID.
+     */
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     /** En las entradas es el uuid que la API usa para no duplicar. */
     val uuid: String,
     val tipo: String, // Pendiente.TIPO_ENTRADA | Pendiente.TIPO_SALIDA
-    val usuarioId: Long,
+    /** UUID del usuario que hizo la checada. */
+    val usuarioId: String,
     /** Hora real en que se toco el boton (ISO-8601 UTC). */
     val ocurridoEn: String,
     val latitud: Double? = null,

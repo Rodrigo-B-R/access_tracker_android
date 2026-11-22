@@ -29,6 +29,8 @@ class ContratoApiTest {
         val r = json.decodeFromString(LoginResponse.serializer(), muestra("login.json"))
         assertEquals("employee", r.role)
         assertEquals(Perfil.Empleada, perfilDeRol(r.role))
+        // Los ids llegan como UUID en texto, no como numeros.
+        assertEquals("00000000-0000-4000-8000-000000000003", r.user.id)
         assertNotNull(r.user.daycareId)
     }
 
@@ -75,9 +77,20 @@ class ContratoApiTest {
     fun acuseDeLectura() {
         val a = json.decodeFromString(
             com.example.access_tracker.model.AcuseLectura.serializer(),
-            """{"noticeId": 1, "read": true, "readAt": "2026-11-04T13:05:00.000Z"}""",
+            """{"noticeId": "cc65970d-7014-4fcf-a9da-11f08a1b2c3d", "read": true, "readAt": "2026-11-04T13:05:00.000Z"}""",
         )
         assertEquals(true, a.read)
+        assertEquals("cc65970d-7014-4fcf-a9da-11f08a1b2c3d", a.noticeId)
+    }
+
+    @Test
+    fun avisoConFechaDeEnvio() {
+        // Campo nuevo de la API: createdAt (UTC).
+        val avisos = json.decodeFromString(
+            kotlinx.serialization.builtins.ListSerializer(com.example.access_tracker.model.Aviso.serializer()),
+            muestra("inbox.json").replace("\"readAt\":null", "\"readAt\":null,\"createdAt\":\"2026-11-04T13:05:00.000Z\""),
+        )
+        assertEquals("2026-11-04T13:05:00.000Z", avisos.first().createdAt)
     }
 
     @Test

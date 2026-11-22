@@ -97,7 +97,7 @@ class AltaPersonalViewModel : ViewModel() {
     private val _creada = MutableStateFlow<PersonaCreada?>(null)
     val creada: StateFlow<PersonaCreada?> = _creada.asStateFlow()
 
-    fun cargar(id: Long?) {
+    fun cargar(id: String?) {
         viewModelScope.launch {
             val c = CatalogosCache.obtener()
             if (id != null) {
@@ -111,7 +111,7 @@ class AltaPersonalViewModel : ViewModel() {
         }
     }
 
-    fun guardar(id: Long?, nombre: String, clave: String, correo: String, telefono: String, puestoId: Long) {
+    fun guardar(id: String?, nombre: String, clave: String, correo: String, telefono: String, puestoId: String) {
         if (_accion.value.enviando) return
         _accion.value = Accion(enviando = true)
         viewModelScope.launch {
@@ -133,7 +133,7 @@ class AltaPersonalViewModel : ViewModel() {
 }
 
 @Composable
-fun AltaPersonalRoute(id: Long?, onCerrar: () -> Unit) {
+fun AltaPersonalRoute(id: String?, onCerrar: () -> Unit) {
     val vm: AltaPersonalViewModel = viewModel()
     val cat by vm.catalogos.collectAsState()
     val persona by vm.persona.collectAsState()
@@ -210,7 +210,7 @@ class PerfilPersonaViewModel : ViewModel() {
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
-    fun cargar(id: Long) {
+    fun cargar(id: String) {
         viewModelScope.launch {
             val r = ServiceLocator.api.get("/staff/$id", PersonaDetalle.serializer())
             _estado.value = when (r) {
@@ -225,7 +225,7 @@ class PerfilPersonaViewModel : ViewModel() {
         }
     }
 
-    fun restablecerPassword(id: Long) {
+    fun restablecerPassword(id: String) {
         viewModelScope.launch {
             when (val r = ServiceLocator.api.post("/staff/$id/password", "{}", PasswordTemporal.serializer())) {
                 is ApiResult.Ok -> _clave.value = r.value.temporaryPassword
@@ -239,7 +239,7 @@ class PerfilPersonaViewModel : ViewModel() {
 
 @Composable
 fun PerfilPersonaRoute(
-    id: Long,
+    id: String,
     onAtras: () -> Unit,
     onEditar: () -> Unit,
     onBaja: () -> Unit,
@@ -389,7 +389,7 @@ class DarDeBajaViewModel : ViewModel() {
     private val _accion = MutableStateFlow(Accion())
     val accion: StateFlow<Accion> = _accion.asStateFlow()
 
-    fun cargar(id: Long) {
+    fun cargar(id: String) {
         viewModelScope.launch {
             val p = ServiceLocator.api.get("/staff/$id", PersonaDetalle.serializer())
             _persona.value = when (p) {
@@ -403,7 +403,7 @@ class DarDeBajaViewModel : ViewModel() {
     }
 
     /** La API usa la fecha de hoy si no se manda otra. */
-    fun confirmarBaja(id: Long, motivoId: Long) {
+    fun confirmarBaja(id: String, motivoId: String) {
         enviar {
             ServiceLocator.api.post(
                 "/staff/$id/terminate", BajaRequest(motivoId), BajaRequest.serializer(), Persona.serializer()
@@ -411,7 +411,7 @@ class DarDeBajaViewModel : ViewModel() {
         }
     }
 
-    fun confirmarTraslado(id: Long, estanciaId: Long) {
+    fun confirmarTraslado(id: String, estanciaId: String) {
         enviar {
             ServiceLocator.api.post(
                 "/staff/$id/transfer", TrasladoRequest(estanciaId), TrasladoRequest.serializer(), Persona.serializer()
@@ -433,7 +433,7 @@ class DarDeBajaViewModel : ViewModel() {
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun DarDeBajaRoute(id: Long, onCerrar: () -> Unit, onTerminado: () -> Unit) {
+fun DarDeBajaRoute(id: String, onCerrar: () -> Unit, onTerminado: () -> Unit) {
     val vm: DarDeBajaViewModel = viewModel()
     val persona by vm.persona.collectAsState()
     val catalogos by vm.catalogos.collectAsState()
