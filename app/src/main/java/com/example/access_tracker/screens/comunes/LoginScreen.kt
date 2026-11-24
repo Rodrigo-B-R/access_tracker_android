@@ -2,7 +2,6 @@ package com.example.access_tracker.screens.comunes
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,13 +40,11 @@ import com.example.access_tracker.ui.theme.Petroleo100
 import com.example.access_tracker.ui.theme.Petroleo500
 import com.example.access_tracker.ui.theme.Petroleo700
 import com.example.access_tracker.ui.theme.TintaSuave
-import com.example.access_tracker.ui.theme.TintaTenue
 import com.example.access_tracker.ui.theme.Texto
 
 @Composable
 fun LoginScreen(
     onIniciarSesion: (clave: String, password: String) -> Unit,
-    onVerIndice: () -> Unit,
     cargando: Boolean = false,
     error: String? = null,
 ) {
@@ -129,16 +125,6 @@ fun LoginScreen(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
-            Text(
-                text = "Ver índice de pantallas (demo)",
-                style = Texto.BodyS,
-                color = TintaTenue,
-                textDecoration = TextDecoration.Underline,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onVerIndice() }
-            )
         }
     }
 }
@@ -170,5 +156,5 @@ private fun MotivoPlantilla(modifier: Modifier = Modifier) {
 @Preview(showBackground = true, heightDp = 915, widthDp = 412)
 @Composable
 private fun LoginPreview() {
-    Access_trackerTheme { LoginScreen({ _, _ -> }, {}) }
+    Access_trackerTheme { LoginScreen({ _, _ -> }) }
 }

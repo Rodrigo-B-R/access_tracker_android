@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.access_tracker.components.AccionAviso
 import com.example.access_tracker.components.AvisoItem
@@ -33,7 +32,6 @@ import com.example.access_tracker.components.Nota
 import com.example.access_tracker.components.PantallaBase
 import com.example.access_tracker.components.SinLeer
 import com.example.access_tracker.components.TonoChip
-import com.example.access_tracker.ui.theme.Access_trackerTheme
 import com.example.access_tracker.ui.theme.Coral500
 import com.example.access_tracker.ui.theme.FondoArena
 import com.example.access_tracker.ui.theme.FondoBlanco
@@ -56,25 +54,6 @@ data class AvisoVista(
     val leido: Boolean,
     val requiereConfirmacion: Boolean,
 )
-
-/** Version de demostracion (indice de pantallas): datos fijos. */
-@Composable
-fun AvisosBandejaScreen(onAtras: () -> Unit, onAbrirUrgente: () -> Unit) {
-    AvisosBandejaContenido(
-        avisos = listOf(
-            AvisoVista("demo-1", "Urgente", TonoChip.Peligro, true, "Hace 10 min", "Cierre anticipado por lluvia",
-                "Se recoge a las niñas y niños a las 13:00. Avisa a las familias.", leido = false, requiereConfirmacion = true),
-            AvisoVista("demo-2", "Cambio de horario", TonoChip.Alerta, false, "Ayer", "Nuevo horario de comida desde el lunes",
-                "", leido = false, requiereConfirmacion = false),
-            AvisoVista("demo-3", "Reunión", TonoChip.Info, false, "Lun 5 oct", "Reunión de personal el viernes a las 9:00",
-                "", leido = true, requiereConfirmacion = false),
-            AvisoVista("demo-4", "Recordatorio", TonoChip.Neutro, false, "Vie 2 oct", "Entregar las bitácoras al cierre del turno",
-                "", leido = true, requiereConfirmacion = false),
-        ),
-        onAtras = onAtras,
-        onAbrir = { onAbrirUrgente() },
-    )
-}
 
 @Composable
 fun AvisosBandejaContenido(
@@ -114,19 +93,6 @@ fun AvisosBandejaContenido(
             }
         }
     }
-}
-
-/** Version de demostracion (indice de pantallas): datos fijos. */
-@Composable
-fun AvisoDetalleScreen(onAtras: () -> Unit, onConfirmar: () -> Unit) {
-    AvisoDetalleContenido(
-        etiqueta = "Urgente", urgente = true, titulo = "Cierre anticipado por lluvia",
-        autor = "Marisol García",
-        mensaje = "Por la alerta de lluvia fuerte, hoy cerramos a las 13:00. Las niñas y niños se entregan a partir de las 12:30.\n\n" +
-            "Avisen a las familias y revisen que no quede nadie en las salas antes de salir.",
-        requiereConfirmacion = true, leido = false, enviando = false,
-        onAtras = onAtras, onConfirmar = onConfirmar,
-    )
 }
 
 @Composable
@@ -207,16 +173,4 @@ fun AvisoDetalleContenido(
             )
         }
     }
-}
-
-@Preview(showBackground = true, heightDp = 915, widthDp = 412)
-@Composable
-private fun AvisosBandejaPreview() {
-    Access_trackerTheme { AvisosBandejaScreen({}, {}) }
-}
-
-@Preview(showBackground = true, heightDp = 915, widthDp = 412)
-@Composable
-private fun AvisoDetallePreview() {
-    Access_trackerTheme { AvisoDetalleScreen({}, {}) }
 }

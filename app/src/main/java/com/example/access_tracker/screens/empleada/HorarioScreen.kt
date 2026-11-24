@@ -16,14 +16,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.access_tracker.components.Ico
 import com.example.access_tracker.components.IconoCuadro
 import com.example.access_tracker.components.PantallaBase
 import com.example.access_tracker.components.Tarjeta
 import com.example.access_tracker.components.TituloPantalla
-import com.example.access_tracker.ui.theme.Access_trackerTheme
 import com.example.access_tracker.ui.theme.FondoArena
 import com.example.access_tracker.ui.theme.FondoArenaFuerte
 import com.example.access_tracker.ui.theme.FondoBlanco
@@ -47,22 +45,6 @@ data class DiaVista(
     val sala: String?,
     val estado: EstadoDia,
 )
-
-/** Version de demostracion (indice de pantallas): datos fijos. */
-@Composable
-fun HorarioScreen(barra: @Composable () -> Unit = {}) {
-    HorarioContenido(
-        semana = "Semana del 5 al 9 de octubre",
-        dias = listOf(
-            DiaVista("L", "5", "Lunes 5", "7:00 – 15:00", "Sala Maternal A", EstadoDia.Normal),
-            DiaVista("M", "6", "Martes 6", "7:00 – 15:00", "Sala Maternal A", EstadoDia.Normal),
-            DiaVista("M", "7", "Miércoles 7", "7:00 – 15:00", "Sala Maternal A", EstadoDia.Hoy),
-            DiaVista("J", "8", "Jueves 8", "Descanso", null, EstadoDia.Descanso),
-            DiaVista("V", "9", "Viernes 9", "9:00 – 17:00", "Sala Lactantes", EstadoDia.Normal),
-        ),
-        barra = barra,
-    )
-}
 
 @Composable
 fun HorarioContenido(semana: String, dias: List<DiaVista>, barra: @Composable () -> Unit = {}) {
@@ -121,10 +103,4 @@ private fun Turno(dia: String, horas: String, sala: String?, estado: EstadoDia =
             if (sala != null) Text(sala, style = Texto.LabelM, color = if (hoy) FondoCrema else TintaSuave)
         }
     }
-}
-
-@Preview(showBackground = true, heightDp = 915, widthDp = 412)
-@Composable
-private fun HorarioPreview() {
-    Access_trackerTheme { HorarioScreen() }
 }

@@ -30,11 +30,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.access_tracker.components.BarraNavegacion
-import com.example.access_tracker.screens.comunes.AvisoSinConexionScreen
 import com.example.access_tracker.screens.comunes.CambioPasswordScreen
 import com.example.access_tracker.screens.comunes.CambioPasswordViewModel
 import com.example.access_tracker.screens.comunes.ExportarScreen
-import com.example.access_tracker.screens.comunes.IndiceScreen
 import com.example.access_tracker.screens.comunes.LoginScreen
 import com.example.access_tracker.screens.comunes.PermisosScreen
 import com.example.access_tracker.screens.comunes.SesionExpiradaScreen
@@ -42,12 +40,9 @@ import com.example.access_tracker.screens.direccion.DirBitacoraRoute
 import com.example.access_tracker.screens.direccion.DirEstadisticasRoute
 import com.example.access_tracker.screens.direccion.DirResumenRoute
 import com.example.access_tracker.screens.empleada.AsistenciasRoute
-import com.example.access_tracker.screens.empleada.AvisoDetalleScreen
-import com.example.access_tracker.screens.empleada.ChecarDentroScreen
 import com.example.access_tracker.screens.empleada.AvisoRoute
 import com.example.access_tracker.screens.empleada.AvisosRoute
 import com.example.access_tracker.screens.empleada.ChecarRoute
-import com.example.access_tracker.screens.empleada.ChecarSinInternetScreen
 import com.example.access_tracker.screens.empleada.HorarioRoute
 import com.example.access_tracker.screens.responsable.AltaPersonalRoute
 import com.example.access_tracker.screens.responsable.DarDeBajaRoute
@@ -105,7 +100,6 @@ fun AppNavHost() {
             }
             LoginScreen(
                 onIniciarSesion = { clave, password -> vm.iniciarSesion(clave, password) },
-                onVerIndice = { nav.navigate(ScreenNames.Indice.route) },
                 cargando = estado.cargando,
                 error = estado.error,
             )
@@ -170,35 +164,11 @@ fun AppNavHost() {
         composable(ScreenNames.SesionExpirada.route) {
             SesionExpiradaScreen(onIniciarSesion = { cerrarSesion(nav) })
         }
-        composable(ScreenNames.AvisoSinConexion.route) {
-            AvisoSinConexionScreen()
-        }
-        composable(ScreenNames.Indice.route) {
-            IndiceScreen(onAtras = { nav.popBackStack() }, onAbrir = { nav.navigate(it) })
-        }
 
         // Empleada
         composable(ScreenNames.EmpChecar.route) {
             ChecarRoute(
                 onAvisos = { nav.navigate(ScreenNames.EmpAvisos.route) },
-                onCambiarPassword = { nav.navigate(ScreenNames.CambioPassword.createRoute(Perfil.Empleada)) },
-                onCerrarSesion = { cerrarSesion(nav) },
-                barra = { Barra(nav, Perfil.Empleada, ScreenNames.EmpChecar) }
-            )
-        }
-        composable(ScreenNames.EmpChecarDentro.route) {
-            ChecarDentroScreen(
-                onAvisos = { nav.navigate(ScreenNames.EmpAvisos.route) },
-                onRegistrarSalida = { nav.popBackStack() },
-                onCambiarPassword = { nav.navigate(ScreenNames.CambioPassword.createRoute(Perfil.Empleada)) },
-                onCerrarSesion = { cerrarSesion(nav) },
-                barra = { Barra(nav, Perfil.Empleada, ScreenNames.EmpChecar) }
-            )
-        }
-        composable(ScreenNames.EmpChecarSinInternet.route) {
-            ChecarSinInternetScreen(
-                onAvisos = { nav.navigate(ScreenNames.EmpAvisos.route) },
-                onRegistrarSalida = { nav.popBackStack() },
                 onCambiarPassword = { nav.navigate(ScreenNames.CambioPassword.createRoute(Perfil.Empleada)) },
                 onCerrarSesion = { cerrarSesion(nav) },
                 barra = { Barra(nav, Perfil.Empleada, ScreenNames.EmpChecar) }
@@ -224,9 +194,6 @@ fun AppNavHost() {
                 id = backStackEntry.arguments?.getString("id").orEmpty(),
                 onAtras = { nav.popBackStack() },
             )
-        }
-        composable(ScreenNames.EmpAvisoDetalle.route) {
-            AvisoDetalleScreen(onAtras = { nav.popBackStack() }, onConfirmar = { nav.popBackStack() })
         }
 
         // Responsable

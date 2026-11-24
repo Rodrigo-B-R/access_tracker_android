@@ -2,7 +2,6 @@ package com.example.access_tracker.navigation
 
 sealed class ScreenNames(val route: String) {
     // Comunes
-    data object Indice : ScreenNames("indice")
     data object Login : ScreenNames("login")
     data object CambioPassword : ScreenNames("cambio_password/{perfil}") {
         fun createRoute(perfil: Perfil) = "cambio_password/${perfil.name}"
@@ -11,19 +10,15 @@ sealed class ScreenNames(val route: String) {
         fun createRoute(perfil: Perfil) = "permisos/${perfil.name}"
     }
     data object SesionExpirada : ScreenNames("sesion_expirada")
-    data object AvisoSinConexion : ScreenNames("aviso_sin_conexion")
     data object Exportar : ScreenNames("exportar/{perfil}") {
         fun createRoute(perfil: Perfil) = "exportar/${perfil.name}"
     }
 
     // Empleada
     data object EmpChecar : ScreenNames("emp_checar")
-    data object EmpChecarDentro : ScreenNames("emp_checar_dentro")
-    data object EmpChecarSinInternet : ScreenNames("emp_checar_sin_internet")
     data object EmpAsistencias : ScreenNames("emp_asistencias")
     data object EmpHorario : ScreenNames("emp_horario")
     data object EmpAvisos : ScreenNames("emp_avisos")
-    data object EmpAvisoDetalle : ScreenNames("emp_aviso_detalle") // demo del indice
     data object EmpAviso : ScreenNames("emp_aviso/{id}") {
         fun createRoute(id: String) = "emp_aviso/$id"
     }

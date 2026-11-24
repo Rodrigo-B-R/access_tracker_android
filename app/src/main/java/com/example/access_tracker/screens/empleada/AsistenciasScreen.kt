@@ -11,14 +11,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.access_tracker.components.Chip
 import com.example.access_tracker.components.PantallaBase
@@ -27,7 +22,6 @@ import com.example.access_tracker.components.Tarjeta
 import com.example.access_tracker.components.TarjetaCifra
 import com.example.access_tracker.components.TituloPantalla
 import com.example.access_tracker.components.TonoChip
-import com.example.access_tracker.ui.theme.Access_trackerTheme
 import com.example.access_tracker.ui.theme.FondoArena
 import com.example.access_tracker.ui.theme.FondoCrema
 import com.example.access_tracker.ui.theme.Mostaza100
@@ -48,24 +42,6 @@ data class AsistenciaVista(
     val detalle: String,
     val actual: Boolean = false,
 )
-
-/** Version de demostracion (indice de pantallas): datos fijos. */
-@Composable
-fun AsistenciasScreen(barra: @Composable () -> Unit = {}) {
-    var periodo by remember { mutableIntStateOf(0) }
-    AsistenciasContenido(
-        periodo = periodo,
-        onPeriodo = { periodo = it },
-        trabajados = 4, retardos = 1, faltas = 0,
-        dias = listOf(
-            AsistenciaVista("MIÉ", "7", "Por sincronizar", TonoChip.Neutro, "Entrada 7:02 · Salida en curso", actual = true),
-            AsistenciaVista("MAR", "6", "Retardo 12 min", TonoChip.Alerta, "Entrada 7:12 · Salida 15:01"),
-            AsistenciaVista("LUN", "5", "A tiempo", TonoChip.Exito, "Entrada 6:58 · Salida 15:03"),
-            AsistenciaVista("VIE", "2", "A tiempo", TonoChip.Exito, "Entrada 7:00 · Salida 15:00"),
-        ),
-        barra = barra,
-    )
-}
 
 @Composable
 fun AsistenciasContenido(
@@ -130,10 +106,4 @@ private fun DiaAsistencia(
             }
         }
     }
-}
-
-@Preview(showBackground = true, heightDp = 915, widthDp = 412)
-@Composable
-private fun AsistenciasPreview() {
-    Access_trackerTheme { AsistenciasScreen() }
 }
